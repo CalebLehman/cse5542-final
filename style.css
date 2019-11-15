@@ -1,0 +1,25 @@
+/* modified from https://www.w3schools.com/howto/howto_css_fixed_menu.asp */
+
+.navbar {
+  background-color: #454545;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.navbar a {
+  float: left;
+  display: block;
+  color: #fdfdfd;
+  text-align: center;
+  padding: 14px 16px;
+}
+
+.navbar a:hover {
+  background: #fdfdfd;
+  color: #454545;
+}
+
+.main {
+  margin-top: 25px;
+}
