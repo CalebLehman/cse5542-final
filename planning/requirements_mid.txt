@@ -1,17 +1,3 @@
-<!-- Author - Caleb Lehman (lehman.346@osu.edu) -->
-<!DOCTYPE html>
-
-<html>
-<head>
-  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1"/>
-  <link rel="stylesheet" type="text/css" href="gh_style.css"/>
-  <link rel="stylesheet" type="text/css" href="style.css"/>
-  <link rel="shortcut icon" href="#"/>
-
-  <title>CSE 5542 Final Project - Requirements</title>
-</head>
-
-<body>
 <div class="navbar">
 <p><a href="index.html">Home</a> <a href="project.html">Project</a> <a href="planning/requirements.html">Requirements</a></p>
 </div>
@@ -70,5 +56,3 @@
 <h3 id="bump-mapping">Bump mapping</h3>
 <p>The scene should implement bump mapping.</p>
 <p>My scene will have bump mapping on the knots, either for the rope texture or the “scaly” texture.</p>
-</body>
-</html>

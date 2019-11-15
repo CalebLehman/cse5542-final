@@ -1,3 +1,18 @@
+---
+title: "CSE 5542 Final Project: Knot Museum"
+header-includes:
+  <title>CSE 5542 Final Project - Requirements</title>
+  <link rel="stylesheet" type="text/css" href="../gh_style.css"/>
+  <link rel="stylesheet" type="text/css" href="../style.css"/>
+  <link rel="shortcut icon" href="#"/>
+---
+
+<div class="navbar">
+  <a href="index.html">Home</a>
+  <a href="project.html">Project</a>
+  <a href="planning/requirements.html">Requirements</a>
+</div>
+
 # Project planning
 
 My overall idea is to have a small "museum" dedicated to some simple knots.
