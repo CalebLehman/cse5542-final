@@ -8,7 +8,7 @@ to walk around the scene and view the knots.
 
 The full requirements for the project can be found
 [here](http://web.cse.ohio-state.edu/~shen.94/5542/Site/Lab5.html) or
-[here](../assignment.html) (local copy).
+[here](../assignment/assignment.html) (local copy).
 The following is a summary of the requirements for the final project.  The
 following sections detail how my project addresses them.
 
