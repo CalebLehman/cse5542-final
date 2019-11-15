@@ -1,25 +1,10 @@
----
-title: "CSE 5542 Final Project: Knot Museum"
-header-includes:
-  <title>CSE 5542 Final Project - Requirements</title>
-  <link rel="stylesheet" type="text/css" href="../gh_style.css"/>
-  <link rel="stylesheet" type="text/css" href="../style.css"/>
-  <link rel="shortcut icon" href="#"/>
----
-
-<div class="navbar">
-  <a href="index.html">Home</a>
-  <a href="project.html">Project</a>
-  <a href="planning/requirements.html">Requirements</a>
-</div>
-
-# Project planning
+## Project overview
 
 My overall idea is to have a small "museum" dedicated to some simple knots.
 Each knot will be placed on one of several pedestals and the user will be able
 to walk around the scene and view the knots.
 
-## Requirements
+### Requirements
 
 The full requirements for the project can be found
 [here](http://web.cse.ohio-state.edu/~shen.94/5542/Site/Lab5.html) or
@@ -33,14 +18,14 @@ following sections detail how my project addresses them.
 - [ ] [Semester content](#semester-content)
 - [ ] [Bump mapping](#bump-mapping) (Note: bonus)
 
-### Texture mapping
+#### Texture mapping
 
 The scene must contain a plane with a texture mapped onto it.
 
 My scene will have a texture (english words) mapped onto
 a plane (descriptive placard) behind each knot.
 
-### Parametric surface
+#### Parametric surface
 
 The scene must contain some parametric surface(s). The user
 must be able to toggle the models between
@@ -57,7 +42,7 @@ In my scene, the user will be able to toggle the knots between
 * rope mode ("scaly" if making rope texture ends up being too difficult)
 * reflective mode
 
-### Environment cube mapping
+#### Environment cube mapping
 
 The scene must have 6 walls an some objects which are reflective, using the
 enivornment cube mapping feature in WebGl.
@@ -65,7 +50,7 @@ enivornment cube mapping feature in WebGl.
 My scene will have an toggle to make both the pedestals (geometric primitive)
 and knots (parametric surfaces) reflective.
 
-### Semester content
+#### Semester content
 
 The scene must have
 
@@ -81,7 +66,7 @@ My scene will have
 * player can move around, rotate view, and rotate knots
 * knots will have "creation" animation
 
-### Bump mapping
+#### Bump mapping
 
 The scene should implement bump mapping.
 

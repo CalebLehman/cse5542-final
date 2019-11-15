@@ -4,20 +4,25 @@
 <html>
 <head>
   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1"/>
-  <link rel="stylesheet" type="text/css" href="gh_style.css"/>
-  <link rel="stylesheet" type="text/css" href="style.css"/>
+  <link rel="stylesheet" type="text/css" href="../gh_style.css"/>
+  <link rel="stylesheet" type="text/css" href="../style.css"/>
   <link rel="shortcut icon" href="#"/>
 
   <title>CSE 5542 Final Project - Requirements</title>
 </head>
 
 <body>
-<div class="navbar">
-<p><a href="index.html">Home</a> <a href="project.html">Project</a> <a href="planning/requirements.html">Requirements</a></p>
-</div>
-<h1 id="project-planning">Project planning</h1>
+  <div class="navbar">
+    <a href="index.html">Home</a>
+    <a href="project.html">Project</a>
+    <a href="planning/requirements.html">Requirements</a>
+  </div>
+
+  <div class="main">
+    <h1>CSE 5542 Final Project: Knot Museum</h1>
+<h2 id="project-overview">Project overview</h2>
 <p>My overall idea is to have a small “museum” dedicated to some simple knots. Each knot will be placed on one of several pedestals and the user will be able to walk around the scene and view the knots.</p>
-<h2 id="requirements">Requirements</h2>
+<h3 id="requirements">Requirements</h3>
 <p>The full requirements for the project can be found <a href="http://web.cse.ohio-state.edu/~shen.94/5542/Site/Lab5.html">here</a> or <a href="../assignment.html">here</a> (local copy). The following is a summary of the requirements for the final project. The following sections detail how my project addresses them.</p>
 <ul>
 <li><input type="checkbox" disabled="" />
@@ -31,10 +36,10 @@
 <li><input type="checkbox" disabled="" />
 <a href="#bump-mapping">Bump mapping</a> (Note: bonus)</li>
 </ul>
-<h3 id="texture-mapping">Texture mapping</h3>
+<h4 id="texture-mapping">Texture mapping</h4>
 <p>The scene must contain a plane with a texture mapped onto it.</p>
 <p>My scene will have a texture (english words) mapped onto a plane (descriptive placard) behind each knot.</p>
-<h3 id="parametric-surface">Parametric surface</h3>
+<h4 id="parametric-surface">Parametric surface</h4>
 <p>The scene must contain some parametric surface(s). The user must be able to toggle the models between</p>
 <ul>
 <li>wire-frame</li>
@@ -49,10 +54,10 @@
 <li>rope mode (“scaly” if making rope texture ends up being too difficult)</li>
 <li>reflective mode</li>
 </ul>
-<h3 id="environment-cube-mapping">Environment cube mapping</h3>
+<h4 id="environment-cube-mapping">Environment cube mapping</h4>
 <p>The scene must have 6 walls an some objects which are reflective, using the enivornment cube mapping feature in WebGl.</p>
 <p>My scene will have an toggle to make both the pedestals (geometric primitive) and knots (parametric surfaces) reflective.</p>
-<h3 id="semester-content">Semester content</h3>
+<h4 id="semester-content">Semester content</h4>
 <p>The scene must have</p>
 <ul>
 <li>hierarchical modeling</li>
@@ -67,8 +72,9 @@
 <li>player can move around, rotate view, and rotate knots</li>
 <li>knots will have “creation” animation</li>
 </ul>
-<h3 id="bump-mapping">Bump mapping</h3>
+<h4 id="bump-mapping">Bump mapping</h4>
 <p>The scene should implement bump mapping.</p>
 <p>My scene will have bump mapping on the knots, either for the rope texture or the “scaly” texture.</p>
+  </div>
 </body>
 </html>
