@@ -1,4 +1,5 @@
 # Makefile to convert markdown to HTML
+# Requires pandoc for now
 
 all: requirements
 
