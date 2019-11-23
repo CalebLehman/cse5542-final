@@ -36,9 +36,16 @@
       </p>
   </div>
 
+  <script type="text/javascript" src="./src/gl-matrix-min.js"></script>
   <script type="module">
 import { init }
     from "./src/graphics.mjs"
+
+    init();
+  </script>
+  <script type="module">
+import { init }
+    from "./src/user.mjs"
 
     init();
   </script>
