@@ -47,7 +47,7 @@ const webglGraphics = (function () {
         camera.position = [5, 1, 5];
         // Setup light
         light = new Light(
-            [5, 2, 5],
+            [3, 2, 5],
             [0.5, 0.5, 0.5],
             [0.5, 0.5, 0.5],
             [1.0, 1.0, 1.0]
@@ -220,21 +220,18 @@ const webglGraphics = (function () {
             vMatrix
         );
 
-        // TODO
+        // TODO hierarchy should be built elsewhere
+        // and drawn starting from root (passed parameter)
+        var date  = new Date();
+        var value = date.getMilliseconds() + 1000.0 * date.getSeconds();
         var cube = new HierarchyNode(
             getCube(),
             [0.0, 0.0, 0.0],
-            {angle: 0.0, axis: [0, 1, 0]},
-            [1.0, 1.0, 1.0]
-        );
-        var plane = new HierarchyNode(
-            getPlane(),
-            [0.0, 0.0, 0.0],
-            {angle: 0.0, axis: [0, 1, 0]},
+            {angle: 2*Math.PI*value/4000.0, axis: [0.5, 0.5, 0.0]},
             [1.0, 1.0, 1.0]
         );
         var mMatrix  = mat4.create();
-        var stack    = [plane];
+        var stack    = [cube];
         var matrices = [mat4.clone(mMatrix)];
         while (stack.length > 0) {
             var currNode = stack.pop();
