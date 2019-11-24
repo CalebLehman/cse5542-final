@@ -44,7 +44,7 @@ const webglGraphics = (function () {
             0.1,
             100.0
         );
-        camera.position = [5, 1, 5]; // TODO
+        camera.position = [5, 1, 5];
         // Setup light
         light = new Light(
             [5, 2, 5],
@@ -280,7 +280,10 @@ const webglGraphics = (function () {
             gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT
         );
 
-        // TODO: draw objects
+        // Resize canvas, if necessary
+        gl.canvas.width  = gl.canvas.clientWidth;
+        gl.canvas.height = gl.canvas.clientHeight;
+
         drawHierarchy();
     }
 
@@ -292,8 +295,8 @@ const webglGraphics = (function () {
 
 function init() {
     const canvas  = document.querySelector("#canvas");
-    canvas.width  = window.innerWidth  * 0.8;
-    canvas.height = window.innerHeight * 0.7;
+    canvas.width  = window.innerWidth  * 0.93;
+    canvas.height = window.innerHeight * 0.70;
 
     webglGraphics.init();
 }

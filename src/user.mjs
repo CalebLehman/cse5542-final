@@ -3,16 +3,62 @@ import { camera }
 import { draw }
     from "./graphics.mjs"
 
-var speed = 5.0 / 60;
+// WASD parameters
+const speed = 5.0 / 60;
 var movingForwards  = false;
 var movingBackwards = false;
 var movingLeft      = false;
 var movingRight     = false;
 
+// Mouse parameters
+var sensitivity = 2 * Math.PI / 2000;
+
+var canvas = null;
+
 function init() {
+    // WASD movement
     document.addEventListener("keydown", handleKeyPress);
     document.addEventListener("keyup", handleKeyRelease);
+
+    // Mouse movement
+    canvas = document.querySelector("#canvas");
+    canvas.requestPointerLock = canvas.requestPointerLock ||
+                                canvas.mozRequestPointerLock ||
+                                canvas.webkitRequestPointerLock;
+    canvas.onclick = function() { canvas.requestPointerLock(); }
+    document.addEventListener('pointerlockchange', pointerLockUnlock, false);
+    document.addEventListener('mozpointerlockchange', pointerLockUnlock, false);
+
+    // Rendering
     window.requestAnimationFrame(main);
+}
+
+function pointerLockUnlock() {
+    if (document.pointerLockElement    === canvas ||
+        document.mozPointerLockElement === canvas) {
+        document.addEventListener("mousemove", handleMouseMove, false);
+    } else {
+        document.removeEventListener("mousemove", handleMouseMove, false);
+    }
+}
+
+function handleMouseMove(e) {
+    camera.turn  += e.movementX * sensitivity;
+    camera.pitch += e.movementY * sensitivity;
+
+    camera.tilt = mat4.create();
+    mat4.rotate(
+        camera.tilt,
+        camera.tilt,
+        camera.pitch,
+        [1.0, 0.0, 0.0]
+    );
+    mat4.rotate(
+        camera.tilt,
+        camera.tilt,
+        camera.turn,
+        [0.0, 1.0, 0.0]
+    );
 }
 
 function handleKeyPress(e) {
@@ -49,12 +95,18 @@ function main() {
     var cameraPosition = vec3.fromValues(...camera.position);
     var targetPosition = vec3.fromValues(...camera.coi);
 
-    var y = vec3.fromValues(...camera.upVector);
     var x = vec3.create();
     vec3.subtract(x, targetPosition, cameraPosition);
+    var turnMatrix = mat4.create();
+    mat4.rotate(
+        turnMatrix,
+        turnMatrix,
+        -1.0 * camera.turn,
+        [0.0, 1.0, 0.0]
+    )
+    vec3.transformMat4(x, x, turnMatrix);
 
-    vec3.transformMat4(x, x, camera.tilt);
-    vec3.transformMat4(y, y, camera.tilt);
+    var y = vec3.fromValues(...camera.upVector);
 
     var z = vec3.create();
     vec3.cross(z, x, y);
