@@ -36,7 +36,7 @@ const webglGraphics = (function () {
         gl.enable(gl.DEPTH_TEST);
 
         // Setup initial shader program
-        program = setProgram(gl);
+        program = setProgram(gl, "standard");
         // Setup camera
         setCameraParams(
             1.0,

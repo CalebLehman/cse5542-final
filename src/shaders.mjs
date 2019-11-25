@@ -1,4 +1,4 @@
-const vertexShader = `
+const vertexShaderPhong = `
     uniform vec3 lightPosWorldSpace;
 
     uniform mat4 pvmMatrix;
@@ -40,7 +40,7 @@ const vertexShader = `
     }
 `;
 
-const fragmentShader = `
+const fragmentShaderPhong = `
     precision mediump float;
 
     uniform vec3 lightAmbient;
@@ -84,66 +84,69 @@ function compileShader(gl, shaderSource, shaderType) {
     return shader;
 }
 
-var program = null;
-function setProgram(gl) {
-    if (!program) {
-        program = gl.createProgram();
+var programPhong = null;
+function setProgramPhong(gl) {
+    var shaderProgram = null;
+    if (!programPhong) {
+        shaderProgram = gl.createProgram();
         gl.attachShader(
-            program,
+            shaderProgram,
             compileShader(
                 gl,
-                vertexShader,
+                vertexShaderPhong,
                 gl.VERTEX_SHADER
             )
         );
         gl.attachShader(
-            program,
+            shaderProgram,
             compileShader(
                 gl,
-                fragmentShader,
+                fragmentShaderPhong,
                 gl.FRAGMENT_SHADER
             )
         );
+    } else {
+        shaderProgram = programPhong.shaders;
     }
 
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    gl.linkProgram(shaderProgram);
+    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
         console.log("Failed linking program");
     }
-    gl.useProgram(program);
+    gl.useProgram(shaderProgram);
 
     var uniforms = {
         lightPosWorldSpace:
-            gl.getUniformLocation(program, "lightPosWorldSpace"),
+            gl.getUniformLocation(shaderProgram, "lightPosWorldSpace"),
         lightAmbient:
-            gl.getUniformLocation(program, "lightAmbient"),
+            gl.getUniformLocation(shaderProgram, "lightAmbient"),
         lightDiffuse:
-            gl.getUniformLocation(program, "lightDiffuse"),
+            gl.getUniformLocation(shaderProgram, "lightDiffuse"),
         lightSpecular:
-            gl.getUniformLocation(program, "lightSpecular"),
+            gl.getUniformLocation(shaderProgram, "lightSpecular"),
         pvmMatrix:
-            gl.getUniformLocation(program, "pvmMatrix"),
+            gl.getUniformLocation(shaderProgram, "pvmMatrix"),
         vmMatrix:
-            gl.getUniformLocation(program, "vmMatrix"),
+            gl.getUniformLocation(shaderProgram, "vmMatrix"),
         vMatrix:
-            gl.getUniformLocation(program, "vMatrix"),
+            gl.getUniformLocation(shaderProgram, "vMatrix"),
         normalMatrix:
-            gl.getUniformLocation(program, "normalMatrix"),
+            gl.getUniformLocation(shaderProgram, "normalMatrix"),
     }
 
     var attributes = {
         vertexPosModelSpace:
-            gl.getAttribLocation(program, "vertexPosModelSpace"),
+            gl.getAttribLocation(shaderProgram, "vertexPosModelSpace"),
         vertexNormalModelSpace:
-            gl.getAttribLocation(program, "vertexNormalModelSpace"),
+            gl.getAttribLocation(shaderProgram, "vertexNormalModelSpace"),
         vertexAmbient:
-            gl.getAttribLocation(program, "vertexAmbient"),
+            gl.getAttribLocation(shaderProgram, "vertexAmbient"),
         vertexDiffuse:
-            gl.getAttribLocation(program, "vertexDiffuse"),
+            gl.getAttribLocation(shaderProgram, "vertexDiffuse"),
         vertexSpecular:
-            gl.getAttribLocation(program, "vertexSpecular"),
+            gl.getAttribLocation(shaderProgram, "vertexSpecular"),
         vertexShine:
-            gl.getAttribLocation(program, "vertexShine"),
+            gl.getAttribLocation(shaderProgram, "vertexShine"),
     }
     gl.enableVertexAttribArray(
         attributes.vertexPosModelSpace
@@ -164,10 +167,18 @@ function setProgram(gl) {
         attributes.vertexShine
     );
 
-    return {
-        shaders: program,
+    programPhong = {
+        shaders: shaderProgram,
         uniforms: uniforms,
         attributes: attributes,
+    };
+
+    return programPhong;
+}
+
+function setProgram(gl, type) {
+    if (type === "standard") {
+        return setProgramPhong(gl);
     }
 }
 

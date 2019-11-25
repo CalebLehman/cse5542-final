@@ -62,6 +62,7 @@ function handleMouseMove(e) {
 }
 
 function handleKeyPress(e) {
+    // WASD movement
     if (e.keyCode === 87) { // w
         movingForwards = true;
     }
@@ -74,9 +75,18 @@ function handleKeyPress(e) {
     if (e.keyCode === 68) { // d
         movingRight = true;
     }
+
+    // Shader selection
+    if (e.keyCode === 59) { // 1
+        // TODO selectShader("standard");
+    }
+    if (e.keyCode === 60) { // 2
+        // TODO selectShader("wireframe");
+    }
 }
 
 function handleKeyRelease(e) {
+    // WASD movement
     if (e.keyCode === 87) { // w
         movingForwards = false;
     }
