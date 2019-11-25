@@ -1,6 +1,6 @@
 import { camera }
     from "./camera.mjs"
-import { draw }
+import { draw, selectShader }
     from "./graphics.mjs"
 
 // WASD parameters

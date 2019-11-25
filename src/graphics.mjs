@@ -14,6 +14,7 @@ import { initCube, getCube, initPlane, getPlane }
 const webglGraphics = (function () {
     var canvas;
     var gl;
+    var shaderType;
 
     var light;
     var clearColor = [0.0, 0.0, 0.0, 1.0];
@@ -33,6 +34,9 @@ const webglGraphics = (function () {
             gl.drawingBufferHeight
         );
         gl.enable(gl.DEPTH_TEST);
+
+        // Select initial shader
+        selectShader("standard");
 
         // Setup camera
         setCameraParams(
@@ -68,7 +72,7 @@ const webglGraphics = (function () {
         gl.canvas.height = gl.canvas.clientHeight;
 
         // Switch to appropriate shader
-        setProgram(gl, "standard");
+        setProgram(gl, shaderType);
 
         // Draw hierarchy
         // TODO sample hierarchy
@@ -80,15 +84,20 @@ const webglGraphics = (function () {
             {angle: 2*Math.PI*value/4000.0, axis: [0.5, 0.5, 0.0]},
             [1.0, 1.0, 1.0]
         );
-        drawHierarchy(gl, "standard", camera, light, cube);
+        drawHierarchy(gl, shaderType, camera, light, cube);
 
         // Unset shader
-        unsetProgram(gl, "standard");
+        unsetProgram(gl, shaderType);
+    }
+
+    function selectShader(type) {
+        shaderType = type;
     }
 
     return {
         init: init,
         draw: draw,
+        selectShader: selectShader,
     }
 }());
 
@@ -104,4 +113,8 @@ function draw() {
     webglGraphics.draw();
 }
 
-export { init, draw }
+function selectShader(type) {
+    webglGraphics.selectShader(type);
+}
+
+export { init, draw, selectShader }
