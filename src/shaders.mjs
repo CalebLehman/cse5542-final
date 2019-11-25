@@ -1,3 +1,6 @@
+import { HierarchyNode }
+    from "./hierarchy_node.mjs"
+
 const vertexShaderPhong = `
     uniform vec3 lightPosWorldSpace;
 
@@ -105,81 +108,322 @@ function setProgramPhong(gl) {
                 gl.FRAGMENT_SHADER
             )
         );
-    } else {
-        shaderProgram = programPhong.shaders;
+
+        gl.linkProgram(shaderProgram);
+        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+            console.log("Failed linking program");
+        }
+
+        var uniforms = {
+            lightPosWorldSpace:
+                gl.getUniformLocation(shaderProgram, "lightPosWorldSpace"),
+            lightAmbient:
+                gl.getUniformLocation(shaderProgram, "lightAmbient"),
+            lightDiffuse:
+                gl.getUniformLocation(shaderProgram, "lightDiffuse"),
+            lightSpecular:
+                gl.getUniformLocation(shaderProgram, "lightSpecular"),
+            pvmMatrix:
+                gl.getUniformLocation(shaderProgram, "pvmMatrix"),
+            vmMatrix:
+                gl.getUniformLocation(shaderProgram, "vmMatrix"),
+            vMatrix:
+                gl.getUniformLocation(shaderProgram, "vMatrix"),
+            normalMatrix:
+                gl.getUniformLocation(shaderProgram, "normalMatrix"),
+        }
+
+        var attributes = {
+            vertexPosModelSpace:
+                gl.getAttribLocation(shaderProgram, "vertexPosModelSpace"),
+            vertexNormalModelSpace:
+                gl.getAttribLocation(shaderProgram, "vertexNormalModelSpace"),
+            vertexAmbient:
+                gl.getAttribLocation(shaderProgram, "vertexAmbient"),
+            vertexDiffuse:
+                gl.getAttribLocation(shaderProgram, "vertexDiffuse"),
+            vertexSpecular:
+                gl.getAttribLocation(shaderProgram, "vertexSpecular"),
+            vertexShine:
+                gl.getAttribLocation(shaderProgram, "vertexShine"),
+        }
+
+        programPhong = {
+            shaders: shaderProgram,
+            uniforms: uniforms,
+            attributes: attributes,
+        };
     }
 
-    gl.linkProgram(shaderProgram);
-    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-        console.log("Failed linking program");
-    }
+    gl.enableVertexAttribArray(
+        programPhong.attributes.vertexPosModelSpace
+    );
+    gl.enableVertexAttribArray(
+        programPhong.attributes.vertexNormalModelSpace
+    );
+    gl.enableVertexAttribArray(
+        programPhong.attributes.vertexAmbient
+    );
+    gl.enableVertexAttribArray(
+        programPhong.attributes.vertexDiffuse
+    );
+    gl.enableVertexAttribArray(
+        programPhong.attributes.vertexSpecular
+    );
+    gl.enableVertexAttribArray(
+        programPhong.attributes.vertexShine
+    );
+
+    shaderProgram = programPhong.shaders;
     gl.useProgram(shaderProgram);
+}
 
-    var uniforms = {
-        lightPosWorldSpace:
-            gl.getUniformLocation(shaderProgram, "lightPosWorldSpace"),
-        lightAmbient:
-            gl.getUniformLocation(shaderProgram, "lightAmbient"),
-        lightDiffuse:
-            gl.getUniformLocation(shaderProgram, "lightDiffuse"),
-        lightSpecular:
-            gl.getUniformLocation(shaderProgram, "lightSpecular"),
-        pvmMatrix:
-            gl.getUniformLocation(shaderProgram, "pvmMatrix"),
-        vmMatrix:
-            gl.getUniformLocation(shaderProgram, "vmMatrix"),
-        vMatrix:
-            gl.getUniformLocation(shaderProgram, "vMatrix"),
-        normalMatrix:
-            gl.getUniformLocation(shaderProgram, "normalMatrix"),
+function unsetProgramPhong(gl) {
+    gl.disableVertexAttribArray(
+        programPhong.attributes.vertexPosModelSpace
+    );
+    gl.disableVertexAttribArray(
+        programPhong.attributes.vertexNormalModelSpace
+    );
+    gl.disableVertexAttribArray(
+        programPhong.attributes.vertexAmbient
+    );
+    gl.disableVertexAttribArray(
+        programPhong.attributes.vertexDiffuse
+    );
+    gl.disableVertexAttribArray(
+        programPhong.attributes.vertexSpecular
+    );
+    gl.disableVertexAttribArray(
+        programPhong.attributes.vertexShine
+    );
+}
+
+function drawDrawablePhong(
+    gl,
+    drawable,
+    pMatrix,
+    vMatrix,
+    mMatrix
+) {
+    if (!drawable) return;
+
+    // Create and pass transformation matrices
+    var vmMatrix = mat4.clone(vMatrix);
+    mat4.multiply(vmMatrix, vMatrix, mMatrix);
+    var pvmMatrix = mat4.create();
+    mat4.multiply(pvmMatrix, pMatrix, vmMatrix);
+    var normalMatrix = mat4.clone(vmMatrix);
+    mat4.transpose(normalMatrix, normalMatrix);
+    mat4.invert(normalMatrix, normalMatrix);
+    gl.uniformMatrix4fv(
+        programPhong.uniforms.pvmMatrix,
+        false,
+        pvmMatrix
+    );
+    gl.uniformMatrix4fv(
+        programPhong.uniforms.vmMatrix,
+        false,
+        vmMatrix
+    );
+    gl.uniformMatrix4fv(
+        programPhong.uniforms.vMatrix,
+        false,
+        vMatrix
+    );
+    gl.uniformMatrix4fv(
+        programPhong.uniforms.normalMatrix,
+        false,
+        normalMatrix
+    );
+
+    // Pass attribute buffers
+    gl.bindBuffer(
+        gl.ARRAY_BUFFER,
+        drawable.posBuffer.buffer
+    );
+    gl.vertexAttribPointer(
+        programPhong.attributes.vertexPosModelSpace,
+        drawable.posBuffer.itemSize,
+        gl.FLOAT,
+        false,
+        0,
+        0
+    );
+    gl.bindBuffer(
+        gl.ARRAY_BUFFER,
+        drawable.normalBuffer.buffer
+    );
+    gl.vertexAttribPointer(
+        programPhong.attributes.vertexNormalModelSpace,
+        drawable.normalBuffer.itemSize,
+        gl.FLOAT,
+        false,
+        0,
+        0
+    );
+    gl.bindBuffer(
+        gl.ARRAY_BUFFER,
+        drawable.ambientBuffer.buffer
+    );
+    gl.vertexAttribPointer(
+        programPhong.attributes.vertexAmbient,
+        drawable.ambientBuffer.itemSize,
+        gl.FLOAT,
+        false,
+        0,
+        0
+    );
+    gl.bindBuffer(
+        gl.ARRAY_BUFFER,
+        drawable.diffuseBuffer.buffer
+    );
+    gl.vertexAttribPointer(
+        programPhong.attributes.vertexDiffuse,
+        drawable.diffuseBuffer.itemSize,
+        gl.FLOAT,
+        false,
+        0,
+        0
+    );
+    gl.bindBuffer(
+        gl.ARRAY_BUFFER,
+        drawable.specularBuffer.buffer
+    );
+    gl.vertexAttribPointer(
+        programPhong.attributes.vertexSpecular,
+        drawable.specularBuffer.itemSize,
+        gl.FLOAT,
+        false,
+        0,
+        0
+    );
+    gl.bindBuffer(
+        gl.ARRAY_BUFFER,
+        drawable.shineBuffer.buffer
+    );
+    gl.vertexAttribPointer(
+        programPhong.attributes.vertexShine,
+        drawable.shineBuffer.itemSize,
+        gl.FLOAT,
+        false,
+        0,
+        0
+    );
+
+    gl.drawArrays(
+        gl.TRIANGLES,
+        0,
+        drawable.posBuffer.numItems,
+    );
+    return;
+}
+
+function drawHierarchyPhong(gl, camera, light, root) {
+    // Pass lighting information to GPU
+    gl.uniform3fv(
+        programPhong.uniforms.lightPosWorldSpace,
+        light.position
+    );
+    gl.uniform3fv(
+        programPhong.uniforms.lightAmbient,
+        light.ambient
+    );
+    gl.uniform3fv(
+        programPhong.uniforms.lightDiffuse,
+        light.diffuse
+    );
+    gl.uniform3fv(
+        programPhong.uniforms.lightSpecular,
+        light.specular
+    );
+
+    // Generate perspective-view matrix
+    var pMatrix = mat4.create();
+    mat4.perspective(
+        pMatrix,
+        camera.fovy,
+        camera.aspect,
+        camera.near,
+        camera.far
+    );
+
+    var vMatrix = mat4.create();
+    mat4.lookAt(
+        vMatrix,
+        camera.position,
+        camera.coi,
+        camera.upVector
+    );
+    mat4.multiply(
+        vMatrix,
+        camera.tilt,
+        vMatrix
+    );
+
+    var mMatrix  = mat4.create();
+    var stack    = [root];
+    var matrices = [mat4.clone(mMatrix)];
+    while (stack.length > 0) {
+        var currNode = stack.pop();
+        if (!currNode.isPrimary) {
+            matrices.push(mat4.clone(mMatrix));
+        }
+        mat4.translate(
+            mMatrix,
+            mMatrix,
+            currNode.translation
+        );
+        mat4.rotate(
+            mMatrix,
+            mMatrix,
+            currNode.rotation.angle,
+            currNode.rotation.axis
+        );
+        mat4.scale(
+            mMatrix,
+            mMatrix,
+            currNode.scale
+        );
+
+        drawDrawablePhong(
+            gl,
+            currNode.drawable,
+            pMatrix,
+            vMatrix,
+            mMatrix
+        );
+
+        if (currNode.children.length === 0) {
+            mMatrix = matrices.pop();
+        }
+
+        stack.push(...currNode.children);
     }
-
-    var attributes = {
-        vertexPosModelSpace:
-            gl.getAttribLocation(shaderProgram, "vertexPosModelSpace"),
-        vertexNormalModelSpace:
-            gl.getAttribLocation(shaderProgram, "vertexNormalModelSpace"),
-        vertexAmbient:
-            gl.getAttribLocation(shaderProgram, "vertexAmbient"),
-        vertexDiffuse:
-            gl.getAttribLocation(shaderProgram, "vertexDiffuse"),
-        vertexSpecular:
-            gl.getAttribLocation(shaderProgram, "vertexSpecular"),
-        vertexShine:
-            gl.getAttribLocation(shaderProgram, "vertexShine"),
-    }
-    gl.enableVertexAttribArray(
-        attributes.vertexPosModelSpace
-    );
-    gl.enableVertexAttribArray(
-        attributes.vertexNormalModelSpace
-    );
-    gl.enableVertexAttribArray(
-        attributes.vertexAmbient
-    );
-    gl.enableVertexAttribArray(
-        attributes.vertexDiffuse
-    );
-    gl.enableVertexAttribArray(
-        attributes.vertexSpecular
-    );
-    gl.enableVertexAttribArray(
-        attributes.vertexShine
-    );
-
-    programPhong = {
-        shaders: shaderProgram,
-        uniforms: uniforms,
-        attributes: attributes,
-    };
-
-    return programPhong;
 }
 
 function setProgram(gl, type) {
     if (type === "standard") {
-        return setProgramPhong(gl);
+        setProgramPhong(gl);
     }
 }
 
-export { setProgram };
+function unsetProgram(gl, type) {
+    if (type === "standard") {
+        unsetProgramPhong(gl);
+    }
+}
+
+function drawHierarchy(
+    gl,
+    type,
+    camera,
+    light,
+    root
+) {
+    if (type === "standard") {
+        drawHierarchyPhong(gl, camera, light, root);
+    }
+}
+
+export { setProgram, unsetProgram, drawHierarchy };
