@@ -77,11 +77,11 @@ function handleKeyPress(e) {
     }
 
     // Shader selection
-    if (e.keyCode === 59) { // 1
-        // TODO selectShader("standard");
+    if (e.keyCode === 49) { // 1
+        selectShader("standard");
     }
-    if (e.keyCode === 60) { // 2
-        // TODO selectShader("wireframe");
+    if (e.keyCode === 50) { // 2
+        selectShader("wireframe");
     }
 }
 
