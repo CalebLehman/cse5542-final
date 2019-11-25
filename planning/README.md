@@ -1,6 +1,6 @@
 ## Project overview
 
-My overall idea is to have a small "museum" dedicated to some simple knots.
+My overall idea is to have a small \"museum\" dedicated to some simple knots.
 Each knot will be placed on one of several pedestals and the user will be able
 to walk around the scene and view the knots.
 
@@ -38,8 +38,8 @@ must be able to toggle the models between
 In my scene, the user will be able to toggle the knots between
 
 * wire-frame mode
-* glossy "plastic" mode
-* rope mode ("scaly" if making rope texture ends up being too difficult)
+* glossy \"plastic\" mode
+* rope mode (\"scaly\" if making rope texture ends up being too difficult)
 * reflective mode
 
 #### Environment cube mapping
@@ -56,7 +56,7 @@ The scene must have
 
 * hierarchical modeling
 * lighting
-* local and "global" transformations
+* local and \"global\" transformations
 * some animation
 
 My scene will have
@@ -64,11 +64,11 @@ My scene will have
 * knots on top of pedestals on top of the ground
 * phong shading
 * player can move around, rotate view, and rotate knots
-* knots will have "creation" animation
+* knots will have \"creation\" animation
 
 #### Bump mapping
 
 The scene should implement bump mapping.
 
 My scene will have bump mapping on the knots, either for the rope texture or
-the "scaly" texture.
+the \"scaly\" texture.
