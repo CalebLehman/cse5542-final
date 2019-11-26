@@ -2,6 +2,8 @@ import { shaderPhong }
     from "./shader_phong.mjs"
 import { shaderWireframe }
     from "./shader_wireframe.mjs"
+import { shaderWirePhong }
+    from "./shader_wire_phong.mjs"
 
 function compileShader(gl, shaderSource, shaderType) {
     var shader = gl.createShader(shaderType);
@@ -10,6 +12,7 @@ function compileShader(gl, shaderSource, shaderType) {
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
         console.log("Failed compiling a shader");
+        console.log(gl.getShaderInfoLog(shader));
     }
 
     return shader;
@@ -23,6 +26,9 @@ function setProgram(gl, type) {
         case "wireframe":
             shaderWireframe.setProgram(gl);
             break;
+        case "wirephong":
+            shaderWirePhong.setProgram(gl);
+            break;
         default:
             console.log("Failed to set program to unknown type " + type);
     }
@@ -35,6 +41,9 @@ function unsetProgram(gl, type) {
             break;
         case "wireframe":
             shaderWireframe.unsetProgram(gl);
+            break;
+        case "wirephong":
+            shaderWirePhong.unsetProgram(gl);
             break;
         default:
             console.log("Failed to unset program from unknown type " + type);
@@ -54,6 +63,9 @@ function drawHierarchy(
             break;
         case "wireframe":
             shaderWireframe.drawHierarchy(gl, camera, light, root);
+            break;
+        case "wirephong":
+            shaderWirePhong.drawHierarchy(gl, camera, light, root);
             break;
         default:
             console.log("Failed to draw using uknown program type " + type);

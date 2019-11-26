@@ -7,7 +7,7 @@ import { Light }
 import { HierarchyNode }
     from "./hierarchy_node.mjs"
 
-var shaderPhong = (function () {
+var shaderWirePhong = (function () {
     var program = null;
 
     const vertexShader = `
@@ -19,6 +19,7 @@ var shaderPhong = (function () {
         uniform mat4 normalMatrix;
 
         attribute vec3  vertexPosModelSpace;
+        attribute vec3  vertexPosBarySpace;
         attribute vec3  vertexNormalModelSpace;
 
         attribute vec3  vertexAmbient;
@@ -29,6 +30,7 @@ var shaderPhong = (function () {
         varying vec3 fragmentPosEyeSpace;
         varying vec3 lightPosEyeSpace;
         varying vec3 fragmentNormalEyeSpace;
+        varying vec3 fragmentPosBarySpace;
 
         varying vec3  fragmentAmbient;
         varying vec3  fragmentDiffuse;
@@ -44,6 +46,7 @@ var shaderPhong = (function () {
             fragmentPosEyeSpace    = vec3(vmMatrix * position);
             lightPosEyeSpace       = vec3(vMatrix * vec4(lightPosWorldSpace, 1.0));
             fragmentNormalEyeSpace = vec3(normalMatrix * normal);
+            fragmentPosBarySpace   = vertexPosBarySpace;
 
             fragmentAmbient  = vertexAmbient;
             fragmentDiffuse  = vertexDiffuse;
@@ -53,6 +56,7 @@ var shaderPhong = (function () {
     `;
 
     const fragmentShader = `
+        #extension GL_OES_standard_derivatives : enable
         precision mediump float;
 
         uniform vec3 lightAmbient;
@@ -62,25 +66,43 @@ var shaderPhong = (function () {
         varying vec3 fragmentPosEyeSpace;
         varying vec3 lightPosEyeSpace;
         varying vec3 fragmentNormalEyeSpace;
+        varying vec3 fragmentPosBarySpace;
 
         varying vec3  fragmentAmbient;
         varying vec3  fragmentDiffuse;
         varying vec3  fragmentSpecular;
         varying float fragmentShine;
+
+        const float thickness = 2.0;
         void main() {
             vec3 L = normalize(lightPosEyeSpace - fragmentPosEyeSpace);
             vec3 N = normalize(fragmentNormalEyeSpace);
             vec3 R = reflect(-L, N);
             vec3 V = normalize(-fragmentPosEyeSpace);
 
-            gl_FragColor = vec4(
+            vec3 fragColor = vec3(
                 fragmentAmbient * lightAmbient +
                 fragmentDiffuse * lightDiffuse *
                     max(0.0, dot(N, L)) +
                 fragmentSpecular * lightSpecular *
-                    pow(max(0.0, dot(R, V)), fragmentShine),
-                1.0
+                    pow(max(0.0, dot(R, V)), fragmentShine)
             );
+
+            vec3 normalizationFactor = fwidth(fragmentPosBarySpace);
+            vec3 smoothStepDistance  = smoothstep(
+                vec3(0.0),
+                normalizationFactor * thickness,
+                fragmentPosBarySpace
+            );
+            float smallest           = min(
+                smoothStepDistance.x,
+                min(
+                    smoothStepDistance.y,
+                    smoothStepDistance.z
+                )
+            );
+
+            gl_FragColor = vec4(fragColor * smallest, 1.0);
         }
     `;
 
@@ -132,6 +154,8 @@ var shaderPhong = (function () {
             var attributes = {
                 vertexPosModelSpace:
                     gl.getAttribLocation(shaderProgram, "vertexPosModelSpace"),
+                vertexPosBarySpace:
+                    gl.getAttribLocation(shaderProgram, "vertexPosBarySpace"),
                 vertexNormalModelSpace:
                     gl.getAttribLocation(shaderProgram, "vertexNormalModelSpace"),
                 vertexAmbient:
@@ -153,6 +177,9 @@ var shaderPhong = (function () {
 
         gl.enableVertexAttribArray(
             program.attributes.vertexPosModelSpace
+        );
+        gl.enableVertexAttribArray(
+            program.attributes.vertexPosBarySpace
         );
         gl.enableVertexAttribArray(
             program.attributes.vertexNormalModelSpace
@@ -177,6 +204,9 @@ var shaderPhong = (function () {
     function unsetProgram(gl) {
         gl.disableVertexAttribArray(
             program.attributes.vertexPosModelSpace
+        );
+        gl.disableVertexAttribArray(
+            program.attributes.vertexPosBarySpace
         );
         gl.disableVertexAttribArray(
             program.attributes.vertexNormalModelSpace
@@ -241,6 +271,18 @@ var shaderPhong = (function () {
         gl.vertexAttribPointer(
             program.attributes.vertexPosModelSpace,
             drawable.posBuffer.itemSize,
+            gl.FLOAT,
+            false,
+            0,
+            0
+        );
+        gl.bindBuffer(
+            gl.ARRAY_BUFFER,
+            drawable.baryBuffer.buffer
+        );
+        gl.vertexAttribPointer(
+            program.attributes.vertexPosBarySpace,
+            drawable.baryBuffer.itemSize,
             gl.FLOAT,
             false,
             0,
@@ -405,4 +447,4 @@ var shaderPhong = (function () {
     }
 })();
 
-export { shaderPhong };
+export { shaderWirePhong };

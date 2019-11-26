@@ -87,6 +87,9 @@ function handleKeyPress(e) {
     if (e.keyCode === 50) { // 2
         selectShader("wireframe");
     }
+    if (e.keyCode === 51) { // 3
+        selectShader("wirephong");
+    }
 }
 
 function handleKeyRelease(e) {

@@ -17,7 +17,7 @@ const webglGraphics = (function () {
     var shaderType;
 
     var light;
-    var clearColor = [0.0, 0.0, 0.0, 1.0];
+    var clearColor = [0.3, 0.3, 0.3, 1.0];
 
     function init() {
         // Get and setup context
@@ -27,6 +27,7 @@ const webglGraphics = (function () {
             console.log("Failed to init WebGL.");
             return;
         };
+        gl.getExtension('OES_standard_derivatives');
         gl.viewport(
             0,
             0,

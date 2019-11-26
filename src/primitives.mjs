@@ -72,6 +72,62 @@ function initCube(gl) {
         position.length / 3
     );
 
+    var barycentric = [
+        1.0, 0.0, 0.0, // +z face
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+
+        1.0, 0.0, 0.0, // -z face
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+
+        1.0, 0.0, 0.0, // +x face
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+
+        1.0, 0.0, 0.0, // -x face
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+
+        1.0, 0.0, 0.0, // +y face
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+
+        1.0, 0.0, 0.0, // -y face
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+    ];
+    var baryBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, baryBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(barycentric),
+        gl.STATIC_DRAW
+    );
+    baryBuffer = new Buffer(
+        baryBuffer,
+        3,
+        barycentric.length / 3
+    );
+
     var normal = [
         +0.0,+0.0,+1.0, // +z face
         +0.0,+0.0,+1.0,
@@ -113,7 +169,7 @@ function initCube(gl) {
         +0.0,-1.0,+0.0,
         +0.0,-1.0,+0.0,
         +0.0,-1.0,+0.0,
-        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0
     ];
     var normalBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
@@ -189,6 +245,7 @@ function initCube(gl) {
 
     unitCube = new Drawable(
         posBuffer,
+        baryBuffer,
         normalBuffer,
         ambientBuffer,
         diffuseBuffer,
@@ -229,6 +286,27 @@ function initPlane(gl) {
         posBuffer,
         3,
         position.length / 3
+    );
+
+    var barycentric = [
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+    ];
+    var baryBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, baryBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(barycentric),
+        gl.STATIC_DRAW
+    );
+    baryBuffer = new Buffer(
+        baryBuffer,
+        3,
+        barycentric.length / 3
     );
 
     var normal = [
@@ -314,6 +392,7 @@ function initPlane(gl) {
 
     unitPlane = new Drawable(
         posBuffer,
+        baryBuffer,
         normalBuffer,
         ambientBuffer,
         diffuseBuffer,
