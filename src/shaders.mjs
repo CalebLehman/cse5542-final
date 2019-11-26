@@ -1,9 +1,9 @@
 import { shaderPhong }
     from "./shader_phong.mjs"
-import { shaderWireframe }
-    from "./shader_wireframe.mjs"
-import { shaderWirePhong }
-    from "./shader_wire_phong.mjs"
+import { shaderQuadWireframe }
+    from "./shader_quad_wireframe.mjs"
+import { shaderTriWireframe }
+    from "./shader_tri_wireframe.mjs"
 
 function compileShader(gl, shaderSource, shaderType) {
     var shader = gl.createShader(shaderType);
@@ -23,11 +23,11 @@ function setProgram(gl, type) {
         case "standard":
             shaderPhong.setProgram(gl);
             break;
-        case "wireframe":
-            shaderWireframe.setProgram(gl);
+        case "quad-wireframe":
+            shaderQuadWireframe.setProgram(gl);
             break;
-        case "wirephong":
-            shaderWirePhong.setProgram(gl);
+        case "tri-wireframe":
+            shaderTriWireframe.setProgram(gl);
             break;
         default:
             console.log("Failed to set program to unknown type " + type);
@@ -39,11 +39,11 @@ function unsetProgram(gl, type) {
         case "standard":
             shaderPhong.unsetProgram(gl);
             break;
-        case "wireframe":
-            shaderWireframe.unsetProgram(gl);
+        case "quad-wireframe":
+            shaderQuadWireframe.unsetProgram(gl);
             break;
-        case "wirephong":
-            shaderWirePhong.unsetProgram(gl);
+        case "tri-wireframe":
+            shaderTriWireframe.unsetProgram(gl);
             break;
         default:
             console.log("Failed to unset program from unknown type " + type);
@@ -61,11 +61,11 @@ function drawHierarchy(
         case "standard":
             shaderPhong.drawHierarchy(gl, camera, light, root);
             break;
-        case "wireframe":
-            shaderWireframe.drawHierarchy(gl, camera, light, root);
+        case "quad-wireframe":
+            shaderQuadWireframe.drawHierarchy(gl, camera, light, root);
             break;
-        case "wirephong":
-            shaderWirePhong.drawHierarchy(gl, camera, light, root);
+        case "tri-wireframe":
+            shaderTriWireframe.drawHierarchy(gl, camera, light, root);
             break;
         default:
             console.log("Failed to draw using uknown program type " + type);

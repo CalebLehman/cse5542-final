@@ -7,7 +7,7 @@ import { Light }
 import { HierarchyNode }
     from "./hierarchy_node.mjs"
 
-var shaderWireframe = (function () {
+var shaderQuadWireframe = (function () {
     var program = null;
 
     const vertexShader = `
@@ -230,4 +230,4 @@ var shaderWireframe = (function () {
     }
 })();
 
-export { shaderWireframe };
+export { shaderQuadWireframe };

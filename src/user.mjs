@@ -85,10 +85,10 @@ function handleKeyPress(e) {
         selectShader("standard");
     }
     if (e.keyCode === 50) { // 2
-        selectShader("wireframe");
+        selectShader("quad-wireframe");
     }
     if (e.keyCode === 51) { // 3
-        selectShader("wirephong");
+        selectShader("tri-wireframe");
     }
 }
 
