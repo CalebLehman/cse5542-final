@@ -42,9 +42,13 @@ function pointerLockUnlock() {
     }
 }
 
+const minPitch = -1.0 * Math.PI / 4;
+const maxPitch = +1.0 * Math.PI / 4;
 function handleMouseMove(e) {
     camera.turn  += e.movementX * sensitivity;
     camera.pitch += e.movementY * sensitivity;
+    camera.pitch  = Math.max(camera.pitch, minPitch);
+    camera.pitch  = Math.min(camera.pitch, maxPitch);
 
     camera.tilt = mat4.create();
     mat4.rotate(
