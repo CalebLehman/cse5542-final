@@ -78,12 +78,10 @@ const webglGraphics = (function () {
         var date  = new Date();
         var value = date.getMilliseconds() + 1000.0 * date.getSeconds();
         var unknot = getUnknot();
-        /*
         unknot.rotation = {
-            angle: 2*Math.PI*value/4000.0,
+            angle: 2*Math.PI*value/8000.0,
             axis: [0.5, 0.5, 0.0]
         };
-        */
         drawHierarchy(gl, shaderType, camera, light, unknot);
 
         // Unset shader

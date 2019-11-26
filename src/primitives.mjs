@@ -402,9 +402,9 @@ function fromPath(
         var v = 1.0 * j / radialDivisions;
         var r = pathPos(u);
         var n = pathNormal(u);
-        vec3.scale(n, n, Math.cos(2.0 * Math.PI * v));
+        vec3.scale(n, n, radius * Math.cos(2.0 * Math.PI * v));
         var b = pathBinormal(u);
-        vec3.scale(b, b, Math.sin(2.0 * Math.PI * v));
+        vec3.scale(b, b, radius * Math.sin(2.0 * Math.PI * v));
         vec3.add(r, r, n);
         vec3.add(r, r, b);
         return r;
@@ -415,9 +415,9 @@ function fromPath(
         var u = 1.0 * i / lengthDivisions;
         var v = 1.0 * j / radialDivisions;
         var n = pathNormal(u);
-        vec3.scale(n, n, Math.cos(2.0 * Math.PI * v));
+        vec3.scale(n, n, radius * Math.cos(2.0 * Math.PI * v));
         var b = pathBinormal(u);
-        vec3.scale(b, b, Math.sin(2.0 * Math.PI * v));
+        vec3.scale(b, b, radius * Math.sin(2.0 * Math.PI * v));
         vec3.add(n, n, b);
         return n;
     };
@@ -573,16 +573,56 @@ function fromPath(
 const torusColor    = [0.0, 1.0, 0.0, 1.0];
 const torusSpecular = [1.0, 1.0, 1.0, 1.0];
 const torusShine    = 100.0;
-const torusRadius   = 1.0;
+const torusRadius   = 0.2;
 function getTorus(gl, p, q) {
     var pathPos = function(t) {
-        return vec3.fromValues(0.0, t, 0.0);
+        var u = 2 * Math.PI * t * p;
+        return vec3.fromValues(
+            Math.cos(u) * (1 + Math.cos(q * u / p) / 2.0),
+            Math.sin(q * u / p) / 2.0,
+            Math.sin(u) * (1 + Math.cos(q * u / p) / 2.0)
+        );
     };
-    var pathNormal = function(t) {
-        return vec3.fromValues(1.0, 0.0, 0.0);
+
+    const h = 0.01;
+    const epsilon = 0.01;
+    var pathFirstDerivative = function(t) {
+        var f_x   = pathPos(t);
+        var f_x_h = pathPos(t-h);
+        vec3.subtract(f_x, f_x, f_x_h);
+        vec3.scale(f_x, f_x, 1.0 / h);
+        return f_x;
     };
+    var pathSecondDerivative = function(t) {
+        var f_x    = pathPos(t);
+        var f_x_h  = pathPos(t-h);
+        var f_x_2h = pathPos(t-2*h);
+
+        vec3.scale(f_x_h, f_x_h, 2.0);
+        vec3.sub(f_x, f_x, f_x_h);
+        vec3.add(f_x, f_x, f_x_2h);
+        vec3.scale(f_x, f_x, 1.0 / (h * h));
+        return f_x;
+    };
+
+    var pathTangent = function(t) {
+        var first = pathFirstDerivative(t);
+        vec3.normalize(first, first);
+        return first;
+    }
     var pathBinormal = function(t) {
-        return vec3.fromValues(0.0, 0.0, 1.0);
+        var first  = pathFirstDerivative(t);
+        var second = pathSecondDerivative(t);
+        vec3.cross(first, first, second);
+        vec3.normalize(first, first);
+        return first;
+    };
+
+    var pathNormal = function(t) {
+        var tangent  = pathTangent(t);
+        var binormal = pathBinormal(t);
+        vec3.cross(tangent, binormal, tangent);
+        return tangent;
     };
 
     return fromPath(
@@ -591,8 +631,8 @@ function getTorus(gl, p, q) {
         pathNormal,
         pathBinormal,
         torusRadius,
-        2,
-        6,
+        128,
+        32,
         torusColor,
         torusSpecular,
         torusShine
