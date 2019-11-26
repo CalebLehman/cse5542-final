@@ -316,6 +316,9 @@ var shaderPhong = (function () {
     }
 
     function drawHierarchy(gl, camera, light, root) {
+        // Setup rendering context
+        gl.enable(gl.DEPTH_TEST);
+
         // Pass lighting information to GPU
         gl.uniform3fv(
             program.uniforms.lightPosWorldSpace,

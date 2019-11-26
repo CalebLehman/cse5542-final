@@ -156,6 +156,9 @@ var shaderWireframe = (function () {
     }
 
     function drawHierarchy(gl, camera, light, root) {
+        // Setup rendering context
+        gl.enable(gl.DEPTH_TEST);
+
         // Generate perspective-view matrix
         var pMatrix = mat4.create();
         mat4.perspective(

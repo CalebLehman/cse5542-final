@@ -102,7 +102,7 @@ var shaderWirePhong = (function () {
                 )
             );
 
-            gl_FragColor = vec4(fragColor * smallest, 1.0);
+            gl_FragColor = vec4(fragColor, 1.0 - smallest);
         }
     `;
 
@@ -358,6 +358,11 @@ var shaderWirePhong = (function () {
     }
 
     function drawHierarchy(gl, camera, light, root) {
+        // Setup rendering context
+        gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
         // Pass lighting information to GPU
         gl.uniform3fv(
             program.uniforms.lightPosWorldSpace,
