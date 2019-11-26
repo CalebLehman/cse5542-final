@@ -6,16 +6,8 @@ import { Drawable }
 const unitCubeColor    = [1.0, 0.0, 0.0, 1.0];
 const unitCubeSpecular = [1.0, 1.0, 1.0, 1.0];
 const unitCubeShine    = 100;
-var unitCube = null;
 
-function getCube() {
-    if (!unitCube) {
-        console.log("Primitive uninitialized");
-    }
-    return unitCube;
-}
-
-function initCube(gl) {
+function getCube(gl) {
     var position = [
         +1.0,+1.0,+1.0, // +z face
         -1.0,+1.0,+1.0,
@@ -243,7 +235,7 @@ function initCube(gl) {
         shine.length
     );
 
-    unitCube = new Drawable(
+    return new Drawable(
         posBuffer,
         baryBuffer,
         normalBuffer,
@@ -257,16 +249,8 @@ function initCube(gl) {
 const unitPlaneColor    = [1.0, 0.0, 0.0, 1.0];
 const unitPlaneSpecular = [1.0, 1.0, 1.0, 1.0];
 const unitPlaneShine    = 100;
-var unitPlane = null;
 
-function getPlane() {
-    if (!unitPlane) {
-        console.log("Primitive uninitialized");
-    }
-    return unitPlane;
-}
-
-function initPlane(gl) {
+function getPlane(gl) {
     var position = [
         +1.0,+0.0,+1.0,
         +1.0,+0.0,-1.0,
@@ -390,7 +374,7 @@ function initPlane(gl) {
         shine.length
     );
 
-    unitPlane = new Drawable(
+    return new Drawable(
         posBuffer,
         baryBuffer,
         normalBuffer,
@@ -400,4 +384,5 @@ function initPlane(gl) {
         shineBuffer
     );
 }
-export { initCube, getCube, initPlane, getPlane };
+
+export { getCube, getPlane };

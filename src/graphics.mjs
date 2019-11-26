@@ -5,11 +5,10 @@ import { camera, setCameraParams }
 import { Light }
     from "./light.mjs"
 
-// TODO
 import { HierarchyNode }
     from "./hierarchy_node.mjs"
-import { initCube, getCube, initPlane, getPlane }
-    from "./primitives.mjs"
+import { initGeometry, getPillar }
+    from "./scene_geometry.mjs"
 
 const webglGraphics = (function () {
     var canvas;
@@ -54,9 +53,8 @@ const webglGraphics = (function () {
             [0.5, 0.5, 0.5],
             [1.0, 1.0, 1.0]
         );
-        // Initialize primitives
-        initCube(gl);
-        initPlane(gl);
+        // Initialize geometry
+        initGeometry(gl);
         // Initial draw routine
         draw();
     }
@@ -79,13 +77,12 @@ const webglGraphics = (function () {
         // TODO sample hierarchy
         var date  = new Date();
         var value = date.getMilliseconds() + 1000.0 * date.getSeconds();
-        var cube = new HierarchyNode(
-            getCube(),
-            [0.0, 0.0, 0.0],
-            {angle: 2*Math.PI*value/4000.0, axis: [0.5, 0.5, 0.0]},
-            [1.0, 1.0, 1.0]
-        );
-        drawHierarchy(gl, shaderType, camera, light, cube);
+        var pillar = getPillar();
+        pillar.rotation = {
+            angle: 2*Math.PI*value/4000.0,
+            axis: [0.5, 0.5, 0.0]
+        };
+        drawHierarchy(gl, shaderType, camera, light, pillar);
 
         // Unset shader
         unsetProgram(gl, shaderType);
