@@ -6,6 +6,16 @@ import { getCube, getPlane, fromPath, fromPathAnim }
 var pillar = null;
 var knotA  = null;
 
+const knotAHighPoly = {
+    pDivisions: 256,
+    qDivisions: 32,
+};
+
+const knotALowPoly = {
+    pDivisions: 64,
+    qDivisions: 8,
+};
+
 function initGeometry(gl) {
     pillar = new HierarchyNode(
         getCube(gl),
@@ -14,7 +24,21 @@ function initGeometry(gl) {
         [1.0, 1.0, 1.0]
     );
 
-    initKnotA(gl);
+    initKnotAPathArrays(gl);
+    initKnotA(gl, knotAHighPoly.pDivisions, knotAHighPoly.qDivisions);
+}
+
+function remakeGeometry(gl, poly) {
+    switch (poly) {
+        case "high-poly":
+            initKnotA(gl, knotAHighPoly.pDivisions, knotAHighPoly.qDivisions);
+            break;
+        case "low-poly":
+            initKnotA(gl, knotALowPoly.pDivisions, knotALowPoly.qDivisions);
+            break;
+        default:
+            console.log("Invalid poly param");
+    }
 }
 
 function getPillar() {
@@ -47,7 +71,7 @@ const knotAQDivisions = 32;
 var   knotAPathPos;
 var   knotAPathNormal;
 var   knotAPathBinormal;
-function initKnotA(gl) {
+function initKnotAPathArrays(gl) {
     const p = knotAP;
     const q = knotAQ;
 
@@ -112,11 +136,9 @@ function initKnotA(gl) {
     knotAPathPos.push(pathPos(0));
     knotAPathNormal.push(pathNormal(0));
     knotAPathBinormal.push(pathBinormal(0));
-
-    setKnotA(gl);
 }
 
-function setKnotA(gl) {
+function initKnotA(gl, pDivisions, qDivisions) {
     const p = knotAP;
     const q = knotAQ;
 
@@ -147,8 +169,8 @@ function setKnotA(gl) {
         pathNormal,
         pathBinormal,
         knotARadius,
-        knotAPDivisions,
-        knotAQDivisions,
+        pDivisions,
+        qDivisions,
         knotAColor,
         knotASpecular,
         knotAShine
@@ -190,4 +212,4 @@ function getKnotA(gl) {
     return knotA;
 }
 
-export { initGeometry, getPillar, getKnotA, animateKnotA };
+export { initGeometry, getPillar, getKnotA, animateKnotA, remakeGeometry };

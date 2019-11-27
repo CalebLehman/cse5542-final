@@ -2,7 +2,7 @@ import { camera }
     from "./camera.mjs"
 import { draw, selectShader }
     from "./graphics.mjs"
-import { animateKnotA }
+import { animateKnotA, remakeGeometry }
     from "./scene_geometry.mjs"
 
 // WASD parameters
@@ -16,6 +16,7 @@ var movingRight     = false;
 var sensitivity = 2 * Math.PI / 2000;
 
 var canvas = null;
+var gl     = null;
 
 function init() {
     // WASD movement
@@ -32,6 +33,7 @@ function init() {
     document.addEventListener('mozpointerlockchange', pointerLockUnlock, false);
 
     // Rendering
+    gl = canvas.getContext("webgl");
     window.requestAnimationFrame(main);
 }
 
@@ -85,12 +87,15 @@ function handleKeyPress(e) {
     // Shader selection
     if (e.keyCode === 49) { // 1
         selectShader("standard");
+        remakeGeometry(gl, "high-poly");
     }
     if (e.keyCode === 50) { // 2
         selectShader("quad-wireframe");
+        remakeGeometry(gl, "low-poly");
     }
     if (e.keyCode === 51) { // 3
         selectShader("tri-wireframe");
+        remakeGeometry(gl, "low-poly");
     }
 
     // Animation
