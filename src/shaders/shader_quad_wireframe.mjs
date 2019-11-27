@@ -1,59 +1,36 @@
 import { compileShader }
     from "./shaders.mjs"
-import { camera }
-    from "./camera.mjs"
 import { Light }
-    from "./light.mjs"
+    from "../common/light.mjs"
 import { HierarchyNode }
-    from "./hierarchy_node.mjs"
+    from "../common/hierarchy_node.mjs"
 
-var shaderTriWireframe = (function () {
+var shaderQuadWireframe = (function () {
     var program = null;
 
     const vertexShader = `
         uniform mat4 pvmMatrix;
 
         attribute vec3  vertexPosModelSpace;
-        attribute vec3  vertexPosBarySpace;
+
         attribute vec3  vertexAmbient;
 
-        varying vec3 fragmentPosBarySpace;
         varying vec3  fragmentAmbient;
-
         void main() {
             gl_PointSize = 1.0;
 
-            vec4 position        = vec4(vertexPosModelSpace, 1.0);
-            gl_Position          = pvmMatrix * position;
-            fragmentPosBarySpace = vertexPosBarySpace;
-            fragmentAmbient      = vertexAmbient;
+            vec4 position = vec4(vertexPosModelSpace, 1.0);
+            gl_Position = pvmMatrix * position;
+            fragmentAmbient  = vertexAmbient;
         }
     `;
 
     const fragmentShader = `
-        #extension GL_OES_standard_derivatives : enable
         precision mediump float;
 
-        varying vec3 fragmentPosBarySpace;
         varying vec3  fragmentAmbient;
-
-        const float thickness = 1.0;
         void main() {
-            vec3 normalizationFactor = fwidth(fragmentPosBarySpace);
-            vec3 smoothStepDistance  = smoothstep(
-                vec3(0.0),
-                normalizationFactor * thickness,
-                fragmentPosBarySpace
-            );
-            float smallest           = min(
-                smoothStepDistance.x,
-                min(
-                    smoothStepDistance.y,
-                    smoothStepDistance.z
-                )
-            );
-
-            gl_FragColor = vec4(fragmentAmbient, 1.0 - smallest);
+            gl_FragColor = vec4(fragmentAmbient, 1.0);
         }
     `;
 
@@ -91,8 +68,6 @@ var shaderTriWireframe = (function () {
             var attributes = {
                 vertexPosModelSpace:
                     gl.getAttribLocation(shaderProgram, "vertexPosModelSpace"),
-                vertexPosBarySpace:
-                    gl.getAttribLocation(shaderProgram, "vertexPosBarySpace"),
                 vertexAmbient:
                     gl.getAttribLocation(shaderProgram, "vertexAmbient"),
             }
@@ -108,9 +83,6 @@ var shaderTriWireframe = (function () {
             program.attributes.vertexPosModelSpace
         );
         gl.enableVertexAttribArray(
-            program.attributes.vertexPosBarySpace
-        );
-        gl.enableVertexAttribArray(
             program.attributes.vertexAmbient
         );
 
@@ -121,9 +93,6 @@ var shaderTriWireframe = (function () {
     function unsetProgram(gl) {
         gl.disableVertexAttribArray(
             program.attributes.vertexPosModelSpace
-        );
-        gl.disableVertexAttribArray(
-            program.attributes.vertexPosBarySpace
         );
         gl.disableVertexAttribArray(
             program.attributes.vertexAmbient
@@ -165,18 +134,6 @@ var shaderTriWireframe = (function () {
         );
         gl.bindBuffer(
             gl.ARRAY_BUFFER,
-            drawable.baryBuffer.buffer
-        );
-        gl.vertexAttribPointer(
-            program.attributes.vertexPosBarySpace,
-            drawable.baryBuffer.itemSize,
-            gl.FLOAT,
-            false,
-            0,
-            0
-        );
-        gl.bindBuffer(
-            gl.ARRAY_BUFFER,
             drawable.ambientBuffer.buffer
         );
         gl.vertexAttribPointer(
@@ -189,7 +146,7 @@ var shaderTriWireframe = (function () {
         );
 
         gl.drawArrays(
-            gl.TRIANGLES,
+            gl.LINE_STRIP, // Sort of a hack, but works for this simple lab
             drawable.offset,
             drawable.numItems,
         );
@@ -198,9 +155,7 @@ var shaderTriWireframe = (function () {
 
     function drawHierarchy(gl, camera, light, root) {
         // Setup rendering context
-        gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
-        gl.enable(gl.BLEND);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.enable(gl.DEPTH_TEST);
 
         // Generate perspective-view matrix
         var pMatrix = mat4.create();
@@ -273,4 +228,4 @@ var shaderTriWireframe = (function () {
     }
 })();
 
-export { shaderTriWireframe };
+export { shaderQuadWireframe };

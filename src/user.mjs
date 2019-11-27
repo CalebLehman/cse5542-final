@@ -1,9 +1,9 @@
 import { camera }
-    from "./camera.mjs"
+    from "./common/camera.mjs"
 import { draw, selectShader }
     from "./graphics.mjs"
-import { animateKnotA, remakeGeometry }
-    from "./scene_geometry.mjs"
+import { getSceneGeometry }
+    from "./scene_geometry/scene_geometry.mjs"
 
 // WASD parameters
 const speed = 5.0 / 60;
@@ -15,8 +15,9 @@ var movingRight     = false;
 // Mouse parameters
 var sensitivity = 2 * Math.PI / 2000;
 
-var canvas = null;
-var gl     = null;
+var canvas   = null;
+var gl       = null;
+var geometry = null;
 
 function init() {
     // WASD movement
@@ -87,22 +88,22 @@ function handleKeyPress(e) {
     // Shader selection
     if (e.keyCode === 49) { // 1
         selectShader("standard");
-        remakeGeometry(gl, "high-poly");
+        makeGeometry("high-poly");
     }
     if (e.keyCode === 50) { // 2
         selectShader("quad-wireframe");
-        remakeGeometry(gl, "low-poly");
+        makeGeometry("low-poly");
     }
     if (e.keyCode === 51) { // 3
         selectShader("tri-wireframe");
-        remakeGeometry(gl, "low-poly");
+        makeGeometry("low-poly");
     }
 
     // Animation
     if (e.keyCode === 32) { // Space
         // TODO should animate nearest knot
         e.preventDefault();
-        animateKnotA(4000);
+        getSceneGeometry().knotA.anim(4000);
     }
 }
 
@@ -170,6 +171,11 @@ function main() {
     camera.coi      = targetPosition;
     draw();
     window.requestAnimationFrame(main);
+}
+
+function makeGeometry(poly) {
+    var geometry = getSceneGeometry();
+    geometry.knotA.init(gl, poly);
 }
 
 export { init };

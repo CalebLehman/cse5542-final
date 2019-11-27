@@ -1,14 +1,15 @@
 import { setProgram, unsetProgram, drawHierarchy }
-    from "./shaders.mjs"
+    from "./shaders/shaders.mjs"
 import { camera, setCameraParams }
-    from "./camera.mjs"
+    from "./common/camera.mjs"
 import { Light }
-    from "./light.mjs"
+    from "./common/light.mjs"
+import { getSceneGeometry }
+    from "./scene_geometry/scene_geometry.mjs"
 
+// TODO should be handled by some "scene_hierarchy" source
 import { HierarchyNode }
-    from "./hierarchy_node.mjs"
-import { initGeometry, getPillar, getKnotA }
-    from "./scene_geometry.mjs"
+    from "./common/hierarchy_node.mjs"
 
 const webglGraphics = (function () {
     var canvas;
@@ -53,8 +54,9 @@ const webglGraphics = (function () {
             [0.5, 0.5, 0.5],
             [1.0, 1.0, 1.0]
         );
-        // Initialize geometry
-        initGeometry(gl);
+        // Get and initialize geometry TODO
+        var geometry = getSceneGeometry();
+        geometry.knotA.init(gl, "high-poly");
         // Initial draw routine
         draw();
     }
@@ -75,16 +77,16 @@ const webglGraphics = (function () {
 
         // Draw hierarchy
         // TODO sample hierarchy
+        var geometry = getSceneGeometry();
+        /*
         var date  = new Date();
         var value = date.getMilliseconds() + 1000.0 * date.getSeconds();
-        var knotA = getKnotA(gl);
-        /*
-        knotA.rotation = {
+        geometry.knotA.get().rotation = {
             angle: 2*Math.PI*value/8000.0,
             axis: [0.5, 0.5, 0.0]
         };
         */
-        drawHierarchy(gl, shaderType, camera, light, knotA);
+        drawHierarchy(gl, shaderType, camera, light, geometry.knotA.get());
 
         // Unset shader
         unsetProgram(gl, shaderType);

@@ -1,11 +1,9 @@
 import { compileShader }
     from "./shaders.mjs"
-import { camera }
-    from "./camera.mjs"
 import { Light }
-    from "./light.mjs"
+    from "../common/light.mjs"
 import { HierarchyNode }
-    from "./hierarchy_node.mjs"
+    from "../common/hierarchy_node.mjs"
 
 var shaderPhong = (function () {
     var program = null;
