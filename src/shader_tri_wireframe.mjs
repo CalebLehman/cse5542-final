@@ -37,7 +37,7 @@ var shaderTriWireframe = (function () {
         varying vec3 fragmentPosBarySpace;
         varying vec3  fragmentAmbient;
 
-        const float thickness = 2.0;
+        const float thickness = 1.0;
         void main() {
             vec3 normalizationFactor = fwidth(fragmentPosBarySpace);
             vec3 smoothStepDistance  = smoothstep(

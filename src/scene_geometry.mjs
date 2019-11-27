@@ -12,7 +12,7 @@ const knotAHighPoly = {
 };
 
 const knotALowPoly = {
-    pDivisions: 64,
+    pDivisions: 32,
     qDivisions: 8,
 };
 
