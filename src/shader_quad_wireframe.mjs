@@ -149,8 +149,8 @@ var shaderQuadWireframe = (function () {
 
         gl.drawArrays(
             gl.LINE_STRIP, // Sort of a hack, but works for this simple lab
-            0,
-            drawable.posBuffer.numItems,
+            drawable.offset,
+            drawable.numItems,
         );
         return;
     }

@@ -309,8 +309,8 @@ var shaderPhong = (function () {
 
         gl.drawArrays(
             gl.TRIANGLES,
-            0,
-            drawable.posBuffer.numItems,
+            drawable.offset,
+            drawable.numItems,
         );
         return;
     }

@@ -2,6 +2,8 @@ import { camera }
     from "./camera.mjs"
 import { draw, selectShader }
     from "./graphics.mjs"
+import { animateKnotA }
+    from "./scene_geometry.mjs"
 
 // WASD parameters
 const speed = 5.0 / 60;
@@ -89,6 +91,13 @@ function handleKeyPress(e) {
     }
     if (e.keyCode === 51) { // 3
         selectShader("tri-wireframe");
+    }
+
+    // Animation
+    if (e.keyCode === 32) { // Space
+        // TODO should animate nearest knot
+        e.preventDefault();
+        animateKnotA(4000);
     }
 }
 

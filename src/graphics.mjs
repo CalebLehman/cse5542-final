@@ -7,7 +7,7 @@ import { Light }
 
 import { HierarchyNode }
     from "./hierarchy_node.mjs"
-import { initGeometry, getPillar, getUnknot }
+import { initGeometry, getPillar, getKnotA }
     from "./scene_geometry.mjs"
 
 const webglGraphics = (function () {
@@ -77,12 +77,14 @@ const webglGraphics = (function () {
         // TODO sample hierarchy
         var date  = new Date();
         var value = date.getMilliseconds() + 1000.0 * date.getSeconds();
-        var unknot = getUnknot();
-        unknot.rotation = {
+        var knotA = getKnotA(gl);
+        /*
+        knotA.rotation = {
             angle: 2*Math.PI*value/8000.0,
             axis: [0.5, 0.5, 0.0]
         };
-        drawHierarchy(gl, shaderType, camera, light, unknot);
+        */
+        drawHierarchy(gl, shaderType, camera, light, knotA);
 
         // Unset shader
         unsetProgram(gl, shaderType);

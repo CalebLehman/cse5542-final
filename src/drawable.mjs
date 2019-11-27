@@ -6,7 +6,9 @@ class Drawable {
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,
-        shineBuffer
+        shineBuffer,
+        numItems,
+        offset
     ) {
         this.posBuffer      = posBuffer;
         this.baryBuffer     = baryBuffer;
@@ -15,6 +17,8 @@ class Drawable {
         this.diffuseBuffer  = diffuseBuffer;
         this.specularBuffer = specularBuffer;
         this.shineBuffer    = shineBuffer;
+        this.numItems       = numItems;
+        this.offset         = offset;
     }
 }
 
