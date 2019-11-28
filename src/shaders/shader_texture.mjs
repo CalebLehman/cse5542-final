@@ -20,14 +20,10 @@ var shaderTexture = (function () {
         attribute vec3 vertexNormalModelSpace;
         attribute vec2 vertexPosTextureSpace;
 
-        attribute float vertexShine;
-
         varying vec3 fragmentPosEyeSpace;
         varying vec3 lightPosEyeSpace;
         varying vec3 fragmentNormalEyeSpace;
         varying vec2 fragmentPosTextureSpace;
-
-        varying float fragmentShine;
 
         void main() {
             gl_PointSize = 1.0;
@@ -41,7 +37,6 @@ var shaderTexture = (function () {
             fragmentNormalEyeSpace = vec3(normalMatrix * normal);
 
             fragmentPosTextureSpace = vertexPosTextureSpace;
-            fragmentShine           = vertexShine;
         }
     `;
 
@@ -60,7 +55,7 @@ var shaderTexture = (function () {
         varying vec3 fragmentNormalEyeSpace;
         varying vec2 fragmentPosTextureSpace;
 
-        varying float fragmentShine;
+        uniform float shine;
 
         void main() {
             vec3 L = normalize(lightPosEyeSpace - fragmentPosEyeSpace);
@@ -89,7 +84,7 @@ var shaderTexture = (function () {
                     * max(0.0, dot(N, L))
                 +
                 fragmentSpecular * lightSpecular
-                    * pow(max(0.0, dot(R, V)), fragmentShine)
+                    * pow(max(0.0, dot(R, V)), shine)
                 ,
                 1.0
             );
@@ -135,6 +130,8 @@ var shaderTexture = (function () {
                     gl.getUniformLocation(shaderProgram, "lightDiffuse"),
                 lightSpecular:
                     gl.getUniformLocation(shaderProgram, "lightSpecular"),
+                shine:
+                    gl.getUniformLocation(shaderProgram, "shine"),
                 pvmMatrix:
                     gl.getUniformLocation(shaderProgram, "pvmMatrix"),
                 vmMatrix:
@@ -152,8 +149,6 @@ var shaderTexture = (function () {
                     gl.getAttribLocation(shaderProgram, "vertexNormalModelSpace"),
                 vertexPosTextureSpace:
                     gl.getAttribLocation(shaderProgram, "vertexPosTextureSpace"),
-                vertexShine:
-                    gl.getAttribLocation(shaderProgram, "vertexShine"),
             }
 
             program = {
@@ -172,9 +167,6 @@ var shaderTexture = (function () {
         gl.enableVertexAttribArray(
             program.attributes.vertexPosTextureSpace
         );
-        gl.enableVertexAttribArray(
-            program.attributes.vertexShine
-        );
 
         shaderProgram = program.shaders;
         gl.useProgram(shaderProgram);
@@ -189,9 +181,6 @@ var shaderTexture = (function () {
         );
         gl.disableVertexAttribArray(
             program.attributes.vertexPosTextureSpace
-        );
-        gl.disableVertexAttribArray(
-            program.attributes.vertexShine
         );
     }
 
@@ -244,6 +233,12 @@ var shaderTexture = (function () {
         gl.bindTexture(gl.TEXTURE_2D, textureSpecular);
         gl.uniform1i(program.uniforms.textureSpecular, 1);
 
+        // Pass shine
+        gl.uniform1f(
+            program.uniforms.shine,
+            drawable.shine
+        );
+
         // Pass attribute buffers
         gl.bindBuffer(
             gl.ARRAY_BUFFER,
@@ -280,18 +275,6 @@ var shaderTexture = (function () {
             false,
             0,
             0
-        );
-        gl.bindBuffer(
-            gl.ARRAY_BUFFER,
-            drawable.shineBuffer.buffer
-        );
-        gl.vertexAttribPointer(
-            program.attributes.vertexShine,
-            drawable.shineBuffer.itemSize,
-            gl.FLOAT,
-            false,
-            0,
-            drawable.offset * 1 * 4
         );
 
         gl.drawArrays(

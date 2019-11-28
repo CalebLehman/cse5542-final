@@ -231,12 +231,10 @@ function getCube(gl) {
     var ambient  = [];
     var diffuse  = [];
     var specular = [];
-    var shine    = [];
     for (var i = 0; i < position.length / 3; ++i) {
         ambient.push (...unitCubeColor);
         diffuse.push (...unitCubeColor);
         specular.push(...unitCubeSpecular);
-        shine.push   (unitCubeShine);
     }
     var ambientBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, ambientBuffer);
@@ -271,17 +269,6 @@ function getCube(gl) {
         specularBuffer,
         4
     );
-    var shineBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, shineBuffer);
-    gl.bufferData(
-        gl.ARRAY_BUFFER,
-        new Float32Array(shine),
-        gl.STATIC_DRAW
-    );
-    shineBuffer = new Buffer(
-        shineBuffer,
-        1
-    );
 
     return new Drawable(
         posBuffer,
@@ -291,8 +278,8 @@ function getCube(gl) {
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,
-        shineBuffer,
-        shine.length,
+        unitCubeShine,
+        position.length / 3,
         0
     );
 }
@@ -385,12 +372,10 @@ function getPlane(gl) {
     var ambient  = [];
     var diffuse  = [];
     var specular = [];
-    var shine    = [];
     for (var i = 0; i < position.length / 3; ++i) {
-        ambient.push (...unitCubeColor);
-        diffuse.push (...unitCubeColor);
-        specular.push(...unitCubeSpecular);
-        shine.push   (unitCubeShine);
+        ambient.push (...unitPlaneColor);
+        diffuse.push (...unitPlaneColor);
+        specular.push(...unitPlaneSpecular);
     }
     var ambientBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, ambientBuffer);
@@ -425,17 +410,6 @@ function getPlane(gl) {
         specularBuffer,
         4
     );
-    var shineBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, shineBuffer);
-    gl.bufferData(
-        gl.ARRAY_BUFFER,
-        new Float32Array(shine),
-        gl.STATIC_DRAW
-    );
-    shineBuffer = new Buffer(
-        shineBuffer,
-        1
-    );
 
     return new Drawable(
         posBuffer,
@@ -445,8 +419,8 @@ function getPlane(gl) {
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,
-        shineBuffer,
-        shine.length,
+        unitPlaneShine,
+        position.length / 3,
         0
     );
 }
@@ -589,12 +563,10 @@ function fromPath(
     var ambient  = [];
     var diffuse  = [];
     var specular = [];
-    var shine    = [];
     for (var i = 0; i < position.length / 3; ++i) {
         ambient.push (...pathColor);
         diffuse.push (...pathColor);
         specular.push(...pathSpecular);
-        shine.push   (pathShine);
     }
     var ambientBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, ambientBuffer);
@@ -629,17 +601,6 @@ function fromPath(
         specularBuffer,
         4
     );
-    var shineBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, shineBuffer);
-    gl.bufferData(
-        gl.ARRAY_BUFFER,
-        new Float32Array(shine),
-        gl.STATIC_DRAW
-    );
-    shineBuffer = new Buffer(
-        shineBuffer,
-        1
-    );
 
     return new Drawable(
         posBuffer,
@@ -649,8 +610,8 @@ function fromPath(
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,
-        shineBuffer,
-        shine.length,
+        pathShine,
+        position.length / 3,
         0
     );
 }
@@ -805,12 +766,10 @@ function fromPathAnim(
     var ambient  = [];
     var diffuse  = [];
     var specular = [];
-    var shine    = [];
     for (var i = 0; i < position.length / 3; ++i) {
         ambient.push (...pathColor);
         diffuse.push (...pathColor);
         specular.push(...pathSpecular);
-        shine.push   (pathShine);
     }
     var ambientBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, ambientBuffer);
@@ -845,17 +804,6 @@ function fromPathAnim(
         specularBuffer,
         4
     );
-    var shineBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, shineBuffer);
-    gl.bufferData(
-        gl.ARRAY_BUFFER,
-        new Float32Array(shine),
-        gl.STATIC_DRAW
-    );
-    shineBuffer = new Buffer(
-        shineBuffer,
-        1
-    );
 
     return new Drawable(
         posBuffer,
@@ -865,8 +813,8 @@ function fromPathAnim(
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,
-        shineBuffer,
-        shine.length / 2,
+        pathShine,
+        (position.length / 3) / 2,
         0
     );
 }

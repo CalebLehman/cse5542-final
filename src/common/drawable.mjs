@@ -7,7 +7,7 @@ class Drawable {
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,
-        shineBuffer,
+        shine,
         numItems,
         offset
     ) {
@@ -18,7 +18,7 @@ class Drawable {
         this.ambientBuffer  = ambientBuffer;
         this.diffuseBuffer  = diffuseBuffer;
         this.specularBuffer = specularBuffer;
-        this.shineBuffer    = shineBuffer;
+        this.shine          = shine;
         this.numItems       = numItems;
         this.offset         = offset;
     }

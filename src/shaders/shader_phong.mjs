@@ -31,7 +31,6 @@ var shaderPhong = (function () {
         varying vec3  fragmentAmbient;
         varying vec3  fragmentDiffuse;
         varying vec3  fragmentSpecular;
-        varying float fragmentShine;
         void main() {
             gl_PointSize = 1.0;
 
@@ -46,7 +45,6 @@ var shaderPhong = (function () {
             fragmentAmbient  = vertexAmbient;
             fragmentDiffuse  = vertexDiffuse;
             fragmentSpecular = vertexSpecular;
-            fragmentShine    = vertexShine;
         }
     `;
 
@@ -64,7 +62,8 @@ var shaderPhong = (function () {
         varying vec3  fragmentAmbient;
         varying vec3  fragmentDiffuse;
         varying vec3  fragmentSpecular;
-        varying float fragmentShine;
+        uniform float shine;
+
         void main() {
             vec3 L = normalize(lightPosEyeSpace - fragmentPosEyeSpace);
             vec3 N = normalize(fragmentNormalEyeSpace);
@@ -72,11 +71,14 @@ var shaderPhong = (function () {
             vec3 V = normalize(-fragmentPosEyeSpace);
 
             gl_FragColor = vec4(
-                fragmentAmbient * lightAmbient +
+                fragmentAmbient * lightAmbient
+                +
                 fragmentDiffuse * lightDiffuse *
-                    max(0.0, dot(N, L)) +
+                    max(0.0, dot(N, L))
+                +
                 fragmentSpecular * lightSpecular *
-                    pow(max(0.0, dot(R, V)), fragmentShine),
+                    pow(max(0.0, dot(R, V)), shine)
+                ,
                 1.0
             );
         }
@@ -117,6 +119,8 @@ var shaderPhong = (function () {
                     gl.getUniformLocation(shaderProgram, "lightDiffuse"),
                 lightSpecular:
                     gl.getUniformLocation(shaderProgram, "lightSpecular"),
+                shine:
+                    gl.getUniformLocation(shaderProgram, "shine"),
                 pvmMatrix:
                     gl.getUniformLocation(shaderProgram, "pvmMatrix"),
                 vmMatrix:
@@ -138,8 +142,6 @@ var shaderPhong = (function () {
                     gl.getAttribLocation(shaderProgram, "vertexDiffuse"),
                 vertexSpecular:
                     gl.getAttribLocation(shaderProgram, "vertexSpecular"),
-                vertexShine:
-                    gl.getAttribLocation(shaderProgram, "vertexShine"),
             }
 
             program = {
@@ -164,9 +166,6 @@ var shaderPhong = (function () {
         gl.enableVertexAttribArray(
             program.attributes.vertexSpecular
         );
-        gl.enableVertexAttribArray(
-            program.attributes.vertexShine
-        );
 
         shaderProgram = program.shaders;
         gl.useProgram(shaderProgram);
@@ -187,9 +186,6 @@ var shaderPhong = (function () {
         );
         gl.disableVertexAttribArray(
             program.attributes.vertexSpecular
-        );
-        gl.disableVertexAttribArray(
-            program.attributes.vertexShine
         );
     }
 
@@ -229,6 +225,12 @@ var shaderPhong = (function () {
             program.uniforms.normalMatrix,
             false,
             normalMatrix
+        );
+
+        // Pass shine
+        gl.uniform1f(
+            program.uniforms.shine,
+            drawable.shine
         );
 
         // Pass attribute buffers
@@ -287,18 +289,6 @@ var shaderPhong = (function () {
         gl.vertexAttribPointer(
             program.attributes.vertexSpecular,
             drawable.specularBuffer.itemSize,
-            gl.FLOAT,
-            false,
-            0,
-            0
-        );
-        gl.bindBuffer(
-            gl.ARRAY_BUFFER,
-            drawable.shineBuffer.buffer
-        );
-        gl.vertexAttribPointer(
-            program.attributes.vertexShine,
-            drawable.shineBuffer.itemSize,
             gl.FLOAT,
             false,
             0,
