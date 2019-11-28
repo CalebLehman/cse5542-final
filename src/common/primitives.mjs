@@ -126,7 +126,7 @@ function getCube(gl) {
         +0.0,+0.0,+1.0,
         +0.0,+0.0,+1.0,
 
-        +0.0,+0.0,-1.0, // +z face
+        +0.0,+0.0,-1.0, // -z face
         +0.0,+0.0,-1.0,
         +0.0,+0.0,-1.0,
         +0.0,+0.0,-1.0,
@@ -140,7 +140,7 @@ function getCube(gl) {
         +1.0,+0.0,+0.0,
         +1.0,+0.0,+0.0,
 
-        -1.0,+0.0,+0.0, // +x face
+        -1.0,+0.0,+0.0, // -x face
         -1.0,+0.0,+0.0,
         -1.0,+0.0,+0.0,
         -1.0,+0.0,+0.0,
@@ -154,7 +154,7 @@ function getCube(gl) {
         +0.0,+1.0,+0.0,
         +0.0,+1.0,+0.0,
 
-        +0.0,-1.0,+0.0, // +y face
+        +0.0,-1.0,+0.0, // -y face
         +0.0,-1.0,+0.0,
         +0.0,-1.0,+0.0,
         +0.0,-1.0,+0.0,
@@ -171,6 +171,61 @@ function getCube(gl) {
     normalBuffer = new Buffer(
         normalBuffer,
         3
+    );
+
+    var texture = [
+        1.0,1.0, // +z face
+        1.0,0.0,
+        0.0,0.0,
+        0.0,0.0,
+        0.0,1.0,
+        1.0,1.0,
+
+        1.0,1.0, // -z face
+        1.0,0.0,
+        0.0,0.0,
+        0.0,0.0,
+        0.0,1.0,
+        1.0,1.0,
+
+        1.0,1.0, // +x face
+        1.0,0.0,
+        0.0,0.0,
+        0.0,0.0,
+        0.0,1.0,
+        1.0,1.0,
+
+        1.0,1.0, // -x face
+        1.0,0.0,
+        0.0,0.0,
+        0.0,0.0,
+        0.0,1.0,
+        1.0,1.0,
+
+        1.0,1.0, // +y face
+        1.0,0.0,
+        0.0,0.0,
+        0.0,0.0,
+        0.0,1.0,
+        1.0,1.0,
+
+        1.0,1.0, // -y face
+        1.0,0.0,
+        0.0,0.0,
+        0.0,0.0,
+        0.0,1.0,
+        1.0,1.0
+    ];
+    var textureBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(texture),
+        gl.STATIC_DRAW
+    );
+    textureBuffer = new Buffer(
+        textureBuffer,
+        2
     );
 
     var ambient  = [];
@@ -232,6 +287,7 @@ function getCube(gl) {
         posBuffer,
         baryBuffer,
         normalBuffer,
+        textureBuffer,
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,
@@ -306,6 +362,26 @@ function getPlane(gl) {
         3
     );
 
+    var texture = [
+        1.0,0.0,
+        1.0,1.0,
+        0.0,1.0,
+        0.0,1.0,
+        0.0,0.0,
+        1.0,0.0
+    ];
+    var textureBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(normal),
+        gl.STATIC_DRAW
+    );
+    textureBuffer = new Buffer(
+        textureBuffer,
+        2
+    );
+
     var ambient  = [];
     var diffuse  = [];
     var specular = [];
@@ -365,6 +441,7 @@ function getPlane(gl) {
         posBuffer,
         baryBuffer,
         normalBuffer,
+        textureBuffer,
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,
@@ -409,6 +486,13 @@ function fromPath(
         return n;
     };
 
+    var computeTexture = function(i, j) {
+        j = ((j % radialDivisions) + radialDivisions) % radialDivisions;
+        var u = 1.0 * i / lengthDivisions;
+        var v = 1.0 * j / radialDivisions;
+        return [u, v];
+    };
+
     var position = [];
     for (var i = 0; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
@@ -484,6 +568,32 @@ function fromPath(
         3
     );
 
+    var texture = [];
+    for (var i = 0; i < lengthDivisions; ++i) {
+        for (var j = 0; j < radialDivisions; ++j) {
+            // j is offset "backwards" more each ring
+            // to ensure that quad-wireframe hack works
+            // see "shader_quad_wireframe.mjs" to see why
+            texture.push(...computeTexture(i, j-i));
+            texture.push(...computeTexture(i, j-i+1));
+            texture.push(...computeTexture(i+1, j-i+1));
+            texture.push(...computeTexture(i+1, j-i+1));
+            texture.push(...computeTexture(i+1, j-i));
+            texture.push(...computeTexture(i, j-i));
+        }
+    }
+    var textureBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(texture),
+        gl.STATIC_DRAW
+    );
+    textureBuffer = new Buffer(
+        textureBuffer,
+        2
+    );
+
     var ambient  = [];
     var diffuse  = [];
     var specular = [];
@@ -543,6 +653,7 @@ function fromPath(
         posBuffer,
         baryBuffer,
         normalBuffer,
+        textureBuffer,
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,
@@ -552,6 +663,7 @@ function fromPath(
     );
 }
 
+// TODO texture for animated
 /**
  * Path functions map from [-1, 1] -> R^3.
  * Creates drawable of "double length" (returned drawable
@@ -596,6 +708,13 @@ function fromPathAnim(
         return n;
     };
 
+    var computeTexture = function(i, j) {
+        j = ((j % radialDivisions) + radialDivisions) % radialDivisions;
+        var u = 1.0 * i / lengthDivisions;
+        var v = 1.0 * j / radialDivisions;
+        return [u, v];
+    };
+
     var position = [];
     for (var i = -lengthDivisions; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
@@ -671,6 +790,33 @@ function fromPathAnim(
         3
     );
 
+    var texture = [];
+    for (var i = -lengthDivisions; i < lengthDivisions; ++i) {
+        for (var j = 0; j < radialDivisions; ++j) {
+            // j is offset "backwards" more each ring
+            // to ensure that quad-wireframe hack works
+            // see "shader_quad_wireframe.mjs" to see why
+            texture.push(...computeTexture(i, j-i));
+            texture.push(...computeTexture(i, j-i+1));
+            texture.push(...computeTexture(i+1, j-i+1));
+            texture.push(...computeTexture(i+1, j-i+1));
+            texture.push(...computeTexture(i+1, j-i));
+            texture.push(...computeTexture(i, j-i));
+        }
+    }
+    var textureBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(texture),
+        gl.STATIC_DRAW
+    );
+    textureBuffer = new Buffer(
+        textureBuffer,
+        2
+    );
+
+
     var ambient  = [];
     var diffuse  = [];
     var specular = [];
@@ -730,6 +876,7 @@ function fromPathAnim(
         posBuffer,
         baryBuffer,
         normalBuffer,
+        textureBuffer,
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,

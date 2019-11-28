@@ -4,6 +4,12 @@ import { HierarchyNode }
     from "../common/hierarchy_node.mjs"
 import { fromPathAnim }
     from "../common/primitives.mjs"
+import { getRopeTexture }
+    from "../textures/rope_texture.mjs"
+
+// TODO
+import { getCheckerboardTexture }
+    from "../textures/checkerboard_texture.mjs"
 
 var knotA = (function() {
     var knot = null;
@@ -147,7 +153,8 @@ var knotA = (function() {
             knotDrawable,
             [0.0, 0.0, 0.0],
             {angle: 0.0, axis: [0.0, 1.0, 0.0]},
-            [1.0, 1.0, 1.0]
+            [1.0, 1.0, 1.0],
+            getRopeTexture(gl) // TODO
         );
     }
 

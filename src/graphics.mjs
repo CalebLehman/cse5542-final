@@ -7,10 +7,6 @@ import { Light }
 import { getSceneGeometry }
     from "./scene_geometry/scene_geometry.mjs"
 
-// TODO should be handled by some "scene_hierarchy" source
-import { HierarchyNode }
-    from "./common/hierarchy_node.mjs"
-
 const webglGraphics = (function () {
     var canvas;
     var gl;
@@ -57,6 +53,7 @@ const webglGraphics = (function () {
         // Get and initialize geometry TODO
         var geometry = getSceneGeometry();
         geometry.knotA.init(gl, "high-poly");
+        geometry.pillar.init(gl, "high-poly");
         // Initial draw routine
         draw();
     }
@@ -87,6 +84,7 @@ const webglGraphics = (function () {
         };
         */
         drawHierarchy(gl, shaderType, camera, light, geometry.knotA.get());
+        drawHierarchy(gl, shaderType, camera, light, geometry.pillar.get());
 
         // Unset shader
         unsetProgram(gl, shaderType);

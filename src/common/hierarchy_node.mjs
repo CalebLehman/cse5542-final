@@ -3,7 +3,8 @@ class HierarchyNode {
         drawable,
         translation,
         rotation,
-        scale
+        scale,
+        texture
     ) {
         this.parent    = null;
         this.children  = [];
@@ -13,6 +14,7 @@ class HierarchyNode {
         this.translation = translation;
         this.rotation    = rotation;
         this.scale       = scale;
+        this.texture     = texture;
     }
 
     addChild(child) {

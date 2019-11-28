@@ -98,12 +98,16 @@ function handleKeyPress(e) {
         selectShader("tri-wireframe");
         makeGeometry("low-poly");
     }
+    if (e.keyCode === 52) { // 4
+        selectShader("texture");
+        makeGeometry("high-poly");
+    };
 
     // Animation
     if (e.keyCode === 32) { // Space
         // TODO should animate nearest knot
         e.preventDefault();
-        getSceneGeometry().knotA.anim(4000);
+        getSceneGeometry().knotA.anim(4000); TODO
     }
 }
 
@@ -175,7 +179,8 @@ function main() {
 
 function makeGeometry(poly) {
     var geometry = getSceneGeometry();
-    geometry.knotA.init(gl, poly);
+    //geometry.knotA.init(gl, poly);
+    geometry.pillar.init(gl, poly);
 }
 
 export { init };

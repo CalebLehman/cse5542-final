@@ -3,6 +3,7 @@ class Drawable {
         posBuffer,
         baryBuffer,
         normalBuffer,
+        textureBuffer,
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,
@@ -13,6 +14,7 @@ class Drawable {
         this.posBuffer      = posBuffer;
         this.baryBuffer     = baryBuffer;
         this.normalBuffer   = normalBuffer;
+        this.textureBuffer  = textureBuffer;
         this.ambientBuffer  = ambientBuffer;
         this.diffuseBuffer  = diffuseBuffer;
         this.specularBuffer = specularBuffer;

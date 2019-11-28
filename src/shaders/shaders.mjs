@@ -4,6 +4,8 @@ import { shaderQuadWireframe }
     from "./shader_quad_wireframe.mjs"
 import { shaderTriWireframe }
     from "./shader_tri_wireframe.mjs"
+import { shaderTexture }
+    from "./shader_texture.mjs"
 
 function compileShader(gl, shaderSource, shaderType) {
     var shader = gl.createShader(shaderType);
@@ -29,6 +31,9 @@ function setProgram(gl, type) {
         case "tri-wireframe":
             shaderTriWireframe.setProgram(gl);
             break;
+        case "texture":
+            shaderTexture.setProgram(gl);
+            break;
         default:
             console.log("Failed to set program to unknown type " + type);
     }
@@ -44,6 +49,9 @@ function unsetProgram(gl, type) {
             break;
         case "tri-wireframe":
             shaderTriWireframe.unsetProgram(gl);
+            break;
+        case "texture":
+            shaderTexture.unsetProgram(gl);
             break;
         default:
             console.log("Failed to unset program from unknown type " + type);
@@ -66,6 +74,9 @@ function drawHierarchy(
             break;
         case "tri-wireframe":
             shaderTriWireframe.drawHierarchy(gl, camera, light, root);
+            break;
+        case "texture":
+            shaderTexture.drawHierarchy(gl, camera, light, root);
             break;
         default:
             console.log("Failed to draw using uknown program type " + type);
