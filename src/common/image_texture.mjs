@@ -6,41 +6,26 @@ class ImageTexture {
         type,
         src
     ) {
-        this.gl     = gl;
-        this.level  = level;
-        this.format = format;
-        this.type   = type;
-        this.src    = src;
+        this.texture = gl.createTexture();
 
-        this.loadTexture();
-    }
-
-    loadTexture() {
-        this.texture = this.gl.createTexture();
-
-        this.gl.bindTexture(
-            this.gl.TEXTURE_2D,
+        gl.bindTexture(
+            gl.TEXTURE_2D,
             this.texture
         );
-        this.gl.texImage2D(
-            this.gl.TEXTURE_2D,
+        gl.texImage2D(
+            gl.TEXTURE_2D,
             0,
-            this.gl.RGBA,
+            gl.RGBA,
             1,
             1,
             0,
-            this.gl.RGBA,
-            this.gl.UNSIGNED_BYTE,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
             new Uint8Array([255, 0, 0, 255])
         );
 
-        const image  = new Image();
-        // TODO
-        var gl = this.gl;
         var texture = this.texture;
-        var level = this.level;
-        var format = this.format;
-        var type = this.type;
+        const image  = new Image();
         image.onload = function() {
             gl.bindTexture(
                 gl.TEXTURE_2D,
@@ -72,7 +57,10 @@ class ImageTexture {
                 gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT
             );
         }
-        image.src = this.src;
+        image.src = src;
+    }
+
+    loadTexture() {
     }
 }
 

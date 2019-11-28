@@ -7,8 +7,7 @@ import { fromPathAnim }
 import { getRopeTexture }
     from "../textures/rope_texture.mjs"
 
-// TODO
-import { getCheckerboardTexture }
+import { getCheckerboardTexture } // TODO
     from "../textures/checkerboard_texture.mjs"
 
 var knotA = (function() {
@@ -154,7 +153,7 @@ var knotA = (function() {
             [0.0, 0.0, 0.0],
             {angle: 0.0, axis: [0.0, 1.0, 0.0]},
             [1.0, 1.0, 1.0],
-            getRopeTexture(gl) // TODO
+            getCheckerboardTexture(gl)
         );
     }
 
@@ -171,9 +170,8 @@ var knotA = (function() {
             console.log("Retrieving uninitialized geometry");
         }
 
-        // TODO
+        knot.drawable.offset = knot.drawable.numItems;
         if (animLength > 0) {
-            // Recompute and check if done
             var date          = new Date();
             var milliseconds  = date.getTime() - animStart;
             var tOffset       = 1.0 * (milliseconds - animLength) / animLength;
@@ -181,15 +179,12 @@ var knotA = (function() {
             if (milliseconds > animLength) {
                 animLength           = 0;
                 animStart            = null;
-                knot.drawable.offset = knot.drawable.numItems;
             } else {
                 const verticesPerRing = currentPoly.qDivisions * 2 * 3;
                 knot.drawable.offset  = Math.floor(
                     0.5 + (knot.drawable.numItems * (1.0 + tOffset)) / verticesPerRing
                 ) * verticesPerRing;
             }
-        } else {
-            knot.drawable.offset = knot.drawable.numItems;
         }
 
         return knot;

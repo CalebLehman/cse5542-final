@@ -246,7 +246,7 @@ var shaderTexture = (function () {
             gl.FLOAT,
             false,
             0,
-            0
+            drawable.offset * 3 * 4
         );
         gl.bindBuffer(
             gl.ARRAY_BUFFER,
@@ -258,7 +258,7 @@ var shaderTexture = (function () {
             gl.FLOAT,
             false,
             0,
-            0
+            drawable.offset * 3 * 4
         );
         gl.bindBuffer(
             gl.ARRAY_BUFFER,
@@ -282,7 +282,7 @@ var shaderTexture = (function () {
             gl.FLOAT,
             false,
             0,
-            0
+            drawable.offset * 4 * 4
         );
         gl.bindBuffer(
             gl.ARRAY_BUFFER,
@@ -294,12 +294,12 @@ var shaderTexture = (function () {
             gl.FLOAT,
             false,
             0,
-            0
+            drawable.offset * 1 * 4
         );
 
         gl.drawArrays(
             gl.TRIANGLES,
-            drawable.offset,
+            0,
             drawable.numItems,
         );
         return;

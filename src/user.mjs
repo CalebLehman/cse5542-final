@@ -105,9 +105,8 @@ function handleKeyPress(e) {
 
     // Animation
     if (e.keyCode === 32) { // Space
-        // TODO should animate nearest knot
         e.preventDefault();
-        getSceneGeometry().knotA.anim(4000); TODO
+        getSceneGeometry().knotA.anim(4000); // TODO should animate nearest knot
     }
 }
 
@@ -179,7 +178,7 @@ function main() {
 
 function makeGeometry(poly) {
     var geometry = getSceneGeometry();
-    //geometry.knotA.init(gl, poly);
+    geometry.knotA.init(gl, poly);
     geometry.pillar.init(gl, poly);
 }
 

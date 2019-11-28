@@ -7,8 +7,7 @@ import { getCube }
 import { getRedTexture }
     from "../textures/red_texture.mjs"
 
-// TODO
-import { getCheckerboardTexture }
+import { getCheckerboardTexture } // TODO
     from "../textures/checkerboard_texture.mjs"
 
 var pillar = (function() {

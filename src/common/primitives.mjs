@@ -486,6 +486,7 @@ function fromPath(
         return n;
     };
 
+    // TODO
     var computeTexture = function(i, j) {
         j = ((j % radialDivisions) + radialDivisions) % radialDivisions;
         var u = 1.0 * i / lengthDivisions;
@@ -496,15 +497,12 @@ function fromPath(
     var position = [];
     for (var i = 0; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
-            // j is offset "backwards" more each ring
-            // to ensure that quad-wireframe hack works
-            // see "quad_wireframe.mjs" to see why
-            position.push(...computePosition(i, j-i));
-            position.push(...computePosition(i, j-i+1));
-            position.push(...computePosition(i+1, j-i+1));
-            position.push(...computePosition(i+1, j-i+1));
-            position.push(...computePosition(i+1, j-i));
-            position.push(...computePosition(i, j-i));
+            position.push(...computePosition(i+0, j+0));
+            position.push(...computePosition(i+0, j+1));
+            position.push(...computePosition(i+1, j+1));
+            position.push(...computePosition(i+1, j+1));
+            position.push(...computePosition(i+1, j+0));
+            position.push(...computePosition(i+0, j+0));
         }
     }
     var posBuffer = gl.createBuffer();
@@ -545,15 +543,12 @@ function fromPath(
     var normal = [];
     for (var i = 0; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
-            // j is offset "backwards" more each ring
-            // to ensure that quad-wireframe hack works
-            // see "quad_wireframe.mjs" to see why
-            normal.push(...computeNormal(i, j-i));
-            normal.push(...computeNormal(i, j-i+1));
-            normal.push(...computeNormal(i+1, j-i+1));
-            normal.push(...computeNormal(i+1, j-i+1));
-            normal.push(...computeNormal(i+1, j-i));
-            normal.push(...computeNormal(i, j-i));
+            normal.push(...computeNormal(i+0, j+0));
+            normal.push(...computeNormal(i+0, j+1));
+            normal.push(...computeNormal(i+1, j+1));
+            normal.push(...computeNormal(i+1, j+1));
+            normal.push(...computeNormal(i+1, j+0));
+            normal.push(...computeNormal(i+0, j+0));
         }
     }
     var normalBuffer = gl.createBuffer();
@@ -571,15 +566,12 @@ function fromPath(
     var texture = [];
     for (var i = 0; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
-            // j is offset "backwards" more each ring
-            // to ensure that quad-wireframe hack works
-            // see "shader_quad_wireframe.mjs" to see why
-            texture.push(...computeTexture(i, j-i));
-            texture.push(...computeTexture(i, j-i+1));
-            texture.push(...computeTexture(i+1, j-i+1));
-            texture.push(...computeTexture(i+1, j-i+1));
-            texture.push(...computeTexture(i+1, j-i));
-            texture.push(...computeTexture(i, j-i));
+            texture.push(...computeTexture(i+0, j+0));
+            texture.push(...computeTexture(i+0, j+1));
+            texture.push(...computeTexture(i+1, j+1));
+            texture.push(...computeTexture(i+1, j+1));
+            texture.push(...computeTexture(i+1, j+0));
+            texture.push(...computeTexture(i+0, j+0));
         }
     }
     var textureBuffer = gl.createBuffer();
@@ -663,7 +655,6 @@ function fromPath(
     );
 }
 
-// TODO texture for animated
 /**
  * Path functions map from [-1, 1] -> R^3.
  * Creates drawable of "double length" (returned drawable
@@ -708,6 +699,7 @@ function fromPathAnim(
         return n;
     };
 
+    // TODO
     var computeTexture = function(i, j) {
         j = ((j % radialDivisions) + radialDivisions) % radialDivisions;
         var u = 1.0 * i / lengthDivisions;
@@ -718,15 +710,12 @@ function fromPathAnim(
     var position = [];
     for (var i = -lengthDivisions; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
-            // j is offset "backwards" more each ring
-            // to ensure that quad-wireframe hack works
-            // see "quad_wireframe.mjs" to see why
-            position.push(...computePosition(i, j-i));
-            position.push(...computePosition(i, j-i+1));
-            position.push(...computePosition(i+1, j-i+1));
-            position.push(...computePosition(i+1, j-i+1));
-            position.push(...computePosition(i+1, j-i));
-            position.push(...computePosition(i, j-i));
+            position.push(...computePosition(i+0, j+0));
+            position.push(...computePosition(i+0, j+1));
+            position.push(...computePosition(i+1, j+1));
+            position.push(...computePosition(i+1, j+1));
+            position.push(...computePosition(i+1, j+0));
+            position.push(...computePosition(i+0, j+0));
         }
     }
     var posBuffer = gl.createBuffer();
@@ -767,15 +756,12 @@ function fromPathAnim(
     var normal = [];
     for (var i = -lengthDivisions; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
-            // j is offset "backwards" more each ring
-            // to ensure that quad-wireframe hack works
-            // see "quad_wireframe.mjs" to see why
-            normal.push(...computeNormal(i, j-i));
-            normal.push(...computeNormal(i, j-i+1));
-            normal.push(...computeNormal(i+1, j-i+1));
-            normal.push(...computeNormal(i+1, j-i+1));
-            normal.push(...computeNormal(i+1, j-i));
-            normal.push(...computeNormal(i, j-i));
+            normal.push(...computeNormal(i+0, j+0));
+            normal.push(...computeNormal(i+0, j+1));
+            normal.push(...computeNormal(i+1, j+1));
+            normal.push(...computeNormal(i+1, j+1));
+            normal.push(...computeNormal(i+1, j+0));
+            normal.push(...computeNormal(i+0, j+0));
         }
     }
     var normalBuffer = gl.createBuffer();
@@ -790,18 +776,17 @@ function fromPathAnim(
         3
     );
 
+    // Texture buffer half length of others
+    // because it doesn't animate
     var texture = [];
-    for (var i = -lengthDivisions; i < lengthDivisions; ++i) {
+    for (var i = 0; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
-            // j is offset "backwards" more each ring
-            // to ensure that quad-wireframe hack works
-            // see "shader_quad_wireframe.mjs" to see why
-            texture.push(...computeTexture(i, j-i));
-            texture.push(...computeTexture(i, j-i+1));
-            texture.push(...computeTexture(i+1, j-i+1));
-            texture.push(...computeTexture(i+1, j-i+1));
-            texture.push(...computeTexture(i+1, j-i));
-            texture.push(...computeTexture(i, j-i));
+            texture.push(...computeTexture(i+0, j+0));
+            texture.push(...computeTexture(i+0, j+1));
+            texture.push(...computeTexture(i+1, j+1));
+            texture.push(...computeTexture(i+1, j+1));
+            texture.push(...computeTexture(i+1, j+0));
+            texture.push(...computeTexture(i+0, j+0));
         }
     }
     var textureBuffer = gl.createBuffer();
