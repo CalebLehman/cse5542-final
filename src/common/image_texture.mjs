@@ -21,7 +21,7 @@ class ImageTexture {
             0,
             gl.RGBA,
             gl.UNSIGNED_BYTE,
-            new Uint8Array([255, 0, 0, 255])
+            new Uint8Array([255, 255, 255, 255])
         );
 
         var texture = this.texture;

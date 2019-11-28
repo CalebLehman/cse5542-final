@@ -20,7 +20,6 @@ var shaderTexture = (function () {
         attribute vec3 vertexNormalModelSpace;
         attribute vec2 vertexPosTextureSpace;
 
-        attribute vec3  vertexSpecular;
         attribute float vertexShine;
 
         varying vec3 fragmentPosEyeSpace;
@@ -28,8 +27,8 @@ var shaderTexture = (function () {
         varying vec3 fragmentNormalEyeSpace;
         varying vec2 fragmentPosTextureSpace;
 
-        varying vec3  fragmentSpecular;
         varying float fragmentShine;
+
         void main() {
             gl_PointSize = 1.0;
 
@@ -42,7 +41,6 @@ var shaderTexture = (function () {
             fragmentNormalEyeSpace = vec3(normalMatrix * normal);
 
             fragmentPosTextureSpace = vertexPosTextureSpace;
-            fragmentSpecular        = vertexSpecular;
             fragmentShine           = vertexShine;
         }
     `;
@@ -50,7 +48,8 @@ var shaderTexture = (function () {
     const fragmentShader = `
         precision mediump float;
 
-        uniform sampler2D texture;
+        uniform sampler2D textureDiffuse;
+        uniform sampler2D textureSpecular;
 
         uniform vec3 lightAmbient;
         uniform vec3 lightDiffuse;
@@ -61,26 +60,37 @@ var shaderTexture = (function () {
         varying vec3 fragmentNormalEyeSpace;
         varying vec2 fragmentPosTextureSpace;
 
-        varying vec3  fragmentSpecular;
         varying float fragmentShine;
+
         void main() {
             vec3 L = normalize(lightPosEyeSpace - fragmentPosEyeSpace);
             vec3 N = normalize(fragmentNormalEyeSpace);
             vec3 R = reflect(-L, N);
             vec3 V = normalize(-fragmentPosEyeSpace);
 
-            vec3 textureColor = vec3(
+            vec3 fragmentAmbient  = vec3(
                 texture2D(
-                    texture,
+                    textureDiffuse,
                     fragmentPosTextureSpace
                 )
             );
-            gl_FragColor      = vec4(
-                textureColor * lightAmbient +
-                textureColor * lightDiffuse * max(0.0, dot(N, L)) +
-                fragmentSpecular * lightSpecular * pow(
-                    max(0.0, dot(R, V)), fragmentShine
-                ),
+            vec3 fragmentDiffuse  = fragmentAmbient;
+            vec3 fragmentSpecular = vec3(
+                texture2D(
+                    textureSpecular,
+                    fragmentPosTextureSpace
+                )
+            );
+
+            gl_FragColor = vec4(
+                fragmentAmbient * lightAmbient
+                +
+                fragmentDiffuse * lightDiffuse
+                    * max(0.0, dot(N, L))
+                +
+                fragmentSpecular * lightSpecular
+                    * pow(max(0.0, dot(R, V)), fragmentShine)
+                ,
                 1.0
             );
         }
@@ -113,8 +123,10 @@ var shaderTexture = (function () {
             }
 
             var uniforms = {
-                texture:
-                    gl.getUniformLocation(shaderProgram, "texture"),
+                textureDiffuse:
+                    gl.getUniformLocation(shaderProgram, "textureDiffuse"),
+                textureSpecular:
+                    gl.getUniformLocation(shaderProgram, "textureSpecular"),
                 lightPosWorldSpace:
                     gl.getUniformLocation(shaderProgram, "lightPosWorldSpace"),
                 lightAmbient:
@@ -140,8 +152,6 @@ var shaderTexture = (function () {
                     gl.getAttribLocation(shaderProgram, "vertexNormalModelSpace"),
                 vertexPosTextureSpace:
                     gl.getAttribLocation(shaderProgram, "vertexPosTextureSpace"),
-                vertexSpecular:
-                    gl.getAttribLocation(shaderProgram, "vertexSpecular"),
                 vertexShine:
                     gl.getAttribLocation(shaderProgram, "vertexShine"),
             }
@@ -163,9 +173,6 @@ var shaderTexture = (function () {
             program.attributes.vertexPosTextureSpace
         );
         gl.enableVertexAttribArray(
-            program.attributes.vertexSpecular
-        );
-        gl.enableVertexAttribArray(
             program.attributes.vertexShine
         );
 
@@ -184,9 +191,6 @@ var shaderTexture = (function () {
             program.attributes.vertexPosTextureSpace
         );
         gl.disableVertexAttribArray(
-            program.attributes.vertexSpecular
-        );
-        gl.disableVertexAttribArray(
             program.attributes.vertexShine
         );
     }
@@ -197,7 +201,8 @@ var shaderTexture = (function () {
         pMatrix,
         vMatrix,
         mMatrix,
-        texture
+        textureDiffuse,
+        textureSpecular
     ) {
         if (!drawable) return;
 
@@ -230,10 +235,14 @@ var shaderTexture = (function () {
             normalMatrix
         );
         
-        // Pass texture
+        // Pass diffuse texture
         gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-        gl.uniform1i(program.uniforms.texture, 0);
+        gl.bindTexture(gl.TEXTURE_2D, textureDiffuse);
+        gl.uniform1i(program.uniforms.textureDiffuse, 0);
+        // Pass specular texture
+        gl.activeTexture(gl.TEXTURE1);
+        gl.bindTexture(gl.TEXTURE_2D, textureSpecular);
+        gl.uniform1i(program.uniforms.textureSpecular, 1);
 
         // Pass attribute buffers
         gl.bindBuffer(
@@ -271,18 +280,6 @@ var shaderTexture = (function () {
             false,
             0,
             0
-        );
-        gl.bindBuffer(
-            gl.ARRAY_BUFFER,
-            drawable.specularBuffer.buffer
-        );
-        gl.vertexAttribPointer(
-            program.attributes.vertexSpecular,
-            drawable.specularBuffer.itemSize,
-            gl.FLOAT,
-            false,
-            0,
-            drawable.offset * 4 * 4
         );
         gl.bindBuffer(
             gl.ARRAY_BUFFER,
@@ -381,7 +378,8 @@ var shaderTexture = (function () {
                 pMatrix,
                 vMatrix,
                 mMatrix,
-                currNode.texture.texture
+                currNode.textureDiffuse.texture,
+                currNode.textureSpecular.texture
             );
 
             if (currNode.children.length === 0) {

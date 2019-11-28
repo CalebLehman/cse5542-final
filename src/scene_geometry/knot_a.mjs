@@ -9,6 +9,8 @@ import { getRopeTexture }
 
 import { getCheckerboardTexture } // TODO
     from "../textures/checkerboard_texture.mjs"
+import { getWhiteTexture } // TODO
+    from "../textures/white_texture.mjs"
 
 var knotA = (function() {
     var knot = null;
@@ -153,7 +155,8 @@ var knotA = (function() {
             [0.0, 0.0, 0.0],
             {angle: 0.0, axis: [0.0, 1.0, 0.0]},
             [1.0, 1.0, 1.0],
-            getCheckerboardTexture(gl)
+            getCheckerboardTexture(gl),
+            getWhiteTexture(gl)
         );
     }
 

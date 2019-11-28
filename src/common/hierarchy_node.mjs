@@ -4,7 +4,8 @@ class HierarchyNode {
         translation,
         rotation,
         scale,
-        texture
+        textureDiffuse,
+        textureSpecular
     ) {
         this.parent    = null;
         this.children  = [];
@@ -14,7 +15,9 @@ class HierarchyNode {
         this.translation = translation;
         this.rotation    = rotation;
         this.scale       = scale;
-        this.texture     = texture;
+
+        this.textureDiffuse  = textureDiffuse;
+        this.textureSpecular = textureSpecular;
     }
 
     addChild(child) {
