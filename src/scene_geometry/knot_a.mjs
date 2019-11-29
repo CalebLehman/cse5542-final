@@ -6,6 +6,8 @@ import { fromPathAnim }
     from "../common/primitives.mjs"
 import { getRopeTexture }
     from "../textures/rope_texture.mjs"
+import { constantSpeedPath, samplePath }
+    from "../common/parametric.mjs"
 
 import { getCheckerboardTexture } // TODO
     from "../textures/checkerboard_texture.mjs"
@@ -15,9 +17,13 @@ import { getWhiteTexture } // TODO
 var knotA = (function() {
     var knot = null;
 
-    var cachedKnots = {};
-    cachedKnots["high-poly"] = null;
-    cachedKnots["low-poly"] = null;
+    // Knot parameters
+    const color    = [0.0, 1.0, 0.0, 1.0];
+    const specular = [1.0, 1.0, 1.0, 1.0];
+    const shine    = 100.0;
+    const radius   = 0.2;
+    const p        = 3;
+    const q        = 2;
 
     const highPoly  = {
         pDivisions: 256,
@@ -28,101 +34,32 @@ var knotA = (function() {
         qDivisions: 8,
     };
     var currentPoly = null;
+    var cachedKnots = {};
+    cachedKnots["high-poly"] = null;
+    cachedKnots["low-poly"] = null;
 
-    const color    = [0.0, 1.0, 0.0, 1.0];
-    const specular = [1.0, 1.0, 1.0, 1.0];
-    const shine    = 100.0;
-    const radius   = 0.2;
-    const p        = 3;
-    const q        = 2;
-
-    const tDivisions      = 300;
-    var   sampledPos      = null;
-    var   sampledLength   = null;
-    var   sampledNormal   = null;
-    var   sampledBinormal = null;
-    function samplePath(gl) {
-        const factor = Math.PI * Math.PI * Math.sqrt(q*q + 9.0*p*p) / 2.0;
-        var pathPos = function(t) {
-            var u = 2 * Math.PI * t * p;
-            if (u >= 0.0) {
-                return vec3.fromValues(
-                    Math.cos(u) * (1 + Math.cos(q * u / p) / 2.0),
-                    Math.sin(q * u / p) / 2.0,
-                    Math.sin(u) * (1 + Math.cos(q * u / p) / 2.0)
-                );
-            } else {
-                return vec3.fromValues(
-                    3.0 / 2.0,
-                    2.0 * Math.PI * q * u / factor,
-                    6.0 * Math.PI * p * u / factor
-                );
-            };
-        };
-
-        const h = 0.01;
-        var pathFirstDerivative = function(t) {
-            var f_x   = pathPos(t);
-            var f_x_h = pathPos(t-h);
-            vec3.subtract(f_x, f_x, f_x_h);
-            vec3.scale(f_x, f_x, 1.0 / h);
-            return f_x;
-        };
-
-        var pathTangent = function(t) {
-            var first = pathFirstDerivative(t);
-            vec3.normalize(first, first);
-            return first;
-        };
-
-        var pathBinormal = function(t) {
-            var first  = pathFirstDerivative(t);
-            var second = vec3.fromValues(0.0, 1.0, 0.0);
-            vec3.cross(first, first, second);
-            vec3.normalize(first, first);
-            return first;
-        };
-
-        var pathNormal = function(t) {
-            var tangent  = pathTangent(t);
-            var binormal = pathBinormal(t);
-            vec3.cross(tangent, binormal, tangent);
-            return tangent;
-        };
-
-        sampledPos      = new Array();
-        sampledNormal   = new Array();
-        sampledBinormal = new Array();
-        for (var i = 0; i < tDivisions; ++i) {
-            var t = -1.0 + 2 * i / tDivisions;
-            sampledPos.push(pathPos(t));
-            sampledNormal.push(pathNormal(t));
-            sampledBinormal.push(pathBinormal(t));
-        }
-        // For periodicity
-        sampledPos.push(pathPos(0));
-        sampledNormal.push(pathNormal(0));
-        sampledBinormal.push(pathBinormal(0));
-
-        // Estimate pseudo-arc length TODO
-        sampledLength = new Array();
-        sampledLength.push(0.0);
-        for (var i = 1; i <= tDivisions; ++i) {
-            var t = -1.0 + 2 * (i-0.5) / tDivisions;
-            var speed  = vec3.length(pathFirstDerivative(t));
-            var length = sampledLength[sampledLength.length - 1]
-                + speed * 2.0 / tDivisions;
-            sampledLength.push(length);
-        }
-        var normOffset = sampledLength[Math.floor(0.5 + tDivisions * 0.5)];
-        for (var i = 0; i < sampledLength.length; ++i) {
-            sampledLength[i] -= normOffset;
-        }
-        var normFactor = 1.0 / sampledLength[sampledLength.length - 1];
-        for (var i = 0; i < sampledLength.length; ++i) {
-            sampledLength[i] *= normFactor;
+    // Parametrization details
+    const tDivisions   = 300;
+    const originalA    = (-1.0 * (1.75 * q + 5.50 * p)) / (4 * Math.PI * p * Math.sqrt(q*q + 9*p*p));
+    const originalB    = 1.0;
+    const originalPath = function(t) {
+        var u = 2 * Math.PI * t * p;
+        if (u >= 0.0) {
+            return vec3.fromValues(
+                Math.cos(u) * (1 + Math.cos(q * u / p) / 2.0),
+                Math.sin(q * u / p) / 2.0,
+                Math.sin(u) * (1 + Math.cos(q * u / p) / 2.0)
+            );
+        } else {
+            return vec3.fromValues(
+                3.0 / 2.0,
+                2.0 * q * u,
+                6.0 * p * u
+            );
         }
     }
+
+    var pathSamples = null;
 
     function init(gl, poly, force=false) {
         switch (poly) {
@@ -136,46 +73,39 @@ var knotA = (function() {
                 console.log("Unknown poly level");
         }
 
-        if (!sampledPos) {
-            samplePath(gl);
+        if (!pathSamples) {
+            // Parametrize from [0,1]
+            // with constant speed
+            const reparamPath = constantSpeedPath(
+                originalPath,
+                originalA,
+                originalB,
+                tDivisions
+            );
+
+            // Parametrize from [-1,1]
+            // with constant speed
+            const shiftedPath = function(t) {
+                return reparamPath((1.0 + t) / 2.0);
+            };
+
+            pathSamples = samplePath(
+                shiftedPath,
+                -1.0,
+                1.0,
+                tDivisions
+            );
         }
 
         if ((!force) && cachedKnots[poly]) {
             knot = cachedKnots[poly];
             return;
         } else {
-            const indexer = function(t) {
-                return Math.floor(
-                    0.5 + tDivisions * (t + 1.0) / 2.0
-                );
-            }
-
-            const pathPos = function(t) {
-                var idx = indexer(t);
-                return vec3.clone(sampledPos[idx]);
-            };
-
-            const pathLength = function(t) {
-                var idx = indexer(t);
-                return sampledLength[idx];
-            };
-
-            const pathNormal = function(t) {
-                var idx = indexer(t);
-                return vec3.clone(sampledNormal[idx]);
-            };
-
-            const pathBinormal = function(t) {
-                var idx = indexer(t);
-                return vec3.clone(sampledBinormal[idx]);
-            };
-
             var knotDrawable = fromPathAnim(
                 gl,
-                pathPos,
-                pathLength, // TODO
-                pathNormal,
-                pathBinormal,
+                pathSamples.path,
+                pathSamples.normal,
+                pathSamples.binormal,
                 radius,
                 currentPoly.pDivisions,
                 currentPoly.qDivisions,

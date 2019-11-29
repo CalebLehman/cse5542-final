@@ -92,11 +92,11 @@ function handleKeyPress(e) {
     }
     if (e.keyCode === 50) { // 2
         selectShader("quad-wireframe");
-        makeGeometry("low-poly");
+        makeGeometry("high-poly");
     }
     if (e.keyCode === 51) { // 3
         selectShader("tri-wireframe");
-        makeGeometry("low-poly");
+        makeGeometry("high-poly");
     }
     if (e.keyCode === 52) { // 4
         selectShader("texture");

@@ -11,12 +11,12 @@ var shaderQuadWireframe = (function () {
     const vertexShader = `
         uniform mat4 pvmMatrix;
 
-        attribute vec3  vertexPosModelSpace;
-        attribute vec3  vertexPosBarySpace;
-        attribute vec3  vertexAmbient;
+        attribute vec3 vertexPosModelSpace;
+        attribute vec3 vertexPosBarySpace;
+        attribute vec3 vertexAmbient;
 
         varying vec3 fragmentPosBarySpace;
-        varying vec3  fragmentAmbient;
+        varying vec3 fragmentAmbient;
 
         void main() {
             gl_PointSize = 1.0;
@@ -34,7 +34,7 @@ var shaderQuadWireframe = (function () {
         precision mediump float;
 
         varying vec3 fragmentPosBarySpace;
-        varying vec3  fragmentAmbient;
+        varying vec3 fragmentAmbient;
 
         const float thickness = 1.0;
         void main() {
