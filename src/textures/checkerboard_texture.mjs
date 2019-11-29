@@ -9,7 +9,7 @@ function getCheckerboardTexture(gl) {
             0,
             gl.RGBA,
             gl.UNSIGNED_BYTE,
-            "./src/textures/checkerboard.png"
+            "./src/textures/gradient.png" // TODO
         );
     }
 

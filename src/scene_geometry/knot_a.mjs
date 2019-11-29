@@ -15,6 +15,10 @@ import { getWhiteTexture } // TODO
 var knotA = (function() {
     var knot = null;
 
+    var cachedKnots = {};
+    cachedKnots["high-poly"] = null;
+    cachedKnots["low-poly"] = null;
+
     const highPoly  = {
         pDivisions: 256,
         qDivisions: 32,
@@ -34,10 +38,11 @@ var knotA = (function() {
 
     const tDivisions      = 300;
     var   sampledPos      = null;
+    var   sampledLength   = null;
     var   sampledNormal   = null;
     var   sampledBinormal = null;
     function samplePath(gl) {
-        const factor = 2 * Math.PI * Math.PI * Math.sqrt(q*q + 9.0*p*p);
+        const factor = Math.PI * Math.PI * Math.sqrt(q*q + 9.0*p*p) / 2.0;
         var pathPos = function(t) {
             var u = 2 * Math.PI * t * p;
             if (u >= 0.0) {
@@ -98,9 +103,28 @@ var knotA = (function() {
         sampledPos.push(pathPos(0));
         sampledNormal.push(pathNormal(0));
         sampledBinormal.push(pathBinormal(0));
+
+        // Estimate pseudo-arc length TODO
+        sampledLength = new Array();
+        sampledLength.push(0.0);
+        for (var i = 1; i <= tDivisions; ++i) {
+            var t = -1.0 + 2 * (i-0.5) / tDivisions;
+            var speed  = vec3.length(pathFirstDerivative(t));
+            var length = sampledLength[sampledLength.length - 1]
+                + speed * 2.0 / tDivisions;
+            sampledLength.push(length);
+        }
+        var normOffset = sampledLength[Math.floor(0.5 + tDivisions * 0.5)];
+        for (var i = 0; i < sampledLength.length; ++i) {
+            sampledLength[i] -= normOffset;
+        }
+        var normFactor = 1.0 / sampledLength[sampledLength.length - 1];
+        for (var i = 0; i < sampledLength.length; ++i) {
+            sampledLength[i] *= normFactor;
+        }
     }
 
-    function init(gl, poly) {
+    function init(gl, poly, force=false) {
         switch (poly) {
             case "high-poly":
                 currentPoly = highPoly;
@@ -116,48 +140,60 @@ var knotA = (function() {
             samplePath(gl);
         }
 
-        const indexer = function(t) {
-            return Math.floor(
-                0.5 + tDivisions * (t + 1.0) / 2.0
+        if ((!force) && cachedKnots[poly]) {
+            knot = cachedKnots[poly];
+            return;
+        } else {
+            const indexer = function(t) {
+                return Math.floor(
+                    0.5 + tDivisions * (t + 1.0) / 2.0
+                );
+            }
+
+            const pathPos = function(t) {
+                var idx = indexer(t);
+                return vec3.clone(sampledPos[idx]);
+            };
+
+            const pathLength = function(t) {
+                var idx = indexer(t);
+                return sampledLength[idx];
+            };
+
+            const pathNormal = function(t) {
+                var idx = indexer(t);
+                return vec3.clone(sampledNormal[idx]);
+            };
+
+            const pathBinormal = function(t) {
+                var idx = indexer(t);
+                return vec3.clone(sampledBinormal[idx]);
+            };
+
+            var knotDrawable = fromPathAnim(
+                gl,
+                pathPos,
+                pathLength, // TODO
+                pathNormal,
+                pathBinormal,
+                radius,
+                currentPoly.pDivisions,
+                currentPoly.qDivisions,
+                color,
+                specular,
+                shine
             );
+
+            knot = new HierarchyNode(
+                knotDrawable,
+                [0.0, 0.0, 0.0],
+                {angle: 0.0, axis: [0.0, 1.0, 0.0]},
+                [1.0, 1.0, 1.0],
+                getCheckerboardTexture(gl),
+                getWhiteTexture(gl)
+            );
+            cachedKnots[poly] = knot;
         }
-
-        const pathPos = function(t) {
-            var idx = indexer(t);
-            return vec3.clone(sampledPos[idx]);
-        };
-
-        const pathNormal = function(t) {
-            var idx = indexer(t);
-            return vec3.clone(sampledNormal[idx]);
-        };
-
-        const pathBinormal = function(t) {
-            var idx = indexer(t);
-            return vec3.clone(sampledBinormal[idx]);
-        };
-
-        var knotDrawable = fromPathAnim(
-            gl,
-            pathPos,
-            pathNormal,
-            pathBinormal,
-            radius,
-            currentPoly.pDivisions,
-            currentPoly.qDivisions,
-            color,
-            specular,
-            shine
-        );
-
-        knot = new HierarchyNode(
-            knotDrawable,
-            [0.0, 0.0, 0.0],
-            {angle: 0.0, axis: [0.0, 1.0, 0.0]},
-            [1.0, 1.0, 1.0],
-            getCheckerboardTexture(gl),
-            getWhiteTexture(gl)
-        );
     }
 
     var animStart  = null;

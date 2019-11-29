@@ -50,11 +50,11 @@ class ImageTexture {
             );
             gl.texParameteri(
                 gl.TEXTURE_2D,
-                gl.TEXTURE_WRAP_S, gl.MIRRORED_REPEAT
+                gl.TEXTURE_WRAP_S, gl.REPEAT
             );
             gl.texParameteri(
                 gl.TEXTURE_2D,
-                gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT
+                gl.TEXTURE_WRAP_T, gl.REPEAT
             );
         }
         image.src = src;

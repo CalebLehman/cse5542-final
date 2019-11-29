@@ -50,11 +50,11 @@ class PixelTexture {
         );
         this.gl.texParameteri(
             this.gl.TEXTURE_2D,
-            this.gl.TEXTURE_WRAP_S, this.gl.MIRRORED_REPEAT
+            this.gl.TEXTURE_WRAP_S, this.gl.REPEAT
         );
         this.gl.texParameteri(
             this.gl.TEXTURE_2D,
-            this.gl.TEXTURE_WRAP_T, this.gl.MIRRORED_REPEAT
+            this.gl.TEXTURE_WRAP_T, this.gl.REPEAT
         );
     }
 }

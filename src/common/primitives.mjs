@@ -628,6 +628,7 @@ function fromPath(
 function fromPathAnim(
     gl,
     pathPos,            // [-1, 1] -> R^3
+    pathLength,         // [0, 1] -> [0, 1]
     pathNormal,         // [-1, 1] -> R^3
     pathBinormal,       // [-1, 1] -> R^3
     radius,
@@ -662,9 +663,8 @@ function fromPathAnim(
 
     // TODO
     var computeTexture = function(i, j) {
-        j = ((j % radialDivisions) + radialDivisions) % radialDivisions;
-        var u = 1.0 * i / lengthDivisions;
-        var v = 1.0 * j / radialDivisions;
+        var u = 8.0 * (pathLength(1.0 * i / lengthDivisions));
+        var v = 4.0 * j / radialDivisions;
         return [u, v];
     };
 
