@@ -39,26 +39,28 @@ var knotA = (function() {
     cachedKnots["low-poly"] = null;
 
     // Parametrization details
-    const tDivisions   = 300;
-    const originalA    = (-1.0 * (1.75 * q + 5.50 * p)) / (4 * Math.PI * p * Math.sqrt(q*q + 9*p*p));
-    const originalB    = 1.0;
+    const tDivisions   = 1000;
+    const originalA    = -1.0;
+    const originalB    = +1.0;
     const originalPath = function(t) {
-        var u = 2 * Math.PI * t * p;
+        const u = 2 * Math.PI * t * p;
+        const v = 2 * Math.PI * t * q;
         if (u >= 0.0) {
             return vec3.fromValues(
-                Math.cos(u) * (1 + Math.cos(q * u / p) / 2.0),
-                Math.sin(q * u / p) / 2.0,
-                Math.sin(u) * (1 + Math.cos(q * u / p) / 2.0)
+                Math.cos(u) * (1 + Math.cos(v) / 2.0),
+                Math.sin(v) / 2.0,
+                Math.sin(u) * (1 + Math.cos(v) / 2.0)
             );
         } else {
+            const factor = (1.0 * (1.75 * q + 5.50 * p))
+                / (4 * Math.PI * p * Math.sqrt(q*q + 9*p*p));
             return vec3.fromValues(
                 3.0 / 2.0,
-                2.0 * q * u,
-                6.0 * p * u
+                2.0 * q * u * factor,
+                6.0 * p * u * factor
             );
         }
     }
-
     var pathSamples = null;
 
     function init(gl, poly, force=false) {
