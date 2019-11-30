@@ -2,17 +2,12 @@ import { Geometry }
     from "../common/geometry.mjs"
 import { HierarchyNode }
     from "../common/hierarchy_node.mjs"
-import { fromPathAnim, getDisk } // TODO
+import { fromPathAnim, getDisk }
     from "../common/primitives.mjs"
-import { getRopeTexture }
-    from "../textures/rope_texture.mjs"
+import { getScalesTextures }
+    from "../textures/scales/textures.mjs"
 import { constantSpeedPath, samplePath }
     from "../common/parametric.mjs"
-
-import { getCheckerboardTexture } // TODO
-    from "../textures/checkerboard_texture.mjs"
-import { getWhiteTexture } // TODO
-    from "../textures/white_texture.mjs"
 
 var knotA = (function() {
     var knot = null;
@@ -41,7 +36,7 @@ var knotA = (function() {
     cachedKnots["low-poly"] = null;
 
     // Parametrization details
-    const tDivisions   = 4000;
+    const tDivisions   = 8000;
     const originalA    = -1.0;
     const originalB    = +1.0;
     const originalPath = function(t) {
@@ -101,21 +96,23 @@ var knotA = (function() {
             );
         }
 
+        const textures = getScalesTextures(gl);
         if ((!force) && cachedKnots[poly]) {
             knot = cachedKnots[poly];
             return;
         } else {
             var knotDrawable = fromPathAnim(
                 gl,
+                color,
+                color,
+                specular,
+                shine,
                 pathSamples.path,
                 pathSamples.normal,
                 pathSamples.binormal,
                 radius,
                 currentPoly.pDivisions,
-                currentPoly.qDivisions,
-                color,
-                specular,
-                shine
+                currentPoly.qDivisions
             );
 
             knot = new HierarchyNode(
@@ -123,29 +120,39 @@ var knotA = (function() {
                 [0.0, 0.0, 0.0],
                 {angle: 0.0, axis: [0.0, 1.0, 0.0]},
                 [1.0, 1.0, 1.0],
-                getCheckerboardTexture(gl),
-                getWhiteTexture(gl)
+                textures.diffuse,
+                textures.specular
             );
             cachedKnots[poly] = knot;
         }
-        // TODO
-        var capDrawable = getDisk(gl, currentPoly.qDivisions);
-        capF            = new HierarchyNode(
+
+        // Build caps
+        var capDrawable = getDisk(
+            gl,
+            color,
+            color,
+            specular,
+            shine,
+            currentPoly.qDivisions
+        );
+        capF = new HierarchyNode(
             capDrawable,
             [0.0, 0.0, 0.0],
             {angle: 0.0, axis: [0.0, 1.0, 0.0]},
             [radius, radius, radius],
-            getCheckerboardTexture(gl),
-            getWhiteTexture(gl)
+            textures.diffuse,
+            textures.specular
         );
-        capB            = new HierarchyNode(
+        capB = new HierarchyNode(
             capDrawable,
             [0.0, 0.0, 0.0],
             {angle: 0.0, axis: [0.0, 1.0, 0.0]},
             [radius, radius, radius],
-            getCheckerboardTexture(gl),
-            getWhiteTexture(gl)
+            textures.diffuse,
+            textures.specular
         );
+
+        // Parent to knot
         knot.addChild(capF);
         knot.addChild(capB);
     }
@@ -163,7 +170,7 @@ var knotA = (function() {
             console.log("Retrieving uninitialized geometry");
         }
 
-        // Position caps default TODO
+        // Position caps default
         positionCaps();
 
         knot.drawable.offset = knot.drawable.numItems;

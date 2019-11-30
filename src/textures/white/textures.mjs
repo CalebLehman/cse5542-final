@@ -1,5 +1,5 @@
 import { PixelTexture }
-    from "../common/pixel_texture.mjs"
+    from "../../common/pixel_texture.mjs"
 
 var colors = [
     255, 255, 255, 255,
@@ -22,4 +22,11 @@ function getWhiteTexture(gl) {
     return texture;
 }
 
-export { getWhiteTexture };
+function getWhiteTextures(gl) {
+    return {
+        diffuse:  getWhiteTexture(gl),
+        specular: getWhiteTexture(gl),
+    };
+}
+
+export { getWhiteTextures };

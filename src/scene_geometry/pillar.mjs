@@ -4,11 +4,9 @@ import { HierarchyNode }
     from "../common/hierarchy_node.mjs"
 import { getCube }
     from "../common/primitives.mjs"
-import { getWhiteTexture }
-    from "../textures/white_texture.mjs"
 
-import { getCheckerboardTexture } // TODO
-    from "../textures/checkerboard_texture.mjs"
+import { getCheckerboardTextures }
+    from "../textures/checkerboard/textures.mjs"
 
 var pillar = (function() {
     var pillar = null;
@@ -18,14 +16,21 @@ var pillar = (function() {
     const shine    = 100.0;
 
     function init(gl, poly) {
-        var pillarDrawable = getCube(gl);
+        const pillarDrawable = getCube(
+            gl,
+            color,
+            color,
+            specular,
+            shine
+        );
+        const textures = getCheckerboardTextures(gl);
         pillar = new HierarchyNode(
             pillarDrawable,
             [3.0, 0.0, -3.0],
             {angle: 0.0, axis: [0.0, 1.0, 0.0]},
             [1.0, 1.0, 1.0],
-            getCheckerboardTexture(gl),
-            getCheckerboardTexture(gl)
+            textures.diffuse,
+            textures.specular
         );
     }
 

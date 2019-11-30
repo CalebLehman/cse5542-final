@@ -3,11 +3,13 @@ import { Buffer }
 import { Drawable }
     from "./drawable.mjs"
 
-const unitCubeColor    = [1.0, 0.0, 0.0, 1.0];
-const unitCubeSpecular = [1.0, 1.0, 1.0, 1.0];
-const unitCubeShine    = 100.0;
-
-function getCube(gl) {
+function getCube(
+    gl,
+    materialAmbient,
+    materialDiffuse,
+    materialSpecular,
+    materialShine
+) {
     var position = [
         +1.0,+1.0,+1.0, // +z face
         -1.0,+1.0,+1.0,
@@ -232,9 +234,9 @@ function getCube(gl) {
     var diffuse  = [];
     var specular = [];
     for (var i = 0; i < position.length / 3; ++i) {
-        ambient.push (...unitCubeColor);
-        diffuse.push (...unitCubeColor);
-        specular.push(...unitCubeSpecular);
+        ambient.push (...materialAmbient);
+        diffuse.push (...materialDiffuse);
+        specular.push(...materialSpecular);
     }
     var ambientBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, ambientBuffer);
@@ -278,17 +280,19 @@ function getCube(gl) {
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,
-        unitCubeShine,
+        materialShine,
         position.length / 3,
         0
     );
 }
 
-const unitPlaneColor    = [1.0, 0.0, 0.0, 1.0];
-const unitPlaneSpecular = [1.0, 1.0, 1.0, 1.0];
-const unitPlaneShine    = 100.0;
-
-function getPlane(gl) {
+function getPlane(
+    gl,
+    materialAmbient,
+    materialDiffuse,
+    materialSpecular,
+    materialShine
+) {
     var position = [
         +1.0,+0.0,+1.0,
         +1.0,+0.0,-1.0,
@@ -373,9 +377,9 @@ function getPlane(gl) {
     var diffuse  = [];
     var specular = [];
     for (var i = 0; i < position.length / 3; ++i) {
-        ambient.push (...unitPlaneColor);
-        diffuse.push (...unitPlaneColor);
-        specular.push(...unitPlaneSpecular);
+        ambient.push (...materialAmbient);
+        diffuse.push (...materialDiffuse);
+        specular.push(...materialSpecular);
     }
     var ambientBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, ambientBuffer);
@@ -419,17 +423,20 @@ function getPlane(gl) {
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,
-        unitPlaneShine,
+        materialShine,
         position.length / 3,
         0
     );
 }
 
-const unitDiskColor    = [1.0, 0.0, 0.0, 1.0];
-const unitDiskSpecular = [1.0, 1.0, 1.0, 1.0];
-const unitDiskShine    = 100.0;
-
-function getDisk(gl, radialDivisions) {
+function getDisk(
+    gl,
+    materialAmbient,
+    materialDiffuse,
+    materialSpecular,
+    materialShine,
+    radialDivisions
+) {
     var position = [];
     for (var i = 0; i < radialDivisions; ++i) {
         const currAngle = 2 * Math.PI * i / radialDivisions;
@@ -522,9 +529,9 @@ function getDisk(gl, radialDivisions) {
     var diffuse  = [];
     var specular = [];
     for (var i = 0; i < position.length / 3; ++i) {
-        ambient.push (...unitDiskColor);
-        diffuse.push (...unitDiskColor);
-        specular.push(...unitDiskSpecular);
+        ambient.push (...materialAmbient);
+        diffuse.push (...materialDiffuse);
+        specular.push(...materialSpecular);
     }
     var ambientBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, ambientBuffer);
@@ -568,7 +575,7 @@ function getDisk(gl, radialDivisions) {
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,
-        unitDiskShine,
+        materialShine,
         position.length / 3,
         0
     );
@@ -576,15 +583,16 @@ function getDisk(gl, radialDivisions) {
 
 function fromPath(
     gl,
+    materialAmbient,
+    materialDiffuse,
+    materialSpecular,
+    materialShine,
     pathPos,            // [0, 1] -> R^3
     pathNormal,         // [0, 1] -> R^3
     pathBinormal,       // [0, 1] -> R^3
     radius,
     lengthDivisions,
-    radialDivisions,
-    pathColor,
-    pathSpecular,
-    pathShine
+    radialDivisions
 ) {
     var computePosition = function(i, j) {
         j = ((j % radialDivisions) + radialDivisions) % radialDivisions;
@@ -609,11 +617,9 @@ function fromPath(
         return n;
     };
 
-    // TODO
     var computeTexture = function(i, j) {
-        j = ((j % radialDivisions) + radialDivisions) % radialDivisions;
-        var u = 1.0 * i / lengthDivisions;
-        var v = 1.0 * j / radialDivisions;
+        var u = 32.0 * i / lengthDivisions;
+        var v =  2.0 * j / radialDivisions;
         return [u, v];
     };
 
@@ -713,9 +719,9 @@ function fromPath(
     var diffuse  = [];
     var specular = [];
     for (var i = 0; i < position.length / 3; ++i) {
-        ambient.push (...pathColor);
-        diffuse.push (...pathColor);
-        specular.push(...pathSpecular);
+        ambient.push (...materialAmbient);
+        diffuse.push (...materialDiffuse);
+        specular.push(...materialSpecular);
     }
     var ambientBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, ambientBuffer);
@@ -759,7 +765,7 @@ function fromPath(
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,
-        pathShine,
+        materialShine,
         position.length / 3,
         0
     );
@@ -776,15 +782,16 @@ function fromPath(
  */
 function fromPathAnim(
     gl,
+    materialAmbient,
+    materialDiffuse,
+    materialSpecular,
+    materialShine,
     pathPos,            // [-1, 1] -> R^3
     pathNormal,         // [-1, 1] -> R^3
     pathBinormal,       // [-1, 1] -> R^3
     radius,
     lengthDivisions,
-    radialDivisions,
-    pathColor,
-    pathSpecular,
-    pathShine
+    radialDivisions
 ) {
     var computePosition = function(i, j) {
         j = ((j % radialDivisions) + radialDivisions) % radialDivisions;
@@ -809,10 +816,9 @@ function fromPathAnim(
         return n;
     };
 
-    // TODO
     var computeTexture = function(i, j) {
-        var u = 8.0 * i / lengthDivisions;
-        var v = 4.0 * j / radialDivisions;
+        var u = 32.0 * i / lengthDivisions;
+        var v =  2.0 * j / radialDivisions;
         return [u, v];
     };
 
@@ -915,9 +921,9 @@ function fromPathAnim(
     var diffuse  = [];
     var specular = [];
     for (var i = 0; i < position.length / 3; ++i) {
-        ambient.push (...pathColor);
-        diffuse.push (...pathColor);
-        specular.push(...pathSpecular);
+        ambient.push (...materialAmbient);
+        diffuse.push (...materialDiffuse);
+        specular.push(...materialSpecular);
     }
     var ambientBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, ambientBuffer);
@@ -961,7 +967,7 @@ function fromPathAnim(
         ambientBuffer,
         diffuseBuffer,
         specularBuffer,
-        pathShine,
+        materialShine,
         (position.length / 3) / 2,
         0
     );
