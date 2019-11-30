@@ -2,7 +2,7 @@ import { Geometry }
     from "../common/geometry.mjs"
 import { HierarchyNode }
     from "../common/hierarchy_node.mjs"
-import { fromPathAnim }
+import { fromPathAnim, getDisk } // TODO
     from "../common/primitives.mjs"
 import { getRopeTexture }
     from "../textures/rope_texture.mjs"
@@ -16,6 +16,8 @@ import { getWhiteTexture } // TODO
 
 var knotA = (function() {
     var knot = null;
+    var capF = null;
+    var capB = null;
 
     // Knot parameters
     const color    = [0.0, 1.0, 0.0, 1.0];
@@ -39,7 +41,7 @@ var knotA = (function() {
     cachedKnots["low-poly"] = null;
 
     // Parametrization details
-    const tDivisions   = 1000;
+    const tDivisions   = 4000;
     const originalA    = -1.0;
     const originalB    = +1.0;
     const originalPath = function(t) {
@@ -126,6 +128,26 @@ var knotA = (function() {
             );
             cachedKnots[poly] = knot;
         }
+        // TODO
+        var capDrawable = getDisk(gl, currentPoly.qDivisions);
+        capF            = new HierarchyNode(
+            capDrawable,
+            [0.0, 0.0, 0.0],
+            {angle: 0.0, axis: [0.0, 1.0, 0.0]},
+            [radius, radius, radius],
+            getCheckerboardTexture(gl),
+            getWhiteTexture(gl)
+        );
+        capB            = new HierarchyNode(
+            capDrawable,
+            [0.0, 0.0, 0.0],
+            {angle: 0.0, axis: [0.0, 1.0, 0.0]},
+            [radius, radius, radius],
+            getCheckerboardTexture(gl),
+            getWhiteTexture(gl)
+        );
+        knot.addChild(capF);
+        knot.addChild(capB);
     }
 
     var animStart  = null;
@@ -140,6 +162,9 @@ var knotA = (function() {
         if (!knot) {
             console.log("Retrieving uninitialized geometry");
         }
+
+        // Position caps default TODO
+        positionCaps();
 
         knot.drawable.offset = knot.drawable.numItems;
         if (animLength > 0) {
@@ -159,6 +184,40 @@ var knotA = (function() {
         }
 
         return knot;
+    }
+
+    function positionCaps() {
+        var t = 0.0;
+        if (animLength > 0) {
+            var date          = new Date();
+            var milliseconds  = date.getTime() - animStart;
+            t                 = 1.0 * (milliseconds - animLength) / animLength;
+        }
+        t = Math.min(0.0, Math.max(t, -1.0));
+
+        { // Front cap
+            capF.translation = [...pathSamples.path(t+1)];
+            const y = vec3.fromValues(0.0, 1.0, 0.0);
+            const T = pathSamples.tangent(t+1);
+            const axis = vec3.create();
+            vec3.cross(axis, y, T);
+            capF.rotation = {
+                angle: Math.acos(vec3.dot(y, T)),
+                axis:  axis
+            };
+        }
+
+        { // Back cap
+            capB.translation = [...pathSamples.path(t)];
+            const y = vec3.fromValues(0.0, 1.0, 0.0);
+            const T = pathSamples.tangent(t);
+            const axis = vec3.create();
+            vec3.cross(axis, y, T);
+            capB.rotation = {
+                angle: Math.acos(vec3.dot(y, T)),
+                axis:  axis
+            };
+        }
     }
 
     return new Geometry(init, animate, get);

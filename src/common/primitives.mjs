@@ -361,7 +361,7 @@ function getPlane(gl) {
     gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
     gl.bufferData(
         gl.ARRAY_BUFFER,
-        new Float32Array(normal),
+        new Float32Array(texture),
         gl.STATIC_DRAW
     );
     textureBuffer = new Buffer(
@@ -420,6 +420,155 @@ function getPlane(gl) {
         diffuseBuffer,
         specularBuffer,
         unitPlaneShine,
+        position.length / 3,
+        0
+    );
+}
+
+const unitDiskColor    = [1.0, 0.0, 0.0, 1.0];
+const unitDiskSpecular = [1.0, 1.0, 1.0, 1.0];
+const unitDiskShine    = 100.0;
+
+function getDisk(gl, radialDivisions) {
+    var position = [];
+    for (var i = 0; i < radialDivisions; ++i) {
+        const currAngle = 2 * Math.PI * i / radialDivisions;
+        const nextAngle = 2 * Math.PI * (i+1) / radialDivisions;
+        position.push(
+            +0.0,
+            +0.0,
+            +0.0
+        );
+        position.push(
+            +1.0 * Math.cos(currAngle),
+            +0.0,
+            -1.0 * Math.sin(currAngle)
+        );
+        position.push(
+            +1.0 * Math.cos(nextAngle),
+            +0.0,
+            -1.0 * Math.sin(nextAngle)
+        );
+    }
+    var posBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, posBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(position),
+        gl.STATIC_DRAW
+    );
+    posBuffer = new Buffer(
+        posBuffer,
+        3
+    );
+
+    var barycentric = [];
+    for (var i = 0; i < radialDivisions; ++i) {
+        barycentric.push(1.0, 0.0, 0.0);
+        barycentric.push(0.0, 1.0, 0.0);
+        barycentric.push(0.0, 0.0, 1.0);
+    }
+    var baryBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, baryBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(barycentric),
+        gl.STATIC_DRAW
+    );
+    baryBuffer = new Buffer(
+        baryBuffer,
+        3
+    );
+
+    var normal = [];
+    for (var i = 0; i < radialDivisions; ++i) {
+        normal.push(0.0, 1.0, 0.0);
+        normal.push(0.0, 1.0, 0.0);
+        normal.push(0.0, 1.0, 0.0);
+    }
+    var normalBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(normal),
+        gl.STATIC_DRAW
+    );
+    normalBuffer = new Buffer(
+        normalBuffer,
+        3
+    );
+
+    var texture = [];
+    for (var i = 0; i < radialDivisions; ++i) {
+        const currAngle = 2 * Math.PI * i / radialDivisions;
+        const nextAngle = 2 * Math.PI * (i+1) / radialDivisions;
+        texture.push(0.0, 0.0);
+        texture.push(Math.cos(currAngle), -Math.sin(currAngle));
+        texture.push(Math.cos(nextAngle), -Math.sin(nextAngle));
+    }
+    var textureBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(texture),
+        gl.STATIC_DRAW
+    );
+    textureBuffer = new Buffer(
+        textureBuffer,
+        2
+    );
+
+    var ambient  = [];
+    var diffuse  = [];
+    var specular = [];
+    for (var i = 0; i < position.length / 3; ++i) {
+        ambient.push (...unitDiskColor);
+        diffuse.push (...unitDiskColor);
+        specular.push(...unitDiskSpecular);
+    }
+    var ambientBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, ambientBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(ambient),
+        gl.STATIC_DRAW
+    );
+    ambientBuffer = new Buffer(
+        ambientBuffer,
+        4
+    );
+    var diffuseBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, diffuseBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(diffuse),
+        gl.STATIC_DRAW
+    );
+    diffuseBuffer = new Buffer(
+        diffuseBuffer,
+        4
+    );
+    var specularBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, specularBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(specular),
+        gl.STATIC_DRAW
+    );
+    specularBuffer = new Buffer(
+        specularBuffer,
+        4
+    );
+
+    return new Drawable(
+        posBuffer,
+        baryBuffer,
+        normalBuffer,
+        textureBuffer,
+        ambientBuffer,
+        diffuseBuffer,
+        specularBuffer,
+        unitDiskShine,
         position.length / 3,
         0
     );
@@ -818,4 +967,4 @@ function fromPathAnim(
     );
 }
 
-export { getCube, getPlane, fromPath, fromPathAnim };
+export { getCube, getPlane, getDisk, fromPath, fromPathAnim };

@@ -106,7 +106,7 @@ function handleKeyPress(e) {
     // Animation
     if (e.keyCode === 32) { // Space
         e.preventDefault();
-        getSceneGeometry().knotA.anim(6000); // TODO should animate nearest knot
+        getSceneGeometry().knotA.anim(4000); // TODO should animate nearest knot
     }
 }
 
