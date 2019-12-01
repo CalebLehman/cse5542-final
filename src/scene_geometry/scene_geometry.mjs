@@ -1,12 +1,18 @@
-import { knotA }
-    from "./knot_a.mjs"
+import { unknot }
+    from "./unknot.mjs"
+import { torusKnot }
+    from "./torus_knot.mjs"
+import { figureEightKnot }
+    from "./figure_eight_knot.mjs"
 import { pillar }
     from "./pillar.mjs"
 
 function getSceneGeometry() {
     return {
-        knotA:  knotA,
-        pillar: pillar,
+        unknot:          unknot,
+        torusKnot:       torusKnot,
+        figureEightKnot: figureEightKnot,
+        pillar:          pillar,
     };
 }
 

@@ -4,15 +4,17 @@ import { HierarchyNode }
     from "../common/hierarchy_node.mjs"
 import { fromPathAnim, getDisk }
     from "../common/primitives.mjs"
-import { getScalesTextures }
-    from "../textures/scales/textures.mjs"
 import { constantSpeedPath, samplePath }
     from "../common/parametric.mjs"
+import { getDefaultTextures }
+    from "../textures/default/textures.mjs"
 
-var knotA = (function() {
+var figureEightKnot = (function() {
     var knot = null;
     var capF = null;
     var capB = null;
+
+    var textures = null;
 
     // Knot parameters
     const color    = [0.0, 1.0, 0.0, 1.0];
@@ -31,30 +33,28 @@ var knotA = (function() {
         qDivisions: 8,
     };
     var currentPoly = null;
-    var cachedKnots = {};
-    cachedKnots["high-poly"] = null;
-    cachedKnots["low-poly"] = null;
+    var cachedDrawables = {};
+    cachedDrawables["high-poly"] = null;
+    cachedDrawables["low-poly"] = null;
 
     // Parametrization details
     const tDivisions   = 8000;
     const originalA    = -1.0;
     const originalB    = +1.0;
     const originalPath = function(t) {
-        const u = 2 * Math.PI * t * p;
-        const v = 2 * Math.PI * t * q;
+        const u = 2 * Math.PI * t;
         if (u >= 0.0) {
             return vec3.fromValues(
-                Math.cos(u) * (1 + Math.cos(v) / 2.0),
-                Math.sin(v) / 2.0,
-                Math.sin(u) * (1 + Math.cos(v) / 2.0)
+                (2.0 + Math.cos(2*u)) * Math.cos(3*u),
+                Math.sin(4*u),
+                (2.0 + Math.cos(2*u)) * Math.sin(3*u)
             );
         } else {
-            const factor = (1.0 * (1.75 * q + 5.50 * p))
-                / (4 * Math.PI * p * Math.sqrt(q*q + 9*p*p));
+            const factor = 41.45 / 9.50;
             return vec3.fromValues(
-                3.0 / 2.0,
-                2.0 * q * u * factor,
-                6.0 * p * u * factor
+                3.0,
+                4.0 * t * factor,
+                9.0 * t * factor
             );
         }
     }
@@ -96,9 +96,47 @@ var knotA = (function() {
             );
         }
 
-        const textures = getScalesTextures(gl);
-        if ((!force) && cachedKnots[poly]) {
-            knot = cachedKnots[poly];
+        if (!textures) {
+            textures = getDefaultTextures(gl);
+        }
+
+        if (!knot) {
+            knot = new HierarchyNode(
+                knotDrawable,
+                [0.0, 0.0, 0.0],
+                {angle: 0.0, axis: [0.0, 1.0, 0.0]},
+                [1.0, 1.0, 1.0],
+                null,
+                null,
+                null
+            );
+
+            capF = new HierarchyNode(
+                null,
+                [0.0, 0.0, 0.0],
+                {angle: 0.0, axis: [0.0, 1.0, 0.0]},
+                [radius, radius, radius],
+                null,
+                null,
+                null
+            );
+            capB = new HierarchyNode(
+                null,
+                [0.0, 0.0, 0.0],
+                {angle: 0.0, axis: [0.0, 1.0, 0.0]},
+                [radius, radius, radius],
+                null,
+                null,
+                null
+            );
+
+            // Parent to knot
+            knot.addChild(capF);
+            knot.addChild(capB);
+        }
+
+        if ((!force) && cachedDrawables[poly]) {
+            knot.drawable = cachedDrawables[poly];
             return;
         } else {
             var knotDrawable = fromPathAnim(
@@ -108,6 +146,7 @@ var knotA = (function() {
                 specular,
                 shine,
                 pathSamples.path,
+                pathSamples.tangent,
                 pathSamples.normal,
                 pathSamples.binormal,
                 radius,
@@ -115,15 +154,8 @@ var knotA = (function() {
                 currentPoly.qDivisions
             );
 
-            knot = new HierarchyNode(
-                knotDrawable,
-                [0.0, 0.0, 0.0],
-                {angle: 0.0, axis: [0.0, 1.0, 0.0]},
-                [1.0, 1.0, 1.0],
-                textures.diffuse,
-                textures.specular
-            );
-            cachedKnots[poly] = knot;
+            knot.drawable         = knotDrawable;
+            cachedDrawables[poly] = knotDrawable;
         }
 
         // Build caps
@@ -135,26 +167,8 @@ var knotA = (function() {
             shine,
             currentPoly.qDivisions
         );
-        capF = new HierarchyNode(
-            capDrawable,
-            [0.0, 0.0, 0.0],
-            {angle: 0.0, axis: [0.0, 1.0, 0.0]},
-            [radius, radius, radius],
-            textures.diffuse,
-            textures.specular
-        );
-        capB = new HierarchyNode(
-            capDrawable,
-            [0.0, 0.0, 0.0],
-            {angle: 0.0, axis: [0.0, 1.0, 0.0]},
-            [radius, radius, radius],
-            textures.diffuse,
-            textures.specular
-        );
-
-        // Parent to knot
-        knot.addChild(capF);
-        knot.addChild(capB);
+        capF.drawable = capDrawable;
+        capB.drawable = capDrawable;
     }
 
     var animStart  = null;
@@ -165,29 +179,43 @@ var knotA = (function() {
         animLength = length;
     }
 
-    function get(gl) {
+    function get() {
         if (!knot) {
             console.log("Retrieving uninitialized geometry");
         }
 
-        // Position caps default
-        positionCaps();
+        if (knot.drawable) {
+            // Position caps default
+            positionCaps();
 
-        knot.drawable.offset = knot.drawable.numItems;
-        if (animLength > 0) {
-            var date          = new Date();
-            var milliseconds  = date.getTime() - animStart;
-            var tOffset       = 1.0 * (milliseconds - animLength) / animLength;
+            knot.drawable.offset = knot.drawable.numItems;
+            if (animLength > 0) {
+                var date          = new Date();
+                var milliseconds  = date.getTime() - animStart;
+                var tOffset       =
+                    1.0 * (milliseconds - animLength) / animLength;
 
-            if (milliseconds > animLength) {
-                animLength           = 0;
-                animStart            = null;
-            } else {
-                const verticesPerRing = currentPoly.qDivisions * 2 * 3;
-                knot.drawable.offset  = Math.floor(
-                    0.5 + (knot.drawable.numItems * (1.0 + tOffset)) / verticesPerRing
-                ) * verticesPerRing;
+                if (milliseconds > animLength) {
+                    animLength           = 0;
+                    animStart            = null;
+                } else {
+                    const verticesPerRing = currentPoly.qDivisions * 2 * 3;
+                    knot.drawable.offset  = Math.floor(
+                        0.5 + (knot.drawable.numItems * (1.0 + tOffset)) / verticesPerRing
+                    ) * verticesPerRing;
+                }
             }
+
+            // Use textures
+            knot.textureDiffuse  = textures.diffuse;
+            knot.textureSpecular = textures.specular;
+            knot.textureNormal   = textures.normal;
+            capF.textureDiffuse  = textures.diffuse;
+            capF.textureSpecular = textures.specular;
+            capF.textureNormal   = textures.normal;
+            capB.textureDiffuse  = textures.diffuse;
+            capB.textureSpecular = textures.specular;
+            capB.textureNormal   = textures.normal;
         }
 
         return knot;
@@ -227,7 +255,11 @@ var knotA = (function() {
         }
     }
 
-    return new Geometry(init, animate, get);
+    function texture(newTextures) {
+        textures = newTextures;
+    }
+
+    return new Geometry(init, animate, get, texture);
 })();
 
-export { knotA };
+export { figureEightKnot };

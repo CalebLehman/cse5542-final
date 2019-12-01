@@ -34,7 +34,7 @@ function constantSpeedPath(path, a, b, tDivisions) {
     var   currIdx           = 0;
     for (var i = 1; i <= tDivisions; ++i) {
         const delta  = 1.0 / tDivisions;
-        const s      = (i - 1) * delta;
+        const s      = i * delta;
 
         while (arcLength[currIdx] < s) { ++currIdx; }
         const tLeft  = (s - arcLength[currIdx - 1])
@@ -78,7 +78,7 @@ function samplePath(path, a, b, tDivisions) {
         const f_r = path(r);
         const f_l = path(l);
         vec3.subtract(f_r, f_r, f_l);
-        vec3.scale(f_r, f_r, 2.0 / h);
+        vec3.scale(f_r, f_r, 1.0 / (2.0 * h));
         return f_r;
     };
 

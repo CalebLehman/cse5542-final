@@ -9,26 +9,15 @@ function getDiffuse(gl) {
             0,
             gl.RGB,
             gl.UNSIGNED_BYTE,
-            "./src/textures/scales/diffuse.png" // relative to project.html page
+            "./src/textures/brick/diffuse.png" // relative to project.html page
         );
     }
 
     return diffuse;
 }
 
-var specular = null;
 function getSpecular(gl) {
-    if (!specular) {
-        specular = new ImageTexture(
-            gl,
-            0,
-            gl.RGB,
-            gl.UNSIGNED_BYTE,
-            "./src/textures/scales/specular.png" // relative to project.html page
-        );
-    }
-
-    return specular;
+    return getColorTextures(gl, [255,255,255,255]).specular;j
 }
 
 var normal = null;
@@ -39,14 +28,14 @@ function getNormal(gl) {
             0,
             gl.RGB,
             gl.UNSIGNED_BYTE,
-            "./src/textures/scales/normal.png" // relative to project.html page
+            "./src/textures/brick/normal.png" // relative to project.html page
         );
     }
 
     return normal;
 }
 
-function getScalesTextures(gl) {
+function getBrickTextures(gl) {
     return {
         diffuse:  getDiffuse(gl),
         specular: getSpecular(gl),
@@ -54,4 +43,4 @@ function getScalesTextures(gl) {
     };
 }
 
-export { getScalesTextures };
+export { getBrickTextures };

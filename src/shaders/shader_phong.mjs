@@ -14,7 +14,7 @@ var shaderPhong = (function () {
         uniform mat4 pvmMatrix;
         uniform mat4 vmMatrix;
         uniform mat4 vMatrix;
-        uniform mat4 normalMatrix;
+        uniform mat4 vmTangentSpaceMatrix;
 
         attribute vec3  vertexPosModelSpace;
         attribute vec3  vertexNormalModelSpace;
@@ -40,7 +40,7 @@ var shaderPhong = (function () {
             gl_Position            = pvmMatrix * position;
             fragmentPosEyeSpace    = vec3(vmMatrix * position);
             lightPosEyeSpace       = vec3(vMatrix * vec4(lightPosWorldSpace, 1.0));
-            fragmentNormalEyeSpace = vec3(normalMatrix * normal);
+            fragmentNormalEyeSpace = vec3(vmTangentSpaceMatrix * normal);
 
             fragmentAmbient  = vertexAmbient;
             fragmentDiffuse  = vertexDiffuse;
@@ -127,8 +127,8 @@ var shaderPhong = (function () {
                     gl.getUniformLocation(shaderProgram, "vmMatrix"),
                 vMatrix:
                     gl.getUniformLocation(shaderProgram, "vMatrix"),
-                normalMatrix:
-                    gl.getUniformLocation(shaderProgram, "normalMatrix"),
+                vmTangentSpaceMatrix:
+                    gl.getUniformLocation(shaderProgram, "vmTangentSpaceMatrix"),
             }
 
             var attributes = {
@@ -203,9 +203,9 @@ var shaderPhong = (function () {
         mat4.multiply(vmMatrix, vMatrix, mMatrix);
         var pvmMatrix = mat4.create();
         mat4.multiply(pvmMatrix, pMatrix, vmMatrix);
-        var normalMatrix = mat4.clone(vmMatrix);
-        mat4.transpose(normalMatrix, normalMatrix);
-        mat4.invert(normalMatrix, normalMatrix);
+        var vmTangentSpaceMatrix = mat4.clone(vmMatrix);
+        mat4.transpose(vmTangentSpaceMatrix, vmTangentSpaceMatrix);
+        mat4.invert(vmTangentSpaceMatrix, vmTangentSpaceMatrix);
         gl.uniformMatrix4fv(
             program.uniforms.pvmMatrix,
             false,
@@ -222,9 +222,9 @@ var shaderPhong = (function () {
             vMatrix
         );
         gl.uniformMatrix4fv(
-            program.uniforms.normalMatrix,
+            program.uniforms.vmTangentSpaceMatrix,
             false,
-            normalMatrix
+            vmTangentSpaceMatrix
         );
 
         // Pass shine

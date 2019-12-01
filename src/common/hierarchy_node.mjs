@@ -5,7 +5,8 @@ class HierarchyNode {
         rotation,
         scale,
         textureDiffuse,
-        textureSpecular
+        textureSpecular,
+        textureNormal
     ) {
         this.parent    = null;
         this.children  = [];
@@ -18,6 +19,7 @@ class HierarchyNode {
 
         this.textureDiffuse  = textureDiffuse;
         this.textureSpecular = textureSpecular;
+        this.textureNormal   = textureNormal;
     }
 
     addChild(child) {

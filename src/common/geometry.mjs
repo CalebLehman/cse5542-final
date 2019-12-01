@@ -3,10 +3,12 @@ class Geometry {
         init,
         anim,
         get,
+        texture
     ) {
-        this.init = init;
-        this.anim = anim;
-        this.get  = get;
+        this.init    = init;
+        this.anim    = anim;
+        this.get     = get;
+        this.texture = texture;
     }
 }
 

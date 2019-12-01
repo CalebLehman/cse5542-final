@@ -10,7 +10,7 @@ function getCube(
     materialSpecular,
     materialShine
 ) {
-    var position = [
+    const position = [
         +1.0,+1.0,+1.0, // +z face
         -1.0,+1.0,+1.0,
         -1.0,-1.0,+1.0,
@@ -65,7 +65,7 @@ function getCube(
         3
     );
 
-    var barycentric = [
+    const barycentric = [
         1.0, 0.0, 0.0, // +z face
         0.0, 1.0, 0.0,
         0.0, 0.0, 1.0,
@@ -120,7 +120,62 @@ function getCube(
         3
     );
 
-    var normal = [
+    const tangent = [
+        +0.0,+1.0,+0.0, // +z face
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+
+        +0.0,+1.0,+0.0, // -z face
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+        
+        +0.0,+1.0,+0.0, // +x face
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+
+        +0.0,+1.0,+0.0, // -x face
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+        +0.0,+1.0,+0.0,
+
+        +0.0,+0.0,-1.0, // +y face
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+
+        +0.0,+0.0,-1.0, // -y face
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0
+    ];
+    var tangentBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, tangentBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(tangent),
+        gl.STATIC_DRAW
+    );
+    tangentBuffer = new Buffer(
+        tangentBuffer,
+        3
+    );
+
+    const normal = [
         +0.0,+0.0,+1.0, // +z face
         +0.0,+0.0,+1.0,
         +0.0,+0.0,+1.0,
@@ -175,7 +230,62 @@ function getCube(
         3
     );
 
-    var texture = [
+    const bitangent = [
+        -1.0,+0.0,+0.0, // +z face
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0,
+
+        +1.0,+0.0,+0.0, // -z face
+        +1.0,+0.0,+0.0,
+        +1.0,+0.0,+0.0,
+        +1.0,+0.0,+0.0,
+        +1.0,+0.0,+0.0,
+        +1.0,+0.0,+0.0,
+
+        +0.0,+0.0,+1.0, // +x face
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+
+        +0.0,+0.0,-1.0, // -x face
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+
+        -1.0,+0.0,+0.0, // +y face
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0,
+
+        +1.0,+0.0,+0.0, // -y face
+        +1.0,+0.0,+0.0,
+        +1.0,+0.0,+0.0,
+        +1.0,+0.0,+0.0,
+        +1.0,+0.0,+0.0,
+        +1.0,+0.0,+0.0
+    ];
+    var bitangentBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, bitangentBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(bitangent),
+        gl.STATIC_DRAW
+    );
+    bitangentBuffer = new Buffer(
+        bitangentBuffer,
+        3
+    );
+        
+    const texture = [
         1.0,1.0, // +z face
         1.0,0.0,
         0.0,0.0,
@@ -230,9 +340,9 @@ function getCube(
         2
     );
 
-    var ambient  = [];
-    var diffuse  = [];
-    var specular = [];
+    const ambient  = [];
+    const diffuse  = [];
+    const specular = [];
     for (var i = 0; i < position.length / 3; ++i) {
         ambient.push (...materialAmbient);
         diffuse.push (...materialDiffuse);
@@ -275,7 +385,9 @@ function getCube(
     return new Drawable(
         posBuffer,
         baryBuffer,
+        tangentBuffer,
         normalBuffer,
+        bitangentBuffer,
         textureBuffer,
         ambientBuffer,
         diffuseBuffer,
@@ -293,7 +405,7 @@ function getPlane(
     materialSpecular,
     materialShine
 ) {
-    var position = [
+    const position = [
         +1.0,+0.0,+1.0,
         +1.0,+0.0,-1.0,
         -1.0,+0.0,-1.0,
@@ -313,7 +425,7 @@ function getPlane(
         3
     );
 
-    var barycentric = [
+    const barycentric = [
         1.0, 0.0, 0.0,
         0.0, 1.0, 0.0,
         0.0, 0.0, 1.0,
@@ -333,7 +445,27 @@ function getPlane(
         3
     );
 
-    var normal = [
+    const tangent = [
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0
+    ];
+    var tangentBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, tangentBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(tangent),
+        gl.STATIC_DRAW
+    );
+    tangentBuffer = new Buffer(
+        tangentBuffer,
+        3
+    );
+
+    const normal = [
         +0.0,+1.0,+0.0,
         +0.0,+1.0,+0.0,
         +0.0,+1.0,+0.0,
@@ -353,7 +485,27 @@ function getPlane(
         3
     );
 
-    var texture = [
+    const bitangent = [
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0
+    ];
+    var bitangentBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, bitangentBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(bitangent),
+        gl.STATIC_DRAW
+    );
+    bitangentBuffer = new Buffer(
+        bitangentBuffer,
+        3
+    );
+
+    const texture = [
         1.0,0.0,
         1.0,1.0,
         0.0,1.0,
@@ -373,9 +525,9 @@ function getPlane(
         2
     );
 
-    var ambient  = [];
-    var diffuse  = [];
-    var specular = [];
+    const ambient  = [];
+    const diffuse  = [];
+    const specular = [];
     for (var i = 0; i < position.length / 3; ++i) {
         ambient.push (...materialAmbient);
         diffuse.push (...materialDiffuse);
@@ -418,7 +570,9 @@ function getPlane(
     return new Drawable(
         posBuffer,
         baryBuffer,
+        tangentBuffer,
         normalBuffer,
+        bitangentBuffer,
         textureBuffer,
         ambientBuffer,
         diffuseBuffer,
@@ -437,7 +591,7 @@ function getDisk(
     materialShine,
     radialDivisions
 ) {
-    var position = [];
+    const position = [];
     for (var i = 0; i < radialDivisions; ++i) {
         const currAngle = 2 * Math.PI * i / radialDivisions;
         const nextAngle = 2 * Math.PI * (i+1) / radialDivisions;
@@ -469,7 +623,7 @@ function getDisk(
         3
     );
 
-    var barycentric = [];
+    const barycentric = [];
     for (var i = 0; i < radialDivisions; ++i) {
         barycentric.push(1.0, 0.0, 0.0);
         barycentric.push(0.0, 1.0, 0.0);
@@ -487,7 +641,25 @@ function getDisk(
         3
     );
 
-    var normal = [];
+    const tangent = [];
+    for (var i = 0; i < radialDivisions; ++i) {
+        tangent.push(0.0, 0.0, -1.0);
+        tangent.push(0.0, 0.0, -1.0);
+        tangent.push(0.0, 0.0, -1.0);
+    }
+    var tangentBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, tangentBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(tangent),
+        gl.STATIC_DRAW
+    );
+    tangentBuffer = new Buffer(
+        tangentBuffer,
+        3
+    );
+
+    const normal = [];
     for (var i = 0; i < radialDivisions; ++i) {
         normal.push(0.0, 1.0, 0.0);
         normal.push(0.0, 1.0, 0.0);
@@ -505,7 +677,25 @@ function getDisk(
         3
     );
 
-    var texture = [];
+    const bitangent = [];
+    for (var i = 0; i < radialDivisions; ++i) {
+        bitangent.push(-1.0, 0.0, 0.0);
+        bitangent.push(-1.0, 0.0, 0.0);
+        bitangent.push(-1.0, 0.0, 0.0);
+    }
+    var bitangentBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, bitangentBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(bitangent),
+        gl.STATIC_DRAW
+    );
+    bitangentBuffer = new Buffer(
+        bitangentBuffer,
+        3
+    );
+
+    const texture = [];
     for (var i = 0; i < radialDivisions; ++i) {
         const currAngle = 2 * Math.PI * i / radialDivisions;
         const nextAngle = 2 * Math.PI * (i+1) / radialDivisions;
@@ -525,9 +715,9 @@ function getDisk(
         2
     );
 
-    var ambient  = [];
-    var diffuse  = [];
-    var specular = [];
+    const ambient  = [];
+    const diffuse  = [];
+    const specular = [];
     for (var i = 0; i < position.length / 3; ++i) {
         ambient.push (...materialAmbient);
         diffuse.push (...materialDiffuse);
@@ -570,7 +760,9 @@ function getDisk(
     return new Drawable(
         posBuffer,
         baryBuffer,
+        tangentBuffer,
         normalBuffer,
+        bitangentBuffer,
         textureBuffer,
         ambientBuffer,
         diffuseBuffer,
@@ -588,42 +780,55 @@ function fromPath(
     materialSpecular,
     materialShine,
     pathPos,            // [0, 1] -> R^3
+    pathTangent,        // [0, 1] -> R^3
     pathNormal,         // [0, 1] -> R^3
     pathBinormal,       // [0, 1] -> R^3
     radius,
     lengthDivisions,
     radialDivisions
 ) {
-    var computePosition = function(i, j) {
+    const computePosition = function(i, j) {
         j = ((j % radialDivisions) + radialDivisions) % radialDivisions;
-        var u = 1.0 * i / lengthDivisions;
-        var v = 1.0 * j / radialDivisions;
-        var r = pathPos(u);
-        var n = pathNormal(u);
-        var b = pathBinormal(u);
-        vec3.scaleAndAdd(r, r, n, radius * Math.cos(2.0 * Math.PI * v));
-        vec3.scaleAndAdd(r, r, b, radius * Math.sin(2.0 * Math.PI * v));
-        return r;
+        const u = 1.0 * i / lengthDivisions;
+        const v = 1.0 * j / radialDivisions;
+        const R = pathPos(u);
+        const N = pathNormal(u);
+        const B = pathBinormal(u);
+        vec3.scaleAndAdd(R, R, N, radius * Math.cos(2.0 * Math.PI * v));
+        vec3.scaleAndAdd(R, R, B, radius * Math.sin(2.0 * Math.PI * v));
+        return R;
     };
 
-    var computeNormal = function(i, j) {
+    const computeTangent = function(i, j) {
+        const u = 1.0 * i / lengthDivisions;
+        return pathTangent(u);
+    };
+
+    const computeNormal = function(i, j) {
         j = ((j % radialDivisions) + radialDivisions) % radialDivisions;
-        var u = 1.0 * i / lengthDivisions;
-        var v = 1.0 * j / radialDivisions;
-        var n = pathNormal(u);
-        vec3.scale(n, n, radius * Math.cos(2.0 * Math.PI * v));
-        var b = pathBinormal(u);
-        vec3.scaleAndAdd(n, n, b, radius * Math.sin(2.0 * Math.PI * v));
-        return n;
+        const u = 1.0 * i / lengthDivisions;
+        const v = 1.0 * j / radialDivisions;
+        const N = pathNormal(u);
+        vec3.scale(N, N, radius * Math.cos(2.0 * Math.PI * v));
+        const B = pathBinormal(u);
+        vec3.scaleAndAdd(N, N, B, radius * Math.sin(2.0 * Math.PI * v));
+        return N;
     };
 
-    var computeTexture = function(i, j) {
-        var u = 32.0 * i / lengthDivisions;
-        var v =  2.0 * j / radialDivisions;
-        return [u, v];
+    const computeBitangent = function(i, j) {
+        const T = computeTangent(i, j);
+        const N = computeNormal(i, j);
+        vec3.cross(T, N, T);
+        return T;
     };
 
-    var position = [];
+    const computeTexture = function(i, j) {
+        const s =  -2.0 * j / radialDivisions;
+        const t = -32.0 * i / lengthDivisions;
+        return [s, t];
+    };
+
+    const position = [];
     for (var i = 0; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
             position.push(...computePosition(i+0, j+0));
@@ -646,7 +851,7 @@ function fromPath(
         3
     );
 
-    var barycentric = [];
+    const barycentric = [];
     for (var i = 0; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
             barycentric.push(1.0, 0.0, 0.0);
@@ -669,7 +874,30 @@ function fromPath(
         3
     );
 
-    var normal = [];
+    const tangent = [];
+    for (var i = 0; i < lengthDivisions; ++i) {
+        for (var j = 0; j < radialDivisions; ++j) {
+            tangent.push(...computeTangent(i+0, j+0));
+            tangent.push(...computeTangent(i+0, j+1));
+            tangent.push(...computeTangent(i+1, j+1));
+            tangent.push(...computeTangent(i+1, j+1));
+            tangent.push(...computeTangent(i+1, j+0));
+            tangent.push(...computeTangent(i+0, j+0));
+        }
+    }
+    var tangentBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, tangentBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(tangent),
+        gl.STATIC_DRAW
+    );
+    tangentBuffer = new Buffer(
+        tangentBuffer,
+        3
+    );
+
+    const normal = [];
     for (var i = 0; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
             normal.push(...computeNormal(i+0, j+0));
@@ -692,7 +920,30 @@ function fromPath(
         3
     );
 
-    var texture = [];
+    const bitangent = [];
+    for (var i = 0; i < lengthDivisions; ++i) {
+        for (var j = 0; j < radialDivisions; ++j) {
+            bitangent.push(...computeBitangent(i+0, j+0));
+            bitangent.push(...computeBitangent(i+0, j+1));
+            bitangent.push(...computeBitangent(i+1, j+1));
+            bitangent.push(...computeBitangent(i+1, j+1));
+            bitangent.push(...computeBitangent(i+1, j+0));
+            bitangent.push(...computeBitangent(i+0, j+0));
+        }
+    }
+    var bitangentBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, bitangentBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(bitangent),
+        gl.STATIC_DRAW
+    );
+    bitangentBuffer = new Buffer(
+        bitangentBuffer,
+        3
+    );
+
+    const texture = [];
     for (var i = 0; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
             texture.push(...computeTexture(i+0, j+0));
@@ -715,9 +966,9 @@ function fromPath(
         2
     );
 
-    var ambient  = [];
-    var diffuse  = [];
-    var specular = [];
+    const ambient  = [];
+    const diffuse  = [];
+    const specular = [];
     for (var i = 0; i < position.length / 3; ++i) {
         ambient.push (...materialAmbient);
         diffuse.push (...materialDiffuse);
@@ -760,7 +1011,9 @@ function fromPath(
     return new Drawable(
         posBuffer,
         baryBuffer,
+        tangentBuffer,
         normalBuffer,
+        bitangentBuffer,
         textureBuffer,
         ambientBuffer,
         diffuseBuffer,
@@ -787,42 +1040,56 @@ function fromPathAnim(
     materialSpecular,
     materialShine,
     pathPos,            // [-1, 1] -> R^3
+    pathTangent,        // [-1, 1] -> R^3
     pathNormal,         // [-1, 1] -> R^3
     pathBinormal,       // [-1, 1] -> R^3
     radius,
     lengthDivisions,
     radialDivisions
 ) {
-    var computePosition = function(i, j) {
+    const computePosition = function(i, j) {
         j = ((j % radialDivisions) + radialDivisions) % radialDivisions;
-        var u = 1.0 * i / lengthDivisions;
-        var v = 1.0 * j / radialDivisions;
-        var r = pathPos(u);
-        var n = pathNormal(u);
-        var b = pathBinormal(u);
+        const u = 1.0 * i / lengthDivisions;
+        const v = 1.0 * j / radialDivisions;
+        const r = pathPos(u);
+        const n = pathNormal(u);
+        const b = pathBinormal(u);
         vec3.scaleAndAdd(r, r, n, radius * Math.cos(2.0 * Math.PI * v));
         vec3.scaleAndAdd(r, r, b, radius * Math.sin(2.0 * Math.PI * v));
         return r;
     };
 
-    var computeNormal = function(i, j) {
+    const computeTangent = function(i, j) {
+        const u = 1.0 * i / lengthDivisions;
+        const T = pathTangent(u);
+        return T;
+    };
+
+    const computeNormal = function(i, j) {
         j = ((j % radialDivisions) + radialDivisions) % radialDivisions;
-        var u = 1.0 * i / lengthDivisions;
-        var v = 1.0 * j / radialDivisions;
-        var n = pathNormal(u);
-        vec3.scale(n, n, radius * Math.cos(2.0 * Math.PI * v));
-        var b = pathBinormal(u);
-        vec3.scaleAndAdd(n, n, b, radius * Math.sin(2.0 * Math.PI * v));
-        return n;
+        const u = 1.0 * i / lengthDivisions;
+        const v = 1.0 * j / radialDivisions;
+        const N = pathNormal(u);
+        vec3.scale(N, N, Math.cos(2.0 * Math.PI * v));
+        const B = pathBinormal(u);
+        vec3.scaleAndAdd(N, N, B, Math.sin(2.0 * Math.PI * v));
+        return N;
     };
 
-    var computeTexture = function(i, j) {
-        var u = 32.0 * i / lengthDivisions;
-        var v =  2.0 * j / radialDivisions;
-        return [u, v];
+    const computeBitangent = function(i, j) {
+        const T = computeTangent(i, j);
+        const N = computeNormal(i, j);
+        vec3.cross(T, N, T);
+        return T;
     };
 
-    var position = [];
+    const computeTexture = function(i, j) {
+        const s =  -2.0 * j / radialDivisions;
+        const t = -32.0 * i / lengthDivisions;
+        return [s, t];
+    };
+
+    const position = [];
     for (var i = -lengthDivisions; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
             position.push(...computePosition(i+0, j+0));
@@ -845,7 +1112,7 @@ function fromPathAnim(
         3
     );
 
-    var barycentric = [];
+    const barycentric = [];
     for (var i = -lengthDivisions; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
             barycentric.push(1.0, 0.0, 0.0);
@@ -868,7 +1135,30 @@ function fromPathAnim(
         3
     );
 
-    var normal = [];
+    const tangent = [];
+    for (var i = -lengthDivisions; i < lengthDivisions; ++i) {
+        for (var j = 0; j < radialDivisions; ++j) {
+            tangent.push(...computeTangent(i+0, j+0));
+            tangent.push(...computeTangent(i+0, j+1));
+            tangent.push(...computeTangent(i+1, j+1));
+            tangent.push(...computeTangent(i+1, j+1));
+            tangent.push(...computeTangent(i+1, j+0));
+            tangent.push(...computeTangent(i+0, j+0));
+        }
+    }
+    var tangentBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, tangentBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(tangent),
+        gl.STATIC_DRAW
+    );
+    tangentBuffer = new Buffer(
+        tangentBuffer,
+        3
+    );
+
+    const normal = [];
     for (var i = -lengthDivisions; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
             normal.push(...computeNormal(i+0, j+0));
@@ -891,9 +1181,32 @@ function fromPathAnim(
         3
     );
 
+    const bitangent = [];
+    for (var i = -lengthDivisions; i < lengthDivisions; ++i) {
+        for (var j = 0; j < radialDivisions; ++j) {
+            bitangent.push(...computeBitangent(i+0, j+0));
+            bitangent.push(...computeBitangent(i+0, j+1));
+            bitangent.push(...computeBitangent(i+1, j+1));
+            bitangent.push(...computeBitangent(i+1, j+1));
+            bitangent.push(...computeBitangent(i+1, j+0));
+            bitangent.push(...computeBitangent(i+0, j+0));
+        }
+    }
+    var bitangentBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, bitangentBuffer);
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array(bitangent),
+        gl.STATIC_DRAW
+    );
+    bitangentBuffer = new Buffer(
+        bitangentBuffer,
+        3
+    );
+
     // Texture buffer half length of others
     // because it doesn't animate
-    var texture = [];
+    const texture = [];
     for (var i = 0; i < lengthDivisions; ++i) {
         for (var j = 0; j < radialDivisions; ++j) {
             texture.push(...computeTexture(i+0, j+0));
@@ -917,9 +1230,9 @@ function fromPathAnim(
     );
 
 
-    var ambient  = [];
-    var diffuse  = [];
-    var specular = [];
+    const ambient  = [];
+    const diffuse  = [];
+    const specular = [];
     for (var i = 0; i < position.length / 3; ++i) {
         ambient.push (...materialAmbient);
         diffuse.push (...materialDiffuse);
@@ -962,7 +1275,9 @@ function fromPathAnim(
     return new Drawable(
         posBuffer,
         baryBuffer,
+        tangentBuffer,
         normalBuffer,
+        bitangentBuffer,
         textureBuffer,
         ambientBuffer,
         diffuseBuffer,

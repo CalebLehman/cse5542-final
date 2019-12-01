@@ -9,7 +9,7 @@ function getDiffuse(gl) {
             0,
             gl.RGB,
             gl.UNSIGNED_BYTE,
-            "./src/textures/scales/diffuse.png" // relative to project.html page
+            "./src/textures/rope/diffuse.png" // relative to project.html page
         );
     }
 
@@ -24,7 +24,7 @@ function getSpecular(gl) {
             0,
             gl.RGB,
             gl.UNSIGNED_BYTE,
-            "./src/textures/scales/specular.png" // relative to project.html page
+            "./src/textures/rope/specular.png" // relative to project.html page
         );
     }
 
@@ -39,14 +39,14 @@ function getNormal(gl) {
             0,
             gl.RGB,
             gl.UNSIGNED_BYTE,
-            "./src/textures/scales/normal.png" // relative to project.html page
+            "./src/textures/rope/normal.png" // relative to project.html page
         );
     }
 
     return normal;
 }
 
-function getScalesTextures(gl) {
+function getRopeTextures(gl) {
     return {
         diffuse:  getDiffuse(gl),
         specular: getSpecular(gl),
@@ -54,4 +54,4 @@ function getScalesTextures(gl) {
     };
 }
 
-export { getScalesTextures };
+export { getRopeTextures };

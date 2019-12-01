@@ -14,29 +14,42 @@ var shaderTexture = (function () {
         uniform mat4 pvmMatrix;
         uniform mat4 vmMatrix;
         uniform mat4 vMatrix;
-        uniform mat4 normalMatrix;
+        uniform mat4 vmTangentSpaceMatrix;
 
         attribute vec3 vertexPosModelSpace;
+        attribute vec3 vertexTangentModelSpace;
         attribute vec3 vertexNormalModelSpace;
+        attribute vec3 vertexBitangentModelSpace;
         attribute vec2 vertexPosTextureSpace;
 
         varying vec3 fragmentPosEyeSpace;
         varying vec3 lightPosEyeSpace;
-        varying vec3 fragmentNormalEyeSpace;
+        varying mat3 fragmentNormalMapMatrix;
         varying vec2 fragmentPosTextureSpace;
 
         void main() {
             gl_PointSize = 1.0;
 
-            vec4 position = vec4(vertexPosModelSpace, 1.0);
-            vec4 normal   = vec4(vertexNormalModelSpace, 0.0);
+            vec4 position  = vec4(vertexPosModelSpace, 1.0);
+            vec4 tangent   = vec4(vertexTangentModelSpace, 0.0);
+            vec4 normal    = vec4(vertexNormalModelSpace, 0.0);
+            vec4 bitangent = vec4(vertexBitangentModelSpace, 0.0);
 
-            gl_Position            = pvmMatrix * position;
-            fragmentPosEyeSpace    = vec3(vmMatrix * position);
-            lightPosEyeSpace       = vec3(vMatrix * vec4(lightPosWorldSpace, 1.0));
-            fragmentNormalEyeSpace = vec3(normalMatrix * normal);
+            gl_Position              = pvmMatrix * position;
+            fragmentPosEyeSpace      = vec3(vmMatrix * position);
+            lightPosEyeSpace         = vec3(vMatrix * vec4(lightPosWorldSpace, 1.0));
+            fragmentPosTextureSpace  = vertexPosTextureSpace;
 
-            fragmentPosTextureSpace = vertexPosTextureSpace;
+            vec3 fragmentTangentEyeSpace  = normalize(vec3(vmTangentSpaceMatrix * tangent));
+            vec3 fragmentNormalEyeSpace   = normalize(vec3(vmTangentSpaceMatrix * normal));
+            vec3 fragmentBitangentEyeSpace = normalize(vec3(vmTangentSpaceMatrix * bitangent));
+            fragmentNormalMapMatrix       = mat3(
+                fragmentBitangentEyeSpace,
+                -1.0*fragmentTangentEyeSpace, // Had to mess around with the signs depending on how
+                                              // the normal maps were rendered
+                                              // Probably a convention issue
+                fragmentNormalEyeSpace
+            );
         }
     `;
 
@@ -45,6 +58,7 @@ var shaderTexture = (function () {
 
         uniform sampler2D textureDiffuse;
         uniform sampler2D textureSpecular;
+        uniform sampler2D textureNormal;
 
         uniform vec3 lightAmbient;
         uniform vec3 lightDiffuse;
@@ -52,12 +66,23 @@ var shaderTexture = (function () {
 
         varying vec3 fragmentPosEyeSpace;
         varying vec3 lightPosEyeSpace;
-        varying vec3 fragmentNormalEyeSpace;
+        varying mat3 fragmentNormalMapMatrix;
         varying vec2 fragmentPosTextureSpace;
 
         uniform float shine;
 
         void main() {
+            vec3 fragmentNormal = normalize(
+                -1.0 + 2.0 * vec3(
+                    texture2D(
+                        textureNormal,
+                        fragmentPosTextureSpace
+                    )
+                )
+            );
+            vec3 fragmentNormalEyeSpace =  vec3(
+                fragmentNormalMapMatrix * fragmentNormal
+            );
             vec3 L = normalize(lightPosEyeSpace - fragmentPosEyeSpace);
             vec3 N = normalize(fragmentNormalEyeSpace);
             vec3 R = reflect(-L, N);
@@ -122,6 +147,8 @@ var shaderTexture = (function () {
                     gl.getUniformLocation(shaderProgram, "textureDiffuse"),
                 textureSpecular:
                     gl.getUniformLocation(shaderProgram, "textureSpecular"),
+                textureNormal:
+                    gl.getUniformLocation(shaderProgram, "textureNormal"),
                 lightPosWorldSpace:
                     gl.getUniformLocation(shaderProgram, "lightPosWorldSpace"),
                 lightAmbient:
@@ -138,15 +165,19 @@ var shaderTexture = (function () {
                     gl.getUniformLocation(shaderProgram, "vmMatrix"),
                 vMatrix:
                     gl.getUniformLocation(shaderProgram, "vMatrix"),
-                normalMatrix:
-                    gl.getUniformLocation(shaderProgram, "normalMatrix"),
+                vmTangentSpaceMatrix:
+                    gl.getUniformLocation(shaderProgram, "vmTangentSpaceMatrix"),
             }
 
             var attributes = {
                 vertexPosModelSpace:
                     gl.getAttribLocation(shaderProgram, "vertexPosModelSpace"),
+                vertexTangentModelSpace:
+                    gl.getAttribLocation(shaderProgram, "vertexTangentModelSpace"),
                 vertexNormalModelSpace:
                     gl.getAttribLocation(shaderProgram, "vertexNormalModelSpace"),
+                vertexBitangentModelSpace:
+                    gl.getAttribLocation(shaderProgram, "vertexBitangentModelSpace"),
                 vertexPosTextureSpace:
                     gl.getAttribLocation(shaderProgram, "vertexPosTextureSpace"),
             }
@@ -162,7 +193,13 @@ var shaderTexture = (function () {
             program.attributes.vertexPosModelSpace
         );
         gl.enableVertexAttribArray(
+            program.attributes.vertexTangentModelSpace
+        );
+        gl.enableVertexAttribArray(
             program.attributes.vertexNormalModelSpace
+        );
+        gl.enableVertexAttribArray(
+            program.attributes.vertexBitangentModelSpace
         );
         gl.enableVertexAttribArray(
             program.attributes.vertexPosTextureSpace
@@ -177,7 +214,13 @@ var shaderTexture = (function () {
             program.attributes.vertexPosModelSpace
         );
         gl.disableVertexAttribArray(
+            program.attributes.vertexTangentModelSpace
+        );
+        gl.disableVertexAttribArray(
             program.attributes.vertexNormalModelSpace
+        );
+        gl.disableVertexAttribArray(
+            program.attributes.vertexBitangentModelSpace
         );
         gl.disableVertexAttribArray(
             program.attributes.vertexPosTextureSpace
@@ -191,7 +234,8 @@ var shaderTexture = (function () {
         vMatrix,
         mMatrix,
         textureDiffuse,
-        textureSpecular
+        textureSpecular,
+        textureNormal
     ) {
         if (!drawable) return;
 
@@ -200,9 +244,9 @@ var shaderTexture = (function () {
         mat4.multiply(vmMatrix, vMatrix, mMatrix);
         var pvmMatrix = mat4.create();
         mat4.multiply(pvmMatrix, pMatrix, vmMatrix);
-        var normalMatrix = mat4.clone(vmMatrix);
-        mat4.transpose(normalMatrix, normalMatrix);
-        mat4.invert(normalMatrix, normalMatrix);
+        var vmTangentSpaceMatrix = mat4.clone(vmMatrix);
+        mat4.transpose(vmTangentSpaceMatrix, vmTangentSpaceMatrix);
+        mat4.invert(vmTangentSpaceMatrix, vmTangentSpaceMatrix);
         gl.uniformMatrix4fv(
             program.uniforms.pvmMatrix,
             false,
@@ -219,9 +263,9 @@ var shaderTexture = (function () {
             vMatrix
         );
         gl.uniformMatrix4fv(
-            program.uniforms.normalMatrix,
+            program.uniforms.vmTangentSpaceMatrix,
             false,
-            normalMatrix
+            vmTangentSpaceMatrix
         );
         
         // Pass diffuse texture
@@ -232,6 +276,10 @@ var shaderTexture = (function () {
         gl.activeTexture(gl.TEXTURE1);
         gl.bindTexture(gl.TEXTURE_2D, textureSpecular);
         gl.uniform1i(program.uniforms.textureSpecular, 1);
+        // Pass normal texture
+        gl.activeTexture(gl.TEXTURE2);
+        gl.bindTexture(gl.TEXTURE_2D, textureNormal);
+        gl.uniform1i(program.uniforms.textureNormal, 2);
 
         // Pass shine
         gl.uniform1f(
@@ -254,11 +302,35 @@ var shaderTexture = (function () {
         );
         gl.bindBuffer(
             gl.ARRAY_BUFFER,
+            drawable.tangentBuffer.buffer
+        );
+        gl.vertexAttribPointer(
+            program.attributes.vertexTangentModelSpace,
+            drawable.tangentBuffer.itemSize,
+            gl.FLOAT,
+            false,
+            0,
+            drawable.offset * 3 * 4
+        );
+        gl.bindBuffer(
+            gl.ARRAY_BUFFER,
             drawable.normalBuffer.buffer
         );
         gl.vertexAttribPointer(
             program.attributes.vertexNormalModelSpace,
             drawable.normalBuffer.itemSize,
+            gl.FLOAT,
+            false,
+            0,
+            drawable.offset * 3 * 4
+        );
+        gl.bindBuffer(
+            gl.ARRAY_BUFFER,
+            drawable.bitangentBuffer.buffer
+        );
+        gl.vertexAttribPointer(
+            program.attributes.vertexBitangentModelSpace,
+            drawable.bitangentBuffer.itemSize,
             gl.FLOAT,
             false,
             0,
@@ -362,7 +434,8 @@ var shaderTexture = (function () {
                 vMatrix,
                 mMatrix,
                 currNode.textureDiffuse.texture,
-                currNode.textureSpecular.texture
+                currNode.textureSpecular.texture,
+                currNode.textureNormal.texture
             );
 
             if (currNode.children.length === 0) {

@@ -7,6 +7,8 @@ import { getCube }
 
 import { getCheckerboardTextures }
     from "../textures/checkerboard/textures.mjs"
+import { getColorTextures }
+    from "../textures/color/textures.mjs"
 
 var pillar = (function() {
     var pillar = null;
@@ -23,14 +25,16 @@ var pillar = (function() {
             specular,
             shine
         );
-        const textures = getCheckerboardTextures(gl);
+        const checkerboardTextures = getCheckerboardTextures(gl);
+        const whiteTextures        = getColorTextures(gl, [255,255,255,255]);
         pillar = new HierarchyNode(
             pillarDrawable,
             [3.0, 0.0, -3.0],
             {angle: 0.0, axis: [0.0, 1.0, 0.0]},
             [1.0, 1.0, 1.0],
-            textures.diffuse,
-            textures.specular
+            checkerboardTextures.diffuse,
+            whiteTextures.specular,
+            checkerboardTextures.normal
         );
     }
 

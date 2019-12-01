@@ -5,6 +5,11 @@ import { draw, selectShader }
 import { getSceneGeometry }
     from "./scene_geometry/scene_geometry.mjs"
 
+import { getOrganicTextures }
+    from "./textures/organic/textures.mjs"
+import { getBrickTextures }
+    from "./textures/brick/textures.mjs"
+
 // WASD parameters
 const speed = 5.0 / 60;
 var movingForwards  = false;
@@ -101,12 +106,17 @@ function handleKeyPress(e) {
     if (e.keyCode === 52) { // 4
         selectShader("texture");
         makeGeometry("high-poly");
+        getSceneGeometry().unknot.texture(getOrganicTextures(gl)); // TODO
+        getSceneGeometry().torusKnot.texture(getOrganicTextures(gl)); // TODO
+        getSceneGeometry().figureEightKnot.texture(getOrganicTextures(gl)); // TODO
     };
 
     // Animation
     if (e.keyCode === 32) { // Space
         e.preventDefault();
-        getSceneGeometry().knotA.anim(4000); // TODO should animate nearest knot
+        getSceneGeometry().unknot.anim(4000); // TODO should animate nearest knot
+        getSceneGeometry().torusKnot.anim(4000); // TODO should animate nearest knot
+        getSceneGeometry().figureEightKnot.anim(4000); // TODO should animate nearest knot
     }
 }
 
@@ -178,7 +188,9 @@ function main() {
 
 function makeGeometry(poly) {
     var geometry = getSceneGeometry();
-    geometry.knotA.init(gl, poly);
+    geometry.unknot.init(gl, poly);
+    geometry.torusKnot.init(gl, poly);
+    geometry.figureEightKnot.init(gl, poly);
     geometry.pillar.init(gl, poly);
 }
 

@@ -1,5 +1,7 @@
 import { ImageTexture }
     from "../../common/image_texture.mjs"
+import { getColorTextures }
+    from "../color/textures.mjs"
 
 var diffuse = null;
 function getDiffuse(gl) {
@@ -9,26 +11,15 @@ function getDiffuse(gl) {
             0,
             gl.RGB,
             gl.UNSIGNED_BYTE,
-            "./src/textures/scales/diffuse.png" // relative to project.html page
+            "./src/textures/organic/diffuse.png" // relative to project.html page
         );
     }
 
     return diffuse;
 }
 
-var specular = null;
 function getSpecular(gl) {
-    if (!specular) {
-        specular = new ImageTexture(
-            gl,
-            0,
-            gl.RGB,
-            gl.UNSIGNED_BYTE,
-            "./src/textures/scales/specular.png" // relative to project.html page
-        );
-    }
-
-    return specular;
+    return getColorTextures(gl, [255,255,255,255]).specular;
 }
 
 var normal = null;
@@ -39,14 +30,14 @@ function getNormal(gl) {
             0,
             gl.RGB,
             gl.UNSIGNED_BYTE,
-            "./src/textures/scales/normal.png" // relative to project.html page
+            "./src/textures/organic/normal.png" // relative to project.html page
         );
     }
 
     return normal;
 }
 
-function getScalesTextures(gl) {
+function getOrganicTextures(gl) {
     return {
         diffuse:  getDiffuse(gl),
         specular: getSpecular(gl),
@@ -54,4 +45,4 @@ function getScalesTextures(gl) {
     };
 }
 
-export { getScalesTextures };
+export { getOrganicTextures };
