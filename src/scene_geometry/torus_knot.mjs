@@ -104,7 +104,7 @@ var torusKnot = (function() {
 
         if (!knot) {
             knot = new HierarchyNode(
-                knotDrawable,
+                null,
                 [0.0, 0.0, 0.0],
                 {angle: 0.0, axis: [0.0, 1.0, 0.0]},
                 [1.0, 1.0, 1.0],
@@ -141,7 +141,7 @@ var torusKnot = (function() {
             knot.drawable = cachedDrawables[poly];
             return;
         } else {
-            var knotDrawable = fromPathAnim(
+            const knotDrawable = fromPathAnim(
                 gl,
                 color,
                 color,

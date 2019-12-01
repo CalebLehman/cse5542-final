@@ -67,7 +67,7 @@ var shaderPhong = (function () {
         void main() {
             vec3 L = normalize(lightPosEyeSpace - fragmentPosEyeSpace);
             vec3 N = normalize(fragmentNormalEyeSpace);
-            vec3 R = reflect(-L, N);
+            vec3 R = reflect(-L, N) * step(0.0, dot(L, N));
             vec3 V = normalize(-fragmentPosEyeSpace);
 
             gl_FragColor = vec4(

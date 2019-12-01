@@ -18,24 +18,12 @@ function getDiffuse(gl) {
     return diffuse;
 }
 
-var specular = null;
 function getSpecular(gl) {
-    if (!specular) {
-        specular = new ImageTexture(
-            gl,
-            0,
-            gl.RGBA,
-            gl.UNSIGNED_BYTE,
-            "./src/textures/checkerboard/specular.png" // relative to project.html page
-        );
-    }
-
-    return specular;
+    return getColorTextures(gl, [255,255,255,255]).specular;
 }
 
 function getNormal(gl) {
-    const textures = getColorTextures(gl, [128,128,255,255]);
-    return textures.normal;
+    return getColorTextures(gl, [128,128,255,255]).normal;
 }
 
 function getCheckerboardTextures(gl) {

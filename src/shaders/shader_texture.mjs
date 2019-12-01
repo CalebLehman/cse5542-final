@@ -85,7 +85,7 @@ var shaderTexture = (function () {
             );
             vec3 L = normalize(lightPosEyeSpace - fragmentPosEyeSpace);
             vec3 N = normalize(fragmentNormalEyeSpace);
-            vec3 R = reflect(-L, N);
+            vec3 R = reflect(-L, N) * step(0.0, dot(N, L));
             vec3 V = normalize(-fragmentPosEyeSpace);
 
             vec3 fragmentAmbient  = vec3(
@@ -237,8 +237,6 @@ var shaderTexture = (function () {
         textureSpecular,
         textureNormal
     ) {
-        if (!drawable) return;
-
         // Create and pass transformation matrices
         var vmMatrix = mat4.clone(vMatrix);
         mat4.multiply(vmMatrix, vMatrix, mMatrix);
@@ -427,16 +425,18 @@ var shaderTexture = (function () {
                 currNode.scale
             );
 
-            drawDrawable(
-                gl,
-                currNode.drawable,
-                pMatrix,
-                vMatrix,
-                mMatrix,
-                currNode.textureDiffuse.texture,
-                currNode.textureSpecular.texture,
-                currNode.textureNormal.texture
-            );
+            if (currNode.drawable) {
+                drawDrawable(
+                    gl,
+                    currNode.drawable,
+                    pMatrix,
+                    vMatrix,
+                    mMatrix,
+                    currNode.textureDiffuse.texture,
+                    currNode.textureSpecular.texture,
+                    currNode.textureNormal.texture
+                );
+            }
 
             if (currNode.children.length === 0) {
                 mMatrix = matrices.pop();

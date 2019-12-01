@@ -230,6 +230,7 @@ function selectTextures(type) {
     getSceneGeometry().unknot.texture(textures);
     getSceneGeometry().torusKnot.texture(textures);
     getSceneGeometry().figureEightKnot.texture(textures);
+    getSceneGeometry().pillar.texture(textures);
 }
 
 function selectWireframe(poly) {
