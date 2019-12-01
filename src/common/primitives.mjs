@@ -1,3 +1,8 @@
+// Note: The terms "Bitangent" and "Binormal"
+// may be mixed up throughout this file.
+// I switched between them several times
+// and may have lost track.
+
 import { Buffer }
     from "./buffer.mjs"
 import { Drawable }
@@ -231,47 +236,47 @@ function getCube(
     );
 
     const bitangent = [
-        -1.0,+0.0,+0.0, // +z face
-        -1.0,+0.0,+0.0,
-        -1.0,+0.0,+0.0,
-        -1.0,+0.0,+0.0,
-        -1.0,+0.0,+0.0,
-        -1.0,+0.0,+0.0,
-
-        +1.0,+0.0,+0.0, // -z face
+        +1.0,+0.0,+0.0, // +z face
         +1.0,+0.0,+0.0,
         +1.0,+0.0,+0.0,
         +1.0,+0.0,+0.0,
         +1.0,+0.0,+0.0,
         +1.0,+0.0,+0.0,
 
-        +0.0,+0.0,+1.0, // +x face
-        +0.0,+0.0,+1.0,
-        +0.0,+0.0,+1.0,
-        +0.0,+0.0,+1.0,
-        +0.0,+0.0,+1.0,
-        +0.0,+0.0,+1.0,
-
-        +0.0,+0.0,-1.0, // -x face
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0,
-
-        -1.0,+0.0,+0.0, // +y face
+        -1.0,+0.0,+0.0, // -z face
         -1.0,+0.0,+0.0,
         -1.0,+0.0,+0.0,
         -1.0,+0.0,+0.0,
         -1.0,+0.0,+0.0,
         -1.0,+0.0,+0.0,
 
-        +1.0,+0.0,+0.0, // -y face
+        +0.0,+0.0,-1.0, // +x face
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+        +0.0,+0.0,-1.0,
+
+        +0.0,+0.0,+1.0, // -x face
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+
+        +1.0,+0.0,+0.0, // +y face
         +1.0,+0.0,+0.0,
         +1.0,+0.0,+0.0,
         +1.0,+0.0,+0.0,
         +1.0,+0.0,+0.0,
-        +1.0,+0.0,+0.0
+        +1.0,+0.0,+0.0,
+
+        -1.0,+0.0,+0.0, // -y face
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0,
+        -1.0,+0.0,+0.0
     ];
     var bitangentBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, bitangentBuffer);
@@ -286,33 +291,33 @@ function getCube(
     );
         
     const texture = [
-        1.0,1.0, // +z face
-        1.0,0.0,
-        0.0,0.0,
+        1.0,0.0, // +z face
         0.0,0.0,
         0.0,1.0,
+        0.0,1.0,
         1.0,1.0,
+        1.0,0.0,
 
-        1.0,1.0, // -z face
-        1.0,0.0,
-        0.0,0.0,
-        0.0,0.0,
+        0.0,0.0, // -z face
         0.0,1.0,
         1.0,1.0,
+        1.0,1.0,
+        1.0,0.0,
+        0.0,0.0,
 
-        1.0,1.0, // +x face
-        1.0,0.0,
-        0.0,0.0,
-        0.0,0.0,
+        0.0,0.0, // +x face
         0.0,1.0,
         1.0,1.0,
+        1.0,1.0,
+        1.0,0.0,
+        0.0,0.0,
 
-        1.0,1.0, // -x face
-        1.0,0.0,
-        0.0,0.0,
+        1.0,0.0, // -x face
         0.0,0.0,
         0.0,1.0,
+        0.0,1.0,
         1.0,1.0,
+        1.0,0.0,
 
         1.0,1.0, // +y face
         1.0,0.0,
@@ -321,12 +326,12 @@ function getCube(
         0.0,1.0,
         1.0,1.0,
 
-        1.0,1.0, // -y face
+        0.0,1.0, // -y face
+        1.0,1.0,
+        1.0,0.0,
         1.0,0.0,
         0.0,0.0,
-        0.0,0.0,
-        0.0,1.0,
-        1.0,1.0
+        0.0,1.0
     ];
     var textureBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
@@ -486,12 +491,12 @@ function getPlane(
     );
 
     const bitangent = [
-        -1.0,+0.0,+0.0,
-        -1.0,+0.0,+0.0,
-        -1.0,+0.0,+0.0,
-        -1.0,+0.0,+0.0,
-        -1.0,+0.0,+0.0,
-        -1.0,+0.0,+0.0
+        +1.0,+0.0,+0.0,
+        +1.0,+0.0,+0.0,
+        +1.0,+0.0,+0.0,
+        +1.0,+0.0,+0.0,
+        +1.0,+0.0,+0.0,
+        +1.0,+0.0,+0.0
     ];
     var bitangentBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, bitangentBuffer);
@@ -506,12 +511,12 @@ function getPlane(
     );
 
     const texture = [
-        1.0,0.0,
         1.0,1.0,
-        0.0,1.0,
-        0.0,1.0,
+        1.0,0.0,
         0.0,0.0,
-        1.0,0.0
+        0.0,0.0,
+        0.0,1.0,
+        1.0,1.0
     ];
     var textureBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
@@ -679,9 +684,9 @@ function getDisk(
 
     const bitangent = [];
     for (var i = 0; i < radialDivisions; ++i) {
-        bitangent.push(-1.0, 0.0, 0.0);
-        bitangent.push(-1.0, 0.0, 0.0);
-        bitangent.push(-1.0, 0.0, 0.0);
+        bitangent.push(1.0, 0.0, 0.0);
+        bitangent.push(1.0, 0.0, 0.0);
+        bitangent.push(1.0, 0.0, 0.0);
     }
     var bitangentBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, bitangentBuffer);
@@ -699,9 +704,18 @@ function getDisk(
     for (var i = 0; i < radialDivisions; ++i) {
         const currAngle = 2 * Math.PI * i / radialDivisions;
         const nextAngle = 2 * Math.PI * (i+1) / radialDivisions;
-        texture.push(0.0, 0.0);
-        texture.push(Math.cos(currAngle), -Math.sin(currAngle));
-        texture.push(Math.cos(nextAngle), -Math.sin(nextAngle));
+        texture.push(
+            0.5,
+            0.5
+        );
+        texture.push(
+            0.5 + 0.5 * Math.cos(currAngle),
+            0.5 - 0.5 * Math.sin(currAngle)
+        );
+        texture.push(
+            0.5 + 0.5 * Math.cos(nextAngle),
+            0.5 - 0.5 * Math.sin(nextAngle)
+        );
     }
     var textureBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);

@@ -45,7 +45,7 @@ const webglGraphics = (function () {
         camera.position = [5, 1, 5];
         // Setup light
         light = new Light(
-            [3, 2, 5],
+            [5, 5, 5],
             [0.5, 0.5, 0.5],
             [0.5, 0.5, 0.5],
             [1.0, 1.0, 1.0]
@@ -87,7 +87,7 @@ const webglGraphics = (function () {
         */
         //drawHierarchy(gl, shaderType, camera, light, geometry.unknot.get());
         //drawHierarchy(gl, shaderType, camera, light, geometry.torusKnot.get());
-        drawHierarchy(gl, shaderType, camera, light, geometry.figureEightKnot.get());
+        //drawHierarchy(gl, shaderType, camera, light, geometry.figureEightKnot.get());
         drawHierarchy(gl, shaderType, camera, light, geometry.pillar.get());
 
         // Unset shader

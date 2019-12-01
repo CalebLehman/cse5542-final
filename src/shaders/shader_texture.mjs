@@ -1,3 +1,8 @@
+// Note: The terms "Bitangent" and "Binormal"
+// may be mixed up throughout this file.
+// I switched between them several times
+// and may have lost track.
+
 import { compileShader }
     from "./shaders.mjs"
 import { Light }

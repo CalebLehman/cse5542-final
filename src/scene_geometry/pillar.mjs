@@ -2,7 +2,7 @@ import { Geometry }
     from "../common/geometry.mjs"
 import { HierarchyNode }
     from "../common/hierarchy_node.mjs"
-import { getCube }
+import { getCube, getDisk } // TODO
     from "../common/primitives.mjs"
 import { getDefaultTextures }
     from "../textures/default/textures.mjs"
@@ -25,7 +25,7 @@ var pillar = (function() {
         if (!pillar) {
             pillar = new HierarchyNode(
                 null,
-                [3.0, 0.0, -3.0],
+                [0.0, 0.0, 0.0],
                 {angle: 0.0, axis: [0.0, 1.0, 0.0]},
                 [1.0, 1.0, 1.0],
                 null,
@@ -37,12 +37,14 @@ var pillar = (function() {
         if (!force && cachedDrawable) {
             pillar.drawable = cachedDrawable;
         } else {
-            const pillarDrawable = getCube(
+            // TODO const pillarDrawable = getCube(
+            const pillarDrawable = getDisk(
                 gl,
                 color,
                 color,
                 specular,
-                shine
+                shine,
+                32 // TODO
             );
             pillar.drawable = pillarDrawable;
             cachedDrawable  = pillarDrawable;
