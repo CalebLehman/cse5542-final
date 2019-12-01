@@ -20,6 +20,24 @@
   color: #454545;
 }
 
+.wireframe-controls {
+    float: left;
+    width: 20%;
+    text-align: left;
+}
+
+.texture-controls {
+    float: left;
+    width: 20%;
+    text-align: left;
+}
+
+.texture-selections {
+    float: left;
+    width: 20%;
+    display: inline-block;
+}
+
 .main {
   margin-top: 25px;
 }

@@ -5,10 +5,18 @@ import { draw, selectShader }
 import { getSceneGeometry }
     from "./scene_geometry/scene_geometry.mjs"
 
-import { getOrganicTextures }
-    from "./textures/organic/textures.mjs"
+import { getDefaultTextures }
+    from "./textures/default/textures.mjs"
+import { getCheckerboardTextures }
+    from "./textures/checkerboard/textures.mjs"
+import { getRopeTextures }
+    from "./textures/rope/textures.mjs"
 import { getBrickTextures }
     from "./textures/brick/textures.mjs"
+import { getScalesTextures }
+    from "./textures/scales/textures.mjs"
+import { getOrganicTextures }
+    from "./textures/organic/textures.mjs"
 
 // WASD parameters
 const speed = 5.0 / 60;
@@ -18,7 +26,10 @@ var movingLeft      = false;
 var movingRight     = false;
 
 // Mouse parameters
-var sensitivity = 2 * Math.PI / 2000;
+const sensitivity = 2 * Math.PI / 2000;
+
+// Wireframe parameter
+var wireframePoly = "high-poly";
 
 var canvas   = null;
 var gl       = null;
@@ -97,18 +108,15 @@ function handleKeyPress(e) {
     }
     if (e.keyCode === 50) { // 2
         selectShader("quad-wireframe");
-        makeGeometry("high-poly");
+        makeGeometry(wireframePoly);
     }
     if (e.keyCode === 51) { // 3
         selectShader("tri-wireframe");
-        makeGeometry("high-poly");
+        makeGeometry(wireframePoly);
     }
     if (e.keyCode === 52) { // 4
         selectShader("texture");
         makeGeometry("high-poly");
-        getSceneGeometry().unknot.texture(getOrganicTextures(gl)); // TODO
-        getSceneGeometry().torusKnot.texture(getOrganicTextures(gl)); // TODO
-        getSceneGeometry().figureEightKnot.texture(getOrganicTextures(gl)); // TODO
     };
 
     // Animation
@@ -194,4 +202,38 @@ function makeGeometry(poly) {
     geometry.pillar.init(gl, poly);
 }
 
-export { init };
+function selectTextures(type) {
+    var textures = null;
+    switch (type) {
+        case "default":
+            textures = getDefaultTextures(gl);
+            break;
+        case "checkerboard":
+            textures = getCheckerboardTextures(gl);
+            break;
+        case "rope":
+            textures = getRopeTextures(gl);
+            break;
+        case "brick":
+            textures = getBrickTextures(gl);
+            break;
+        case "scales":
+            textures = getScalesTextures(gl);
+            break;
+        case "organic":
+            textures = getOrganicTextures(gl);
+            break;
+        default:
+            console.log("Unknown texture type");
+    }
+
+    getSceneGeometry().unknot.texture(textures);
+    getSceneGeometry().torusKnot.texture(textures);
+    getSceneGeometry().figureEightKnot.texture(textures);
+}
+
+function selectWireframe(poly) {
+    wireframePoly = poly;
+}
+
+export { init, selectTextures, selectWireframe };

@@ -18,19 +18,62 @@
     <a href="planning/requirements.html">Requirements</a>
   </div>
   <div class="main">
-    <h1>CSE 5542 Final Project: Knot Museum</h1>
-
     <h2>Project</h2>
     <div>
       <canvas id="canvas"></canvas>
     </div>
 
     <h2>Controls</h2>
-      <p>
-      Move player with <code>WASD</code> and mouse (click on canvas to enable mouse control, <code>ESC</code> to release mouse).
-      Use <code>1 - 3</code> to switch render modes.
-      TODO more controls or description.
-      </p>
+      <h3>Movement</h3>
+        <p>
+        Move player with <code>WASD</code> and mouse (click on canvas to enable mouse control, <code>ESC</code> to release mouse).
+        Use <code>1 - 4</code> to switch render modes.
+        TODO more controls or description.
+        </p>
+      <h3>Rendering</h3>
+        <div style="text-align: center;">
+          <div class="wireframe-controls">
+            <h4>Wireframe Quality</h4>
+            <label>Select a quality:</label>
+
+            <select id="wireframe-selector">
+              <option value="low-poly">Low-poly</option>
+              <option value="high-poly" selected="selected">High-poly</option>
+            </select>
+          </div>
+
+          <div class="texture-controls">
+            <h4>Textures</h4>
+            <label>Select a texture:</label>
+
+            <select id="texture-selector">
+              <option value="default">Default</option>
+              <option value="checkerboard">Checkerboard</option>
+              <option value="rope">Rope</option>
+              <option value="brick">Brick</option>
+              <option value="scales">Scales</option>
+              <option value="organic">Organic</option>
+            </select>
+            <br/>
+
+            <label>Select a shininess:</label>
+
+            <input type="range" min="1" max="100" value="50">
+          </div>
+          <div class="texture-selections">
+            <h4>Diffuse</h4>
+            <img id="diffuse-img" src="./src/textures/empty.gif" style="width:90%;" border="1">
+          </div>
+          <div class="texture-selections">
+            <h4>Specular</h4>
+            <img id="specular-img" src="./src/textures/empty.gif" style="width:90%;" border="1">
+          </div>
+          <div class="texture-selections">
+            <h4>Normal</h4>
+            <img id="normal-img" src="./src/textures/empty.gif" style="width:90%;" border="1">
+          </div>
+          <br style="clear: left;"/>
+        </div>
 
     <h2>Contact</h2>
       <p>
@@ -50,6 +93,70 @@ import { init }
     from "./src/user.mjs"
 
     init();
+  </script>
+  <script type="module">
+import { selectTextures, selectWireframe }
+    from "./src/user.mjs"
+
+    function textureSelector() {
+        const selectElem  = document.getElementById("texture-selector");
+        const textureType = selectElem.options[selectElem .selectedIndex].value;
+
+        selectTextures(textureType);
+
+        var diffuseSrc  = null;
+        var specularSrc = null;
+        var normalSrc   = null;
+        switch (textureType) {
+            case "default":
+                diffuseSrc  = "./src/textures/empty.gif"
+                specularSrc = "./src/textures/empty.gif"
+                normalSrc   = "./src/textures/empty.gif"
+                break;
+            case "checkerboard":
+                diffuseSrc  = "./src/textures/checkerboard/diffuse.png"
+                specularSrc = "./src/textures/empty.gif"
+                normalSrc   = "./src/textures/empty.gif"
+                break;
+            case "rope":
+                diffuseSrc  = "./src/textures/rope/diffuse.png"
+                specularSrc = "./src/textures/rope/specular.png"
+                normalSrc   = "./src/textures/rope/normal.png"
+                break;
+            case "brick":
+                diffuseSrc  = "./src/textures/brick/diffuse.png"
+                specularSrc = "./src/textures/empty.gif"
+                normalSrc   = "./src/textures/brick/normal.png"
+                break;
+            case "scales":
+                diffuseSrc  = "./src/textures/scales/diffuse.png";
+                specularSrc = "./src/textures/scales/specular.png";
+                normalSrc   = "./src/textures/scales/normal.png";
+                break;
+            case "organic":
+                diffuseSrc  = "./src/textures/organic/diffuse.png";
+                specularSrc = "./src/textures/empty.gif";
+                normalSrc   = "./src/textures/organic/normal.png";
+                break;
+            default:
+                console.log("Unknown texture type");
+        }
+
+        document.getElementById("diffuse-img").src  = diffuseSrc;
+        document.getElementById("specular-img").src = specularSrc;
+        document.getElementById("normal-img").src   = normalSrc;
+    }
+    const selectElem    = document.getElementById("texture-selector");
+    selectElem.onchange = textureSelector;
+
+    function wireframeSelector() {
+        const wireframeElem = document.getElementById("wireframe-selector");
+        const wireframePoly = wireframeElem.options[wireframeElem.selectedIndex].value;
+
+        selectWireframe(wireframePoly);
+    }
+    const wireframeElem    = document.getElementById("wireframe-selector");
+    wireframeElem.onchange = wireframeSelector;
   </script>
 
 </body>

@@ -1,5 +1,7 @@
 import { ImageTexture }
     from "../../common/image_texture.mjs"
+import { getColorTextures}
+    from "../color/textures.mjs"
 
 var diffuse = null;
 function getDiffuse(gl) {
