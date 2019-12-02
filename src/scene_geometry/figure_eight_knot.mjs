@@ -151,7 +151,9 @@ var figureEightKnot = (function() {
                 pathSamples.binormal,
                 radius,
                 currentPoly.pDivisions,
-                currentPoly.qDivisions
+                currentPoly.qDivisions,
+                48,
+                2
             );
 
             knot.drawable         = knotDrawable;

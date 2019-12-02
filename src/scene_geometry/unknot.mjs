@@ -153,7 +153,9 @@ var unknot = (function() {
                 pathSamples.binormal,
                 radius,
                 currentPoly.pDivisions,
-                currentPoly.qDivisions
+                currentPoly.qDivisions,
+                8,
+                2
             );
             knot.drawable         = knotDrawable;
             cachedDrawables[poly] = knotDrawable;

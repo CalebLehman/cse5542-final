@@ -87,8 +87,8 @@ const webglGraphics = (function () {
         */
         //drawHierarchy(gl, shaderType, camera, light, geometry.unknot.get());
         //drawHierarchy(gl, shaderType, camera, light, geometry.torusKnot.get());
-        //drawHierarchy(gl, shaderType, camera, light, geometry.figureEightKnot.get());
-        drawHierarchy(gl, shaderType, camera, light, geometry.pillar.get());
+        drawHierarchy(gl, shaderType, camera, light, geometry.figureEightKnot.get());
+        //drawHierarchy(gl, shaderType, camera, light, geometry.pillar.get());
 
         // Unset shader
         unsetProgram(gl, shaderType);

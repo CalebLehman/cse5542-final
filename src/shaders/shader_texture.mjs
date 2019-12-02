@@ -1,8 +1,3 @@
-// Note: The terms "Bitangent" and "Binormal"
-// may be mixed up throughout this file.
-// I switched between them several times
-// and may have lost track.
-
 import { compileShader }
     from "./shaders.mjs"
 import { Light }
@@ -50,7 +45,7 @@ var shaderTexture = (function () {
             vec3 fragmentBitangentEyeSpace = normalize(vec3(vmTangentSpaceMatrix * bitangent));
             fragmentNormalMapMatrix       = mat3(
                 fragmentBitangentEyeSpace,
-                -1.0*fragmentTangentEyeSpace, // Had to mess around with the signs depending on how
+                fragmentTangentEyeSpace, // Had to mess around with the signs depending on how
                                               // the normal maps were rendered
                                               // Probably a convention issue
                 fragmentNormalEyeSpace

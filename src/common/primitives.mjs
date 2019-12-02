@@ -1,8 +1,3 @@
-// Note: The terms "Bitangent" and "Binormal"
-// may be mixed up throughout this file.
-// I switched between them several times
-// and may have lost track.
-
 import { Buffer }
     from "./buffer.mjs"
 import { Drawable }
@@ -126,47 +121,47 @@ function getCube(
     );
 
     const tangent = [
-        +0.0,+1.0,+0.0, // +z face
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
+        +0.0,-1.0,+0.0, // +z face
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
 
-        +0.0,+1.0,+0.0, // -z face
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
+        +0.0,-1.0,+0.0, // -z face
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
         
-        +0.0,+1.0,+0.0, // +x face
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
+        +0.0,-1.0,+0.0, // +x face
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
 
-        +0.0,+1.0,+0.0, // -x face
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
-        +0.0,+1.0,+0.0,
+        +0.0,-1.0,+0.0, // -x face
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
+        +0.0,-1.0,+0.0,
 
-        +0.0,+0.0,-1.0, // +y face
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0,
+        +0.0,+0.0,+1.0, // +y face
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
 
-        +0.0,+0.0,-1.0, // -y face
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0
+        +0.0,+0.0,+1.0, // -y face
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0
     ];
     var tangentBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, tangentBuffer);
@@ -451,12 +446,12 @@ function getPlane(
     );
 
     const tangent = [
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0,
-        +0.0,+0.0,-1.0
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0,
+        +0.0,+0.0,+1.0
     ];
     var tangentBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, tangentBuffer);
@@ -648,9 +643,9 @@ function getDisk(
 
     const tangent = [];
     for (var i = 0; i < radialDivisions; ++i) {
-        tangent.push(0.0, 0.0, -1.0);
-        tangent.push(0.0, 0.0, -1.0);
-        tangent.push(0.0, 0.0, -1.0);
+        tangent.push(0.0, 0.0, 1.0);
+        tangent.push(0.0, 0.0, 1.0);
+        tangent.push(0.0, 0.0, 1.0);
     }
     var tangentBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, tangentBuffer);
@@ -799,7 +794,9 @@ function fromPath(
     pathBinormal,       // [0, 1] -> R^3
     radius,
     lengthDivisions,
-    radialDivisions
+    radialDivisions,
+    textureLengths,
+    textureCircums
 ) {
     const computePosition = function(i, j) {
         j = ((j % radialDivisions) + radialDivisions) % radialDivisions;
@@ -815,7 +812,9 @@ function fromPath(
 
     const computeTangent = function(i, j) {
         const u = 1.0 * i / lengthDivisions;
-        return pathTangent(u);
+        const T = pathTangent(u);
+        vec3.scale(T, T, -1.0);
+        return T;
     };
 
     const computeNormal = function(i, j) {
@@ -837,8 +836,8 @@ function fromPath(
     };
 
     const computeTexture = function(i, j) {
-        const s =  -2.0 * j / radialDivisions;
-        const t = -32.0 * i / lengthDivisions;
+        const s = -1.0 * textureCircums * j / radialDivisions;
+        const t = -1.0 * textureLengths * i / lengthDivisions;
         return [s, t];
     };
 
@@ -1059,7 +1058,9 @@ function fromPathAnim(
     pathBinormal,       // [-1, 1] -> R^3
     radius,
     lengthDivisions,
-    radialDivisions
+    radialDivisions,
+    textureLengths,
+    textureCircums
 ) {
     const computePosition = function(i, j) {
         j = ((j % radialDivisions) + radialDivisions) % radialDivisions;
@@ -1076,6 +1077,7 @@ function fromPathAnim(
     const computeTangent = function(i, j) {
         const u = 1.0 * i / lengthDivisions;
         const T = pathTangent(u);
+        vec3.scale(T, T, -1.0);
         return T;
     };
 
@@ -1098,8 +1100,8 @@ function fromPathAnim(
     };
 
     const computeTexture = function(i, j) {
-        const s =  -2.0 * j / radialDivisions;
-        const t = -32.0 * i / lengthDivisions;
+        const s = -1.0 * textureCircums * j / radialDivisions;
+        const t = -1.0 * textureLengths * i / lengthDivisions;
         return [s, t];
     };
 

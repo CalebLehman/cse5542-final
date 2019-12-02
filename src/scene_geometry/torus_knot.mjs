@@ -153,7 +153,9 @@ var torusKnot = (function() {
                 pathSamples.binormal,
                 radius,
                 currentPoly.pDivisions,
-                currentPoly.qDivisions
+                currentPoly.qDivisions,
+                32,
+                2
             );
 
             knot.drawable         = knotDrawable;
