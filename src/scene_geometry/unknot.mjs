@@ -19,7 +19,7 @@ var unknot = (function() {
     // Knot parameters
     const color    = [0.0, 1.0, 0.0, 1.0];
     const specular = [1.0, 1.0, 1.0, 1.0];
-    const shine    = 100.0;
+    var   shine    = 100.0;
     const radius   = 0.2;
     const p        = 1;
     const q        = 1;
@@ -258,8 +258,19 @@ var unknot = (function() {
         }
     }
 
-    function texture(newTextures) {
-        textures = newTextures;
+    function texture(newTextures, newShine) {
+        if (newTextures) {
+            textures = newTextures;
+        }
+        if (newShine) {
+            shine = newShine;
+            if (cachedDrawables["low-poly"]) {
+                cachedDrawables["low-poly"].shine = newShine;
+            }
+            if (cachedDrawables["high-poly"]) {
+                cachedDrawables["high-poly"].shine = newShine;
+            }
+        }
     }
 
     return new Geometry(init, animate, get, texture);

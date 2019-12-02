@@ -14,7 +14,7 @@ var pillar = (function() {
 
     const color    = [1.0, 0.0, 0.0, 1.0];
     const specular = [1.0, 1.0, 1.0, 1.0];
-    const shine    = 100.0;
+    var   shine    = 100.0;
 
     var cachedDrawable = null;
     function init(gl, poly, force=false) {
@@ -68,6 +68,17 @@ var pillar = (function() {
 
     function texture(newTextures) {
         textures = newTextures;
+    }
+    function texture(newTextures, newShine) {
+        if (newTextures) {
+            textures = newTextures;
+        }
+        if (newShine) {
+            shine = newShine;
+            if (cachedDrawable) {
+                cachedDrawable.shine = newShine;
+            }
+        }
     }
 
     return new Geometry(init, animate, get, texture);
