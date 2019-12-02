@@ -15,8 +15,6 @@ import { getDefaultTextures }
     from "./textures/default/textures.mjs"
 import { getCheckerboardTextures }
     from "./textures/checkerboard/textures.mjs"
-import { getRopeTextures }
-    from "./textures/rope/textures.mjs"
 import { getBrickTextures }
     from "./textures/brick/textures.mjs"
 import { getScalesTextures }
@@ -246,9 +244,6 @@ function selectTextures(type, shine) {
             break;
         case "checkerboard":
             textures = getCheckerboardTextures(gl);
-            break;
-        case "rope":
-            textures = getRopeTextures(gl);
             break;
         case "brick":
             textures = getBrickTextures(gl);
