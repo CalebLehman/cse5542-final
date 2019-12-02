@@ -9,6 +9,9 @@ import { figureEightKnot }
 import { pillars }
     from "./pillars.mjs"
 
+import { getBrickTextures }
+    from "../textures/brick/textures.mjs"
+
 var root = null;
 function initSceneGeometry(gl, poly) {
     unknot.init(gl, poly);
@@ -71,11 +74,11 @@ function getSceneHierarchy() {
     }
 }
 
-function textureSceneGeometry(textures, shine) {
-    unknot.texture(textures, shine);
-    torusKnot.texture(textures, shine);
-    figureEightKnot.texture(textures, shine);
-    pillars.texture(textures, shine);
+function textureSceneGeometry(knotTextures, pillarTextures, shine) {
+    unknot.texture(knotTextures, shine);
+    torusKnot.texture(knotTextures, shine);
+    figureEightKnot.texture(knotTextures, shine);
+    pillars.texture(pillarTextures, shine);
 }
 
 function animateKnots(lengths) {
@@ -91,7 +94,6 @@ function setKnotsRotation(rotation) {
     unknotNode.rotation          = rotation;
     torusKnotNode.rotation       = rotation;
     figureEightKnotNode.rotation = rotation;
-    // TODO
 }
 
 const minHeight = 1.6;
@@ -131,47 +133,12 @@ function setKnotsHeight(userX, userY, userZ, pitch) {
     unknotNode.translation[1] = knotY;
     torusKnotNode.translation[1] = knotY;
     figureEightKnotNode.translation[1] = knotY;
-
-    /* TODO
-    const unknotNode = unknot.get();
-    const unknotDist = -1.5 + Math.sqrt(
-        Math.pow(userX - pillars.get()[0].translation[0], 2)
-        +
-        Math.pow(userZ - pillars.get()[0].translation[2], 2)
-    );
-    const unknotY = Math.max(minHeight,
-        Math.min(maxHeight,
-            unknotDist * Math.tan(pitch) + (userY - 1.5) - 1.5
-        )
-    );
-    unknotNode.translation[1] = unknotY;
-
-    const torusKnotNode = torusKnot.get();
-    const torusKnotDist = -1.5 + Math.sqrt(
-        Math.pow(userX - pillars.get()[1].translation[0], 2)
-        +
-        Math.pow(userZ - pillars.get()[1].translation[2], 2)
-    );
-    const torusKnotY = Math.max(minHeight,
-        Math.min(maxHeight,
-            torusKnotDist * Math.tan(pitch) + (userY - 1.5) - 1.5
-        )
-    );
-    torusKnotNode.translation[1] = torusKnotY;
-
-    const figureEightKnotNode = figureEightKnot.get();
-    const figureEightKnotDist = -1.5 + Math.sqrt(
-        Math.pow(userX - pillars.get()[2].translation[0], 2)
-        +
-        Math.pow(userZ - pillars.get()[2].translation[2], 2)
-    );
-    const figureEightKnotY = Math.max(minHeight,
-        Math.min(maxHeight,
-            figureEightKnotDist * Math.tan(pitch) + (userY - 1.5) - 1.5
-        )
-    );
-    figureEightKnotNode.translation[1] = figureEightKnotY;
-    */
 }
 
-export { initSceneGeometry, getSceneHierarchy, textureSceneGeometry, animateKnots, setKnotsHeight };
+export { initSceneGeometry
+       , getSceneHierarchy
+       , textureSceneGeometry
+       , animateKnots
+       , setKnotsHeight
+       , setKnotsRotation
+       };

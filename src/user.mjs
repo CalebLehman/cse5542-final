@@ -7,6 +7,7 @@ import { initSceneGeometry
        , textureSceneGeometry
        , animateKnots
        , setKnotsHeight
+       , setKnotsRotation
        }
     from "./scene_geometry/scene_geometry.mjs"
 
@@ -35,6 +36,12 @@ const sensitivity = 2 * Math.PI / 2000;
 
 // Wireframe parameter
 var wireframePoly = "low-poly";
+
+// Knot parameters
+var trackKnots  = true; // TODO
+var rotateKnots = false;
+var rotateStart = null;
+var rotateTotal = 0;
 
 var canvas   = null;
 var gl       = null;
@@ -132,6 +139,17 @@ function handleKeyPress(e) {
     if (e.keyCode === 67) { // c
         animateKnots([3000, 4000, 6000]);
     }
+    if (e.keyCode === 86) { // v
+        const date  = new Date();
+        rotateKnots = !rotateKnots;
+        if (rotateKnots) {
+            rotateStart = date.getTime();
+        } else {
+            rotateTotal += 2*Math.PI*(date.getTime() - rotateStart)/8000.0;
+            rotateTotal %= 2*Math.PI;
+            rotateStart = null;
+        }
+    }
 }
 
 function handleKeyRelease(e) {
@@ -194,6 +212,16 @@ function main() {
         vec3.scaleAndAdd(targetPosition, targetPosition, z, -1.0 * speed);
     }
 
+    if (rotateKnots) {
+        const date  = new Date();
+        const angle = rotateTotal
+            + 2*Math.PI*(date.getTime() - rotateStart)/8000.0;
+        setKnotsRotation({
+            angle: angle,
+            axis: [0.0, 1.0, 0.0]
+        });
+    }
+
     camera.position = cameraPosition;
     camera.coi      = targetPosition;
     setKnotsHeight(...camera.position, -1.0 * camera.pitch);
@@ -233,7 +261,13 @@ function selectTextures(type, shine) {
             console.log("Unknown texture type: " + type);
     }
 
-    textureSceneGeometry(textures, shine);
+    // It looks best to just keep the
+    // pillars textures as bricks
+    textureSceneGeometry(
+        textures,
+        getBrickTextures(gl),
+        shine
+    );
 }
 
 function selectWireframe(poly) {

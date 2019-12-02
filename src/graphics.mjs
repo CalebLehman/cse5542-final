@@ -78,15 +78,6 @@ const webglGraphics = (function () {
 
         // Draw hierarchy TODO (walls, light?)
         drawHierarchy(gl, shaderType, camera, light, getSceneHierarchy().root, cubeMapTextures.texture);
-        /*
-        var geometry = getSceneGeometry(); TODO
-        var date  = new Date();
-        var value = date.getMilliseconds() + 1000.0 * date.getSeconds();
-        geometry.torusKnot.get().rotation = {
-            angle: 2*Math.PI*value/8000.0,
-            axis: [0.5, 0.5, 0.0]
-        };
-        */
 
         // Unset shader
         unsetProgram(gl, shaderType);
