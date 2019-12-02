@@ -20,7 +20,7 @@ var figureEightKnot = (function() {
     const color    = [0.0, 1.0, 0.0, 1.0];
     const specular = [1.0, 1.0, 1.0, 1.0];
     var   shine    = 100.0;
-    const radius   = 0.2;
+    const radius   = 0.3;
     const p        = 3;
     const q        = 2;
 
@@ -69,7 +69,7 @@ var figureEightKnot = (function() {
                 currentPoly = lowPoly;
                 break;
             default:
-                console.log("Unknown poly level");
+                console.log("Unknown poly level: " + poly);
         }
 
         if (!pathSamples) {

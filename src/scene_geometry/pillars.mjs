@@ -39,7 +39,9 @@ var pillars = (function() {
         }
 
         if (!force && cachedDrawable) {
-            pillar.drawable = cachedDrawable;
+            for (var i = 0; i < numPillars; ++i) {
+                pillars[i].drawable = cachedDrawable;
+            }
         } else {
             const pillarDrawable = getCube(
                 gl,

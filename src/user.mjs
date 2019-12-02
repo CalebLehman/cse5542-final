@@ -2,7 +2,7 @@ import { camera }
     from "./common/camera.mjs"
 import { draw, selectShader }
     from "./graphics.mjs"
-import { getSceneGeometry }
+import { initSceneGeometry, getSceneHierarchy, textureSceneGeometry, animateKnots }
     from "./scene_geometry/scene_geometry.mjs"
 
 import { getDefaultTextures }
@@ -19,7 +19,7 @@ import { getOrganicTextures }
     from "./textures/organic/textures.mjs"
 
 // WASD parameters
-const speed = 5.0 / 60;
+const speed = 15.0 / (2 * 60);
 var movingForwards  = false;
 var movingBackwards = false;
 var movingLeft      = false;
@@ -29,7 +29,7 @@ var movingRight     = false;
 const sensitivity = 2 * Math.PI / 2000;
 
 // Wireframe parameter
-var wireframePoly = "high-poly";
+var wireframePoly = "low-poly";
 
 var canvas   = null;
 var gl       = null;
@@ -63,8 +63,8 @@ function pointerLockUnlock() {
     }
 }
 
-const minPitch = -1.0 * Math.PI / 4;
-const maxPitch = +1.0 * Math.PI / 4;
+const minPitch = -1.0 * Math.PI / 2;
+const maxPitch = +1.0 * Math.PI / 2;
 function handleMouseMove(e) {
     camera.turn  += e.movementX * sensitivity;
     camera.pitch += e.movementY * sensitivity;
@@ -125,9 +125,7 @@ function handleKeyPress(e) {
 
     // Animation
     if (e.keyCode === 67) { // c
-        getSceneGeometry().unknot.anim(3000); // TODO should animate nearest knot
-        getSceneGeometry().torusKnot.anim(4000); // TODO should animate nearest knot
-        getSceneGeometry().figureEightKnot.anim(6000); // TODO should animate nearest knot
+        animateKnots([3000, 4000, 6000]);
     }
 }
 
@@ -198,11 +196,7 @@ function main() {
 }
 
 function makeGeometry(poly) {
-    var geometry = getSceneGeometry();
-    geometry.unknot.init(gl, poly);
-    geometry.torusKnot.init(gl, poly);
-    geometry.figureEightKnot.init(gl, poly);
-    geometry.pillar.init(gl, poly);
+    initSceneGeometry(gl, poly);
 }
 
 function selectTextures(type, shine) {
@@ -230,13 +224,10 @@ function selectTextures(type, shine) {
             // leave as null, indicates no update
             break;
         default:
-            console.log("Unknown texture type");
+            console.log("Unknown texture type: " + type);
     }
 
-    getSceneGeometry().unknot.texture(textures, shine);
-    getSceneGeometry().torusKnot.texture(textures, shine);
-    getSceneGeometry().figureEightKnot.texture(textures, shine);
-    getSceneGeometry().pillar.texture(textures, shine);
+    textureSceneGeometry(textures, shine);
 }
 
 function selectWireframe(poly) {

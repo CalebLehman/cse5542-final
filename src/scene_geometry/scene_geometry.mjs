@@ -9,53 +9,102 @@ import { figureEightKnot }
 import { pillars }
     from "./pillars.mjs"
 
-const root = new HierarchyNode(
-    null,
-    [0, 0, 0],
-    {angle: 0.0, axis: [0,1,0]},
-    [1, 1, 1],
-    null,
-    null,
-    null
-);
-function initSceneGeometry(gl) {
-    unknot.init(gl, "high-poly");
-    torusKnot.init(gl, "high-poly");
-    figureEightKnot.init(gl, "high-poly");
-    pillars.init(gl, "high-poly");
+var root = null;
+function initSceneGeometry(gl, poly) {
+    unknot.init(gl, poly);
+    torusKnot.init(gl, poly);
+    figureEightKnot.init(gl, poly);
+    pillars.init(gl, poly);
 
-    const pillarUnknot       = pillars.get()[0];
-    pillarUnknot.translation = [-9.0, +1.0, +0.0];
-    pillarUnknot.scale       = [+1.5, +1.5, +1.5];
-    root.addChild(pillarUnknot);
+    if (!root) {
+        root = new HierarchyNode(
+            null,
+            [0, 0, 0],
+            {angle: 0.0, axis: [0,1,0]},
+            [1, 1, 1],
+            null,
+            null,
+            null
+        );
 
-    const pillarTorusKnot       = pillars.get()[1];
-    pillarTorusKnot.translation = [+0.0, +1.0, +0.0];
-    pillarTorusKnot.scale       = [+1.5, +1.5, +1.5];
-    root.addChild(pillarTorusKnot);
-    torusKnot.get().translation = [+0.0, +1.8, +0.0];
-    pillarTorusKnot.addChild(torusKnot.get());
+        const pillarUnknotNode       = pillars.get()[0];
+        pillarUnknotNode.translation = [-9.0, +1.0, +0.0];
+        pillarUnknotNode.scale       = [+1.5, +1.5, +1.5];
+        root.addChild(pillarUnknotNode);
 
+        // min height = 1.6 + 1.0 TODO
+        //               ^     ^
+        //             offset pillar offset
+        const unknotNode       = unknot.get();
+        unknotNode.translation = [-0.3, +1.6, +0.0];
+        unknotNode.scale       = [+0.9, +0.9, +0.9];
+        pillarUnknotNode.addChild(unknotNode);
 
-    const pillarFigureEightKnot       = pillars.get()[2];
-    pillarFigureEightKnot.translation = [+9.0, +1.0, +0.0];
-    pillarFigureEightKnot.scale       = [+1.5, +1.5, +1.5];
-    root.addChild(pillarFigureEightKnot);
+        const pillarTorusKnotNode       = pillars.get()[1];
+        pillarTorusKnotNode.translation = [+0.0, +1.0, +0.0];
+        pillarTorusKnotNode.scale       = [+1.5, +1.5, +1.5];
+        root.addChild(pillarTorusKnotNode);
+
+        // min height = 1.6 + 1.0 TODO
+        //               ^     ^
+        //             offset pillar offset
+        const torusKnotNode       = torusKnot.get();
+        torusKnotNode.translation = [+0.0, +1.6, +0.0];
+        torusKnotNode.scale       = [+0.7, +0.7, +0.7];
+        pillarTorusKnotNode.addChild(torusKnotNode);
+
+        const pillarFigureEightKnotNode       = pillars.get()[2];
+        pillarFigureEightKnotNode.translation = [+9.0, +1.0, +0.0];
+        pillarFigureEightKnotNode.scale       = [+1.5, +1.5, +1.5];
+        root.addChild(pillarFigureEightKnotNode);
+
+        // min height = 1.6 + 1.0 TODO
+        //               ^     ^
+        //             offset pillar offset
+        const figureEightKnotNode       = figureEightKnot.get();
+        figureEightKnotNode.translation = [+0.0, +1.6, +0.0];
+        figureEightKnotNode.scale       = [+0.45, +0.45, +0.45];
+        pillarFigureEightKnotNode.addChild(figureEightKnotNode);
+    }
 }
 
-function getSceneGeometry() {
-    return {
-        unknot:          unknot,
-        torusKnot:       torusKnot,
-        figureEightKnot: figureEightKnot,
-        pillars:         pillars,
-    };
-}
+function getSceneHierarchy() {
+    // Call 'get' on geometry to get updates
+    unknot.get();
+    torusKnot.get();
+    figureEightKnot.get();
+    pillars.get();
 
-function getGeometryHierarchy() {
     return {
         root: root,
     }
 }
 
-export { initSceneGeometry, getSceneGeometry, getGeometryHierarchy };
+function textureSceneGeometry(textures, shine) {
+    unknot.texture(textures, shine);
+    torusKnot.texture(textures, shine);
+    figureEightKnot.texture(textures, shine);
+    pillars.texture(textures, shine);
+}
+
+function animateKnots(lengths) {
+    unknot.anim(lengths[0]);
+    torusKnot.anim(lengths[1]);
+    figureEightKnot.anim(lengths[2]);
+}
+
+function setKnotsRotation(rotation) {
+    const unknotNode          = unknot.get();
+    const torusKnotNode       = torusKnot.get();
+    const figureEightKnotNode = figureEightKnot.get();
+    unknotNode.rotation          = rotation;
+    torusKnotNode.rotation       = rotation;
+    figureEightKnotNode.rotation = rotation;
+    // TODO
+}
+
+function setKnotsHeight() {
+    // TODO
+}
+
+export { initSceneGeometry, getSceneHierarchy, textureSceneGeometry, animateKnots };

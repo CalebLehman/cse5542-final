@@ -37,6 +37,9 @@
   margin-top: 25px;
 }
 
+.canvas-wrapper {
+}
+
 #canvas {
   display: block;
   border: 1px solid black;

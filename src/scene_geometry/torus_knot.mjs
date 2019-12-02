@@ -71,7 +71,7 @@ var torusKnot = (function() {
                 currentPoly = lowPoly;
                 break;
             default:
-                console.log("Unknown poly level");
+                console.log("Unknown poly level: " + poly);
         }
 
         if (!pathSamples) {
