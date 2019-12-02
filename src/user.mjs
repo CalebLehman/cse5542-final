@@ -120,11 +120,10 @@ function handleKeyPress(e) {
     };
 
     // Animation
-    if (e.keyCode === 32) { // Space
-        e.preventDefault();
-        getSceneGeometry().unknot.anim(4000); // TODO should animate nearest knot
+    if (e.keyCode === 67) { // c
+        getSceneGeometry().unknot.anim(3000); // TODO should animate nearest knot
         getSceneGeometry().torusKnot.anim(4000); // TODO should animate nearest knot
-        getSceneGeometry().figureEightKnot.anim(4000); // TODO should animate nearest knot
+        getSceneGeometry().figureEightKnot.anim(6000); // TODO should animate nearest knot
     }
 }
 
@@ -202,7 +201,7 @@ function makeGeometry(poly) {
     geometry.pillar.init(gl, poly);
 }
 
-function selectTextures(type) {
+function selectTextures(type, shine) {
     var textures = null;
     switch (type) {
         case "default":
@@ -223,14 +222,17 @@ function selectTextures(type) {
         case "organic":
             textures = getOrganicTextures(gl);
             break;
+        case null:
+            // leave as null, indicates no update
+            break;
         default:
             console.log("Unknown texture type");
     }
 
-    getSceneGeometry().unknot.texture(textures);
-    getSceneGeometry().torusKnot.texture(textures);
-    getSceneGeometry().figureEightKnot.texture(textures);
-    getSceneGeometry().pillar.texture(textures);
+    getSceneGeometry().unknot.texture(textures, shine);
+    getSceneGeometry().torusKnot.texture(textures, shine);
+    getSceneGeometry().figureEightKnot.texture(textures, shine);
+    getSceneGeometry().pillar.texture(textures, shine);
 }
 
 function selectWireframe(poly) {

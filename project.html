@@ -23,57 +23,89 @@
       <canvas id="canvas"></canvas>
     </div>
 
-    <h2>Controls</h2>
-      <h3>Movement</h3>
-        <p>
-        Move player with <code>WASD</code> and mouse (click on canvas to enable mouse control, <code>ESC</code> to release mouse).
-        Use <code>1 - 4</code> to switch render modes.
-        TODO more controls or description.
-        </p>
-      <h3>Rendering</h3>
-        <div style="text-align: center;">
-          <div class="wireframe-controls">
-            <h4>Wireframe Quality</h4>
-            <label>Select a quality:</label>
-
-            <select id="wireframe-selector">
-              <option value="low-poly">Low-poly</option>
-              <option value="high-poly" selected="selected">High-poly</option>
-            </select>
-          </div>
-
-          <div class="texture-controls">
-            <h4>Textures</h4>
-            <label>Select a texture:</label>
-
-            <select id="texture-selector">
-              <option value="default">Default</option>
-              <option value="checkerboard">Checkerboard</option>
-              <option value="rope">Rope</option>
-              <option value="brick">Brick</option>
-              <option value="scales">Scales</option>
-              <option value="organic">Organic</option>
-            </select>
-            <br/>
-
-            <label>Select a shininess:</label>
-
-            <input type="range" min="1" max="100" value="50">
-          </div>
-          <div class="texture-selections">
-            <h4>Diffuse</h4>
-            <img id="diffuse-img" src="./src/textures/empty.gif" style="width:90%;" border="1">
-          </div>
-          <div class="texture-selections">
-            <h4>Specular</h4>
-            <img id="specular-img" src="./src/textures/empty.gif" style="width:90%;" border="1">
-          </div>
-          <div class="texture-selections">
-            <h4>Normal</h4>
-            <img id="normal-img" src="./src/textures/empty.gif" style="width:90%;" border="1">
-          </div>
-          <br style="clear: left;"/>
+    <h2>Rendering</h2>
+      <div style="text-align: center;">
+        <div class="render-controls">
+          <h3>Modes</h3>
+          <table style="width:100%">
+            <tr>
+              <th>Key</th>
+              <th>Render Mode</th>
+            </tr>
+            <tr>
+              <td><code>1</code></td>
+              <td><a href="https://en.wikipedia.org/wiki/Phong_shading">Phong Shading</a></td>
+            </tr>
+            <tr>
+              <td><code>2</code></td>
+              <td>Wireframe (quads)</a></td>
+            </tr>
+            <tr>
+              <td><code>3</code></td>
+              <td>Wireframe (tris)</a></td>
+            </tr>
+            <tr>
+              <td><code>4</code></td>
+              <td><a href="https://en.wikipedia.org/wiki/Texture_mapping">Texture Mapping</a></td>
+            </tr>
+          </table>
+  
+          <h3>Wireframe Quality</h3>
+          <label>Select a quality:</label>
+  
+          <select id="wireframe-selector">
+            <option value="low-poly">Low-poly</option>
+            <option value="high-poly" selected="selected">High-poly</option>
+          </select>
+          </br>
         </div>
+  
+        <div class="render-controls">
+          <h3>Specularity</h3>
+          <label>Select specular strength:</label>
+          <br/>
+          <input id="specular-selector" type="range" min="0.0" max="1.0" value="1.0" step="0.05">
+          <br/>
+  
+          <label>Select a shininess:</label>
+          <br/>
+          <input id="shine-selector" type="range" min="1" max="200" value="100">
+          <br/>
+  
+          <h3>Textures</h3>
+          <label>Select a texture:</label>
+          <br/>
+          <select id="texture-selector">
+            <option value="default">Default</option>
+            <option value="checkerboard">Checkerboard</option>
+            <option value="rope">Rope</option>
+            <option value="brick">Brick</option>
+            <option value="scales">Scales</option>
+            <option value="organic">Organic</option>
+          </select>
+          <br/>
+        </div>
+
+        <div class="texture-selections">
+          <h4>Diffuse</h4>
+          <img id="diffuse-img" src="./src/textures/empty.gif" style="width:90%;" border="1">
+        </div>
+        <div class="texture-selections">
+          <h4>Specular</h4>
+          <img id="specular-img" src="./src/textures/empty.gif" style="width:90%;" border="1">
+        </div>
+        <div class="texture-selections">
+          <h4>Normal</h4>
+          <img id="normal-img" src="./src/textures/empty.gif" style="width:90%;" border="1">
+        </div>
+        <br style="clear: left;"/>
+      </div>
+  
+    <h2>Movement</h2>
+      <p>
+      Move player with <code>WASD</code> and mouse (click on canvas to enable mouse control, <code>ESC</code> to release mouse).
+      TODO more controls or description.
+      </p>
 
     <h2>Contact</h2>
       <p>
@@ -97,12 +129,14 @@ import { init }
   <script type="module">
 import { selectTextures, selectWireframe }
     from "./src/user.mjs"
+import { setLight }
+    from "./src/graphics.mjs"
 
     function textureSelector() {
-        const selectElem  = document.getElementById("texture-selector");
-        const textureType = selectElem.options[selectElem .selectedIndex].value;
+        const textureElem  = document.getElementById("texture-selector");
+        const textureType = textureElem.options[textureElem .selectedIndex].value;
 
-        selectTextures(textureType);
+        selectTextures(textureType, null);
 
         var diffuseSrc  = null;
         var specularSrc = null;
@@ -146,8 +180,28 @@ import { selectTextures, selectWireframe }
         document.getElementById("specular-img").src = specularSrc;
         document.getElementById("normal-img").src   = normalSrc;
     }
-    const selectElem    = document.getElementById("texture-selector");
-    selectElem.onchange = textureSelector;
+    const textureElem    = document.getElementById("texture-selector");
+    textureElem.onchange = textureSelector;
+
+    function shineSelector() {
+        const shineElem = document.getElementById("shine-selector");
+        const shineVal  = shineElem.value;
+
+        selectTextures(null, shineVal);
+    }
+    const shineElem    = document.getElementById("shine-selector");
+    shineElem.onchange = shineSelector;
+    shineElem.oninput  = shineSelector;
+
+    function specularSelector() {
+        const specElem   = document.getElementById("specular-selector");
+        const specLevel  = specElem.value;
+
+        setLight(null, null, null, [specLevel, specLevel, specLevel]);
+    }
+    const specElem    = document.getElementById("specular-selector");
+    specElem.onchange = specularSelector;
+    specElem.oninput  = specularSelector;
 
     function wireframeSelector() {
         const wireframeElem = document.getElementById("wireframe-selector");

@@ -20,16 +20,11 @@
   color: #454545;
 }
 
-.wireframe-controls {
+.render-controls {
     float: left;
-    width: 20%;
+    width: 15%;
     text-align: left;
-}
-
-.texture-controls {
-    float: left;
-    width: 20%;
-    text-align: left;
+    padding: 10px;
 }
 
 .texture-selections {

@@ -98,10 +98,26 @@ const webglGraphics = (function () {
         shaderType = type;
     }
 
+    function setLight(position, ambient, diffuse, specular) {
+        if (position) {
+            light.position = position;
+        }
+        if (ambient) {
+            light.ambient = ambient;
+        }
+        if (diffuse) {
+            light.diffuse = diffuse;
+        }
+        if (specular) {
+            light.specular = specular;
+        }
+    }
+
     return {
-        init: init,
-        draw: draw,
+        init:         init,
+        draw:         draw,
         selectShader: selectShader,
+        setLight:     setLight,
     }
 }());
 
@@ -121,4 +137,8 @@ function selectShader(type) {
     webglGraphics.selectShader(type);
 }
 
-export { init, draw, selectShader }
+function setLight(position, ambient, diffuse, specular) {
+    webglGraphics.setLight(position, ambient, diffuse, specular);
+}
+
+export { init, draw, selectShader, setLight }
