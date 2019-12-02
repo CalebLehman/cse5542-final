@@ -7,8 +7,9 @@ import { getCube }
 import { getDefaultTextures }
     from "../textures/default/textures.mjs"
 
-var pillar = (function() {
-    var pillar = null;
+var pillars = (function() {
+    var   pillars    = null;
+    const numPillars = 3;
 
     var textures = null;
 
@@ -22,16 +23,19 @@ var pillar = (function() {
             textures = getDefaultTextures(gl);
         }
 
-        if (!pillar) {
-            pillar = new HierarchyNode(
-                null,
-                [0.0, 0.0, 0.0],
-                {angle: 0.0, axis: [0.0, 1.0, 0.0]},
-                [1.0, 1.0, 1.0],
-                null,
-                null,
-                null
-            );
+        if (!pillars) {
+            pillars = [];
+            for (var i = 0; i < numPillars; ++i) {
+                pillars.push(new HierarchyNode(
+                    null,
+                    [0.0, 0.0, 0.0],
+                    {angle: 0.0, axis: [0.0, 1.0, 0.0]},
+                    [1.0, 1.0, 1.0],
+                    null,
+                    null,
+                    null
+                ));
+            }
         }
 
         if (!force && cachedDrawable) {
@@ -44,7 +48,9 @@ var pillar = (function() {
                 specular,
                 shine
             );
-            pillar.drawable = pillarDrawable;
+            for (var i = 0; i < pillars.length; ++i) {
+                pillars[i].drawable = pillarDrawable;
+            }
             cachedDrawable  = pillarDrawable;
         }
     }
@@ -52,23 +58,23 @@ var pillar = (function() {
     function animate(length) {
     }
     
-    function get(gl) {
-        if (!pillar) {
+    function get() {
+        if (!pillars) {
             console.log("Retrieving uninitialized geometry");
         }
 
-        if (pillar.drawable) {
-            pillar.textureDiffuse  = textures.diffuse;
-            pillar.textureSpecular = textures.specular;
-            pillar.textureNormal   = textures.normal;
+        for (var i = 0; i < pillars.length; ++i) {
+            const pillar = pillars[i];
+            if (pillar.drawable) {
+                pillar.textureDiffuse  = textures.diffuse;
+                pillar.textureSpecular = textures.specular;
+                pillar.textureNormal   = textures.normal;
+            }
         }
 
-        return pillar;
+        return pillars;
     }
 
-    function texture(newTextures) {
-        textures = newTextures;
-    }
     function texture(newTextures, newShine) {
         if (newTextures) {
             textures = newTextures;
@@ -84,4 +90,4 @@ var pillar = (function() {
     return new Geometry(init, animate, get, texture);
 })();
 
-export { pillar };
+export { pillars };

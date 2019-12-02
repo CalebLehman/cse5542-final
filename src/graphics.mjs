@@ -4,7 +4,7 @@ import { camera, setCameraParams }
     from "./common/camera.mjs"
 import { Light }
     from "./common/light.mjs"
-import { getSceneGeometry, initSceneGeometry }
+import { initSceneGeometry, getSceneGeometry, getGeometryHierarchy }
     from "./scene_geometry/scene_geometry.mjs"
 import { getParkCubeMapTextures }
     from "./cube_maps/park/cube_map.mjs"
@@ -45,7 +45,8 @@ const webglGraphics = (function () {
             0.1,
             100.0
         );
-        camera.position = [5, 1, 5];
+        camera.position = [0.0, 5.5, 15.0];
+        camera.coi      = [0.0, 5.5,  0.0];
         // Setup cube map environment
         cubeMapTextures = getParkCubeMapTextures(gl);
         // Setup light
@@ -77,19 +78,20 @@ const webglGraphics = (function () {
 
         // Draw hierarchy
         // TODO sample hierarchy
-        var geometry = getSceneGeometry();
+        drawHierarchy(gl, shaderType, camera, light, getGeometryHierarchy().root, cubeMapTextures.texture);
         /*
+        var geometry = getSceneGeometry();
         var date  = new Date();
         var value = date.getMilliseconds() + 1000.0 * date.getSeconds();
         geometry.torusKnot.get().rotation = {
             angle: 2*Math.PI*value/8000.0,
             axis: [0.5, 0.5, 0.0]
         };
-        */
         drawHierarchy(gl, shaderType, camera, light, geometry.unknot.get(), cubeMapTextures.texture);
         //drawHierarchy(gl, shaderType, camera, light, geometry.torusKnot.get(), cubeMapTextures.texture);
         //drawHierarchy(gl, shaderType, camera, light, geometry.figureEightKnot.get(), cubeMapTextures.texture);
         //drawHierarchy(gl, shaderType, camera, light, geometry.pillar.get(), cubeMapTextures.texture);
+        */
 
         // Unset shader
         unsetProgram(gl, shaderType);
