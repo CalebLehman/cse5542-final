@@ -113,11 +113,12 @@ const webglGraphics = (function () {
             case "park":
                 cubeMapTextures = getParkCubeMapTextures(gl);
                 textureSceneWalls(getParkImageTextures(gl));
+                setLight([0, 100, 0], null, null, null);
                 break;
             case "city":
                 cubeMapTextures = getCityCubeMapTextures(gl);
-                console.log('here');
                 textureSceneWalls(getCityImageTextures(gl));
+                setLight([0, 100, 100], null, null, null);
                 break;
             default:
                 console.log("Unknown environment type " + type);
