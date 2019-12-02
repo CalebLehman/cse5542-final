@@ -67,7 +67,10 @@
           <input id="specular-selector" type="range" min="0.0" max="1.0" value="1.0" step="0.05">
           <br/>
   
-          <label>Select a shininess:</label>
+          <!-- I had been using "shine" to denote "gloss" and switched
+          the terminology on the UI because "glossiness" seemed more clear.
+          In any case, it refers to how sharp the specular highlights are-->
+          <label>Select a glossiness:</label>
           <br/>
           <input id="shine-selector" type="range" min="1" max="200" value="100">
           <br/>
@@ -101,9 +104,10 @@
         <br style="clear: left;"/>
       </div>
   
-    <h2>Movement</h2>
+    <h2>Controls</h2>
       <p>
       Move player with <code>WASD</code> and mouse (click on canvas to enable mouse control, <code>ESC</code> to release mouse).
+      <code>c</code> will "tie" the knots.
       TODO more controls or description.
       </p>
 
