@@ -137,11 +137,8 @@ var torusKnot = (function() {
             knot.addChild(capB);
         }
 
-        if ((!force) && cachedDrawables[poly]) {
-            knot.drawable = cachedDrawables[poly];
-            return;
-        } else {
-            const knotDrawable = fromPathAnim(
+        if (force || !cachedDrawables[poly]) {
+            cachedDrawables[poly] = fromPathAnim(
                 gl,
                 color,
                 color,
@@ -157,10 +154,8 @@ var torusKnot = (function() {
                 32,
                 2
             );
-
-            knot.drawable         = knotDrawable;
-            cachedDrawables[poly] = knotDrawable;
         }
+        knot.drawable = cachedDrawables[poly];
 
         // Build caps
         var capDrawable = getDisk(

@@ -4,8 +4,8 @@ import { HierarchyNode }
     from "../common/hierarchy_node.mjs"
 import { getCube }
     from "../common/primitives.mjs"
-import { getDefaultTextures }
-    from "../textures/default/textures.mjs"
+import { getBrickTextures } // Default for pillars is brick
+    from "../textures/brick/textures.mjs"
 
 var pillars = (function() {
     var   pillars    = null;
@@ -20,7 +20,7 @@ var pillars = (function() {
     var cachedDrawable = null;
     function init(gl, poly, force=false) {
         if (!textures) {
-            textures = getDefaultTextures(gl);
+            textures = getBrickTextures(gl);
         }
 
         if (!pillars) {
@@ -38,22 +38,17 @@ var pillars = (function() {
             }
         }
 
-        if (!force && cachedDrawable) {
-            for (var i = 0; i < numPillars; ++i) {
-                pillars[i].drawable = cachedDrawable;
-            }
-        } else {
-            const pillarDrawable = getCube(
+        if (force || !cachedDrawable) {
+            cachedDrawable = getCube(
                 gl,
                 color,
                 color,
                 specular,
                 shine
             );
-            for (var i = 0; i < pillars.length; ++i) {
-                pillars[i].drawable = pillarDrawable;
-            }
-            cachedDrawable  = pillarDrawable;
+        }
+        for (var i = 0; i < pillars.length; ++i) {
+            pillars[i].drawable = cachedDrawable;
         }
     }
 

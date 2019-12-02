@@ -137,11 +137,8 @@ var unknot = (function() {
             knot.addChild(capB);
         }
 
-        if ((!force) && cachedDrawables[poly]) {
-            knot.drawable = cachedDrawables[poly];
-            return;
-        } else {
-            const knotDrawable = fromPathAnim(
+        if (force || !cachedDrawables[poly]) {
+            cachedDrawables[poly] = fromPathAnim(
                 gl,
                 color,
                 color,
@@ -157,9 +154,8 @@ var unknot = (function() {
                 8,
                 2
             );
-            knot.drawable         = knotDrawable;
-            cachedDrawables[poly] = knotDrawable;
         }
+        knot.drawable = cachedDrawables[poly];
 
         // Build caps
         var capDrawable = getDisk(
