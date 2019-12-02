@@ -8,19 +8,23 @@ import { figureEightKnot }
     from "./figure_eight_knot.mjs"
 import { pillars }
     from "./pillars.mjs"
+import { walls }
+    from "./walls.mjs"
 
 import { getBrickTextures }
     from "../textures/brick/textures.mjs"
 
-var root = null;
+var mainRoot = null;
+var wallRoot = null;
 function initSceneGeometry(gl, poly) {
     unknot.init(gl, poly);
     torusKnot.init(gl, poly);
     figureEightKnot.init(gl, poly);
     pillars.init(gl, poly);
+    walls.init(gl, poly);
 
-    if (!root) {
-        root = new HierarchyNode(
+    if (!mainRoot) {
+        mainRoot = new HierarchyNode(
             null,
             [0, 0, 0],
             {angle: 0.0, axis: [0,1,0]},
@@ -33,7 +37,7 @@ function initSceneGeometry(gl, poly) {
         const pillarUnknotNode       = pillars.get()[0];
         pillarUnknotNode.translation = [-9.0, +1.5, +0.0];
         pillarUnknotNode.scale       = [+1.5, +1.5, +1.5];
-        root.addChild(pillarUnknotNode);
+        mainRoot.addChild(pillarUnknotNode);
 
         const unknotNode       = unknot.get();
         unknotNode.translation = [-0.3, +1.6, +0.0];
@@ -43,7 +47,7 @@ function initSceneGeometry(gl, poly) {
         const pillarTorusKnotNode       = pillars.get()[1];
         pillarTorusKnotNode.translation = [+0.0, +1.5, +0.0];
         pillarTorusKnotNode.scale       = [+1.5, +1.5, +1.5];
-        root.addChild(pillarTorusKnotNode);
+        mainRoot.addChild(pillarTorusKnotNode);
 
         const torusKnotNode       = torusKnot.get();
         torusKnotNode.translation = [+0.0, +1.6, +0.0];
@@ -53,12 +57,61 @@ function initSceneGeometry(gl, poly) {
         const pillarFigureEightKnotNode       = pillars.get()[2];
         pillarFigureEightKnotNode.translation = [+9.0, +1.5, +0.0];
         pillarFigureEightKnotNode.scale       = [+1.5, +1.5, +1.5];
-        root.addChild(pillarFigureEightKnotNode);
+        mainRoot.addChild(pillarFigureEightKnotNode);
 
         const figureEightKnotNode       = figureEightKnot.get();
         figureEightKnotNode.translation = [+0.0, +1.6, +0.0];
         figureEightKnotNode.scale       = [+0.45, +0.45, +0.45];
         pillarFigureEightKnotNode.addChild(figureEightKnotNode);
+    }
+
+    if (!wallRoot) {
+        wallRoot = new HierarchyNode(
+            null,
+            [0, 0, 0],
+            {angle: 0.0, axis: [0,1,0]},
+            [1, 1, 1],
+            null,
+            null,
+            null
+        );
+        const D = 100.0;
+
+        const posXRoot = walls.get()[0];
+        posXRoot.translation = [+D, 0, 0];
+        posXRoot.rotation    = {angle: 2 * Math.PI / 3, axis: [1, -1, 1]};
+        posXRoot.scale       = [D, D, D];
+        wallRoot.addChild(posXRoot);
+
+        const negXRoot = walls.get()[1];
+        negXRoot.translation = [-D, 0, 0];
+        negXRoot.rotation    = {angle: -2 * Math.PI / 3, axis: [-1, -1, 1]};
+        negXRoot.scale       = [D, D, D];
+        wallRoot.addChild(negXRoot);
+
+        const posYRoot = walls.get()[2];
+        posYRoot.translation = [0, +D, 0];
+        posYRoot.rotation    = {angle: Math.PI, axis: [1, 0, 0]};
+        posYRoot.scale       = [D, D, D];
+        wallRoot.addChild(posYRoot);
+
+        const negYRoot = walls.get()[3];
+        negYRoot.translation = [0, -D, 0];
+        negYRoot.rotation    = {angle: 0, axis: [1, 0, 0]};
+        negYRoot.scale       = [D, D, D];
+        wallRoot.addChild(negYRoot);
+
+        const posZRoot = walls.get()[4];
+        posZRoot.translation = [0, 0, +D];
+        posZRoot.rotation    = {angle: Math.PI, axis: [0, -1, 1]};
+        posZRoot.scale       = [D, D, D];
+        wallRoot.addChild(posZRoot);
+
+        const negZRoot = walls.get()[5];
+        negZRoot.translation = [0, 0, -D];
+        negZRoot.rotation    = {angle: Math.PI / 2, axis: [1, 0, 0]};
+        negZRoot.scale       = [D, D, D];
+        wallRoot.addChild(negZRoot);
     }
 }
 
@@ -68,9 +121,11 @@ function getSceneHierarchy() {
     torusKnot.get();
     figureEightKnot.get();
     pillars.get();
+    walls.get();
 
     return {
-        root: root,
+        mainRoot: mainRoot,
+        wallRoot: wallRoot,
     }
 }
 
@@ -79,6 +134,7 @@ function textureSceneGeometry(knotTextures, pillarTextures, shine) {
     torusKnot.texture(knotTextures, shine);
     figureEightKnot.texture(knotTextures, shine);
     pillars.texture(pillarTextures, shine);
+    walls.texture(pillarTextures, shine); // TODO
 }
 
 function animateKnots(lengths) {

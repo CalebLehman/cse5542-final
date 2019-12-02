@@ -43,7 +43,7 @@ const webglGraphics = (function () {
             1.0,
             canvas.clientWidth / canvas.clientHeight,
             0.1,
-            100.0
+            500.0
         );
         camera.position = [0.0, 5.5, 15.0];
         camera.coi      = [0.0, 5.5,  0.0];
@@ -51,7 +51,7 @@ const webglGraphics = (function () {
         cubeMapTextures = getParkCubeMapTextures(gl);
         // Setup light
         light = new Light(
-            [5, 5, 5],
+            [20, 5, 5],
             [0.5, 0.5, 0.5],
             [0.5, 0.5, 0.5],
             [1.0, 1.0, 1.0]
@@ -77,7 +77,8 @@ const webglGraphics = (function () {
         setProgram(gl, shaderType);
 
         // Draw hierarchy TODO (walls, light?)
-        drawHierarchy(gl, shaderType, camera, light, getSceneHierarchy().root, cubeMapTextures.texture);
+        drawHierarchy(gl, shaderType, camera, light, getSceneHierarchy().mainRoot, cubeMapTextures.texture);
+        drawHierarchy(gl, shaderType, camera, light, getSceneHierarchy().wallRoot, cubeMapTextures.texture);
 
         // Unset shader
         unsetProgram(gl, shaderType);
