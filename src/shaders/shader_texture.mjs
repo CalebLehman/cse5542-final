@@ -45,9 +45,7 @@ var shaderTexture = (function () {
             vec3 fragmentBitangentEyeSpace = normalize(vec3(vmTangentSpaceMatrix * bitangent));
             fragmentNormalMapMatrix       = mat3(
                 fragmentBitangentEyeSpace,
-                fragmentTangentEyeSpace, // Had to mess around with the signs depending on how
-                                              // the normal maps were rendered
-                                              // Probably a convention issue
+                fragmentTangentEyeSpace,
                 fragmentNormalEyeSpace
             );
         }

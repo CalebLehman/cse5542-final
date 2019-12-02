@@ -8,6 +8,8 @@ import { shaderTexture }
     from "./shader_texture.mjs"
 import { shaderCubeMap }
     from "./shader_cube_map.mjs"
+import { shaderFlatImage }
+    from "./shader_flat_image.mjs"
 
 function compileShader(gl, shaderSource, shaderType) {
     var shader = gl.createShader(shaderType);
@@ -39,6 +41,9 @@ function setProgram(gl, type) {
         case "cube-map":
             shaderCubeMap.setProgram(gl);
             break;
+        case "flat-image":
+            shaderFlatImage.setProgram(gl);
+            break;
         default:
             console.log("Failed to set program to unknown type " + type);
     }
@@ -60,6 +65,9 @@ function unsetProgram(gl, type) {
             break;
         case "cube-map":
             shaderCubeMap.unsetProgram(gl);
+            break;
+        case "flat-image":
+            shaderFlatImage.unsetProgram(gl);
             break;
         default:
             console.log("Failed to unset program from unknown type " + type);
@@ -90,8 +98,11 @@ function drawHierarchy(
         case "cube-map":
             shaderCubeMap.drawHierarchy(gl, camera, light, root, cubeMapTexture);
             break;
+        case "flat-image":
+            shaderFlatImage.drawHierarchy(gl, camera, root);
+            break;
         default:
-            console.log("Failed to draw using uknown program type " + type);
+            console.log("Failed to draw using unknown program type " + type);
     }
 }
 

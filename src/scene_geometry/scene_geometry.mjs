@@ -40,8 +40,8 @@ function initSceneGeometry(gl, poly) {
         mainRoot.addChild(pillarUnknotNode);
 
         const unknotNode       = unknot.get();
-        unknotNode.translation = [-0.3, +1.6, +0.0];
-        unknotNode.scale       = [+0.9, +0.9, +0.9];
+        unknotNode.translation = [+0.0, +1.6, +0.0];
+        unknotNode.scale       = [+0.8, +0.8, +0.8];
         pillarUnknotNode.addChild(unknotNode);
 
         const pillarTorusKnotNode       = pillars.get()[1];

@@ -20,9 +20,9 @@ var unknot = (function() {
     const color    = [0.0, 1.0, 0.0, 1.0];
     const specular = [1.0, 1.0, 1.0, 1.0];
     var   shine    = 100.0;
-    const radius   = 0.2;
+    const radius   = 0.3;
     const p        = 1;
-    const q        = 1;
+    const q        = 0;
 
     const highPoly  = {
         pDivisions: 128,
@@ -51,7 +51,7 @@ var unknot = (function() {
                 Math.sin(u) * (1 + Math.cos(v) / 2.0)
             );
         } else {
-            const factor = (0.98 * (1.75 * q + 5.50 * p))
+            const factor = (1.715 * (1.75 * q + 5.50 * p))
                 / (4 * Math.PI * p * Math.sqrt(q*q + 9*p*p));
             return vec3.fromValues(
                 3.0 / 2.0,

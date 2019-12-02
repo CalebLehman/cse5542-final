@@ -73,15 +73,18 @@ const webglGraphics = (function () {
         gl.canvas.width  = gl.canvas.clientWidth;
         gl.canvas.height = gl.canvas.clientHeight;
 
-        // Switch to appropriate shader
+        // Draw/set light TODO
+
+        // Draw main geometry
         setProgram(gl, shaderType);
-
-        // Draw hierarchy TODO (walls, light?)
         drawHierarchy(gl, shaderType, camera, light, getSceneHierarchy().mainRoot, cubeMapTextures.texture);
-        drawHierarchy(gl, shaderType, camera, light, getSceneHierarchy().wallRoot, cubeMapTextures.texture);
-
-        // Unset shader
         unsetProgram(gl, shaderType);
+
+        // Draw walls
+        const wallShaderType = "flat-image";
+        setProgram(gl, wallShaderType);
+        drawHierarchy(gl, wallShaderType, camera, light, getSceneHierarchy().wallRoot, cubeMapTextures.texture);
+        unsetProgram(gl, wallShaderType);
     }
 
     function selectShader(type) {
