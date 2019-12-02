@@ -38,7 +38,7 @@ const sensitivity = 2 * Math.PI / 2000;
 var wireframePoly = "low-poly";
 
 // Knot parameters
-var trackKnots  = true; // TODO
+var trackKnots  = true;
 var rotateKnots = false;
 var rotateStart = null;
 var rotateTotal = 0;
@@ -135,7 +135,10 @@ function handleKeyPress(e) {
         makeGeometry("high-poly");
     };
 
-    // Animation
+    // Knot animations
+    if (e.keyCode === 90) { // z
+        trackKnots = !trackKnots;
+    }
     if (e.keyCode === 67) { // c
         animateKnots([3000, 4000, 6000]);
     }
@@ -224,7 +227,9 @@ function main() {
 
     camera.position = cameraPosition;
     camera.coi      = targetPosition;
-    setKnotsHeight(...camera.position, -1.0 * camera.pitch);
+    if (trackKnots) {
+        setKnotsHeight(...camera.position, -1.0 * camera.pitch);
+    }
     draw();
     window.requestAnimationFrame(main);
 }
