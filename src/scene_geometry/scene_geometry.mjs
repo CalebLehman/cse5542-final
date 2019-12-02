@@ -11,9 +11,6 @@ import { pillars }
 import { walls }
     from "./walls.mjs"
 
-import { getBrickTextures }
-    from "../textures/brick/textures.mjs"
-
 var mainRoot = null;
 var wallRoot = null;
 function initSceneGeometry(gl, poly) {
@@ -75,42 +72,43 @@ function initSceneGeometry(gl, poly) {
             null,
             null
         );
-        const D = 100.0;
+        const D = 500.0;
+        const S = D + 0.5;
 
         const posXRoot = walls.get()[0];
         posXRoot.translation = [+D, 0, 0];
-        posXRoot.rotation    = {angle: 2 * Math.PI / 3, axis: [1, -1, 1]};
-        posXRoot.scale       = [D, D, D];
+        posXRoot.rotation    = {angle: -2 * Math.PI / 3, axis: [-1, -1, 1]};
+        posXRoot.scale       = [S, S, S];
         wallRoot.addChild(posXRoot);
 
         const negXRoot = walls.get()[1];
         negXRoot.translation = [-D, 0, 0];
-        negXRoot.rotation    = {angle: -2 * Math.PI / 3, axis: [-1, -1, 1]};
-        negXRoot.scale       = [D, D, D];
+        negXRoot.rotation    = {angle: 2 * Math.PI / 3, axis: [1, -1, 1]};
+        negXRoot.scale       = [S, S, S];
         wallRoot.addChild(negXRoot);
 
         const posYRoot = walls.get()[2];
         posYRoot.translation = [0, +D, 0];
-        posYRoot.rotation    = {angle: Math.PI, axis: [1, 0, 0]};
-        posYRoot.scale       = [D, D, D];
+        posYRoot.rotation    = {angle: 0, axis: [0, 0, 1]};
+        posYRoot.scale       = [S, S, S];
         wallRoot.addChild(posYRoot);
 
         const negYRoot = walls.get()[3];
         negYRoot.translation = [0, -D, 0];
-        negYRoot.rotation    = {angle: 0, axis: [1, 0, 0]};
-        negYRoot.scale       = [D, D, D];
+        negYRoot.rotation    = {angle: Math.PI, axis: [1, 0, 0]};
+        negYRoot.scale       = [S, S, S];
         wallRoot.addChild(negYRoot);
 
         const posZRoot = walls.get()[4];
         posZRoot.translation = [0, 0, +D];
-        posZRoot.rotation    = {angle: Math.PI, axis: [0, -1, 1]};
-        posZRoot.scale       = [D, D, D];
+        posZRoot.rotation    = {angle: Math.PI / 2, axis: [1, 0, 0]};
+        posZRoot.scale       = [S, S, S];
         wallRoot.addChild(posZRoot);
 
         const negZRoot = walls.get()[5];
         negZRoot.translation = [0, 0, -D];
-        negZRoot.rotation    = {angle: Math.PI / 2, axis: [1, 0, 0]};
-        negZRoot.scale       = [D, D, D];
+        negZRoot.rotation    = {angle: Math.PI, axis: [0, -1, 1]};
+        negZRoot.scale       = [S, S, S];
         wallRoot.addChild(negZRoot);
     }
 }
@@ -134,7 +132,10 @@ function textureSceneGeometry(knotTextures, pillarTextures, shine) {
     torusKnot.texture(knotTextures, shine);
     figureEightKnot.texture(knotTextures, shine);
     pillars.texture(pillarTextures, shine);
-    walls.texture(pillarTextures, shine); // TODO
+}
+
+function textureSceneWalls(imageTextures) {
+    walls.texture(imageTextures);
 }
 
 function animateKnots(lengths) {
@@ -197,4 +198,5 @@ export { initSceneGeometry
        , animateKnots
        , setKnotsHeight
        , setKnotsRotation
+       , textureSceneWalls
        };

@@ -4,14 +4,19 @@ import { HierarchyNode }
     from "../common/hierarchy_node.mjs"
 import { getPlane }
     from "../common/primitives.mjs"
-import { getBrickTextures } // TODO
-    from "../textures/brick/textures.mjs"
+
+import { getColorTextures }
+    from "../textures/color/textures.mjs"
+import { getParkImageTextures }
+    from "../cube_maps/park/cube_map.mjs"
 
 var walls = (function() {
     var   walls    = null;
     const numWalls = 6;
 
-    var textures = null;
+    var textures      = null;
+    var blankSpecular = null;
+    var blankNormal   = null;
 
     const color    = [1.0, 0.0, 0.0, 1.0];
     const specular = [1.0, 1.0, 1.0, 1.0];
@@ -20,7 +25,9 @@ var walls = (function() {
     var cachedDrawable = null;
     function init(gl, poly, force=false) {
         if (!textures) {
-            textures = getBrickTextures(gl);
+            textures = getParkImageTextures(gl);
+            blankSpecular = getColorTextures(gl, [255, 255, 255, 255]).specular;
+            blankNormal   = getColorTextures(gl, [128, 128, 255, 255]).normal;
         }
 
         if (!walls) {
@@ -61,27 +68,19 @@ var walls = (function() {
         }
 
         for (var i = 0; i < walls.length; ++i) {
-            const pillar = walls[i];
-            if (pillar.drawable) {
-                pillar.textureDiffuse  = textures.diffuse;
-                pillar.textureSpecular = textures.specular;
-                pillar.textureNormal   = textures.normal;
+            const wall = walls[i];
+            if (wall.drawable) {
+                wall.textureDiffuse  = textures[i];
+                wall.textureSpecular = blankSpecular;
+                wall.textureNormal   = blankNormal;
             }
         }
 
         return walls;
     }
 
-    function texture(newTextures, newShine) {
-        if (newTextures) {
-            textures = newTextures;
-        }
-        if (newShine) {
-            shine = newShine;
-            if (cachedDrawable) {
-                cachedDrawable.shine = newShine;
-            }
-        }
+    function texture(newTextures) {
+        textures = newTextures;
     }
 
     return new Geometry(init, animate, get, texture);

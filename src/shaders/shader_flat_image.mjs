@@ -114,9 +114,7 @@ var shaderFlatImage = (function () {
         pMatrix,
         vMatrix,
         mMatrix,
-        textureDiffuse,
-        textureSpecular,
-        textureNormal
+        textureDiffuse
     ) {
         // Create and pass transformation matrices
         var vmMatrix = mat4.clone(vMatrix);
@@ -227,9 +225,7 @@ var shaderFlatImage = (function () {
                     pMatrix,
                     vMatrix,
                     mMatrix,
-                    currNode.textureDiffuse.texture,
-                    currNode.textureSpecular.texture,
-                    currNode.textureNormal.texture
+                    currNode.textureDiffuse.texture
                 );
             }
 

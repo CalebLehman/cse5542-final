@@ -4,10 +4,12 @@ import { camera, setCameraParams }
     from "./common/camera.mjs"
 import { Light }
     from "./common/light.mjs"
-import { initSceneGeometry, getSceneHierarchy }
+import { initSceneGeometry, getSceneHierarchy, textureSceneWalls }
     from "./scene_geometry/scene_geometry.mjs"
-import { getParkCubeMapTextures }
+import { getParkCubeMapTextures, getParkImageTextures }
     from "./cube_maps/park/cube_map.mjs"
+import { getCityCubeMapTextures, getCityImageTextures }
+    from "./cube_maps/city/cube_map.mjs"
 
 const webglGraphics = (function () {
     var canvas;
@@ -43,12 +45,10 @@ const webglGraphics = (function () {
             1.0,
             canvas.clientWidth / canvas.clientHeight,
             0.1,
-            500.0
+            1000.0
         );
         camera.position = [0.0, 5.5, 15.0];
         camera.coi      = [0.0, 5.5,  0.0];
-        // Setup cube map environment
-        cubeMapTextures = getParkCubeMapTextures(gl);
         // Setup light
         light = new Light(
             [20, 5, 5],
@@ -58,6 +58,8 @@ const webglGraphics = (function () {
         );
         // Get and initialize geometry
         initSceneGeometry(gl, "high-poly");
+        // Setup cube map environment
+        selectEnvironment("park");
         // Initial draw routine
         draw();
     }
@@ -106,11 +108,28 @@ const webglGraphics = (function () {
         }
     }
 
+    function selectEnvironment(type) {
+        switch (type) {
+            case "park":
+                cubeMapTextures = getParkCubeMapTextures(gl);
+                textureSceneWalls(getParkImageTextures(gl));
+                break;
+            case "city":
+                cubeMapTextures = getCityCubeMapTextures(gl);
+                console.log('here');
+                textureSceneWalls(getCityImageTextures(gl));
+                break;
+            default:
+                console.log("Unknown environment type " + type);
+        }
+    }
+
     return {
-        init:         init,
-        draw:         draw,
-        selectShader: selectShader,
-        setLight:     setLight,
+        init:              init,
+        draw:              draw,
+        selectShader:      selectShader,
+        setLight:          setLight,
+        selectEnvironment: selectEnvironment,
     }
 }());
 
@@ -134,4 +153,8 @@ function setLight(position, ambient, diffuse, specular) {
     webglGraphics.setLight(position, ambient, diffuse, specular);
 }
 
-export { init, draw, selectShader, setLight }
+function selectEnvironment(type) {
+    webglGraphics.selectEnvironment(type);
+}
+
+export { init, draw, selectShader, setLight, selectEnvironment }

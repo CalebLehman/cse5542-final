@@ -93,7 +93,7 @@
           <br/>
   
           <h3>Environment</h3>
-          <label>Select an environment (TODO):</label>
+          <label>Select an environment:</label>
           <br/>
           <select id="environment-selector">
             <option value="park">Park</option>
@@ -147,7 +147,7 @@ import { init }
   <script type="module">
 import { selectTextures, selectWireframe }
     from "./src/user.mjs"
-import { setLight }
+import { setLight, selectEnvironment }
     from "./src/graphics.mjs"
 
     function textureSelector() {
@@ -233,6 +233,17 @@ import { setLight }
     }
     const wireframeElem    = document.getElementById("wireframe-selector");
     wireframeElem.onchange = wireframeSelector;
+
+    function environmentSelector() {
+        const environmentElem = document.getElementById("environment-selector");
+        const environmentType = environmentElem.options[environmentElem.selectedIndex].value;
+
+        selectEnvironment(environmentType);
+
+        selectEnvironment.blur();
+    }
+    const environmentElem    = document.getElementById("environment-selector");
+    environmentElem.onchange = environmentSelector;
   </script>
 
 </body>
