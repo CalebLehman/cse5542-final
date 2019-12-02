@@ -118,6 +118,10 @@ function handleKeyPress(e) {
         selectShader("texture");
         makeGeometry("high-poly");
     };
+    if (e.keyCode === 53) { // 5
+        selectShader("cube-map");
+        makeGeometry("high-poly");
+    };
 
     // Animation
     if (e.keyCode === 67) { // c

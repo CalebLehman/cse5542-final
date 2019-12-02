@@ -19,7 +19,7 @@ function getDiffuse(gl) {
 }
 
 function getSpecular(gl) {
-    return getColorTextures(gl, [255,255,255,255]).specular;j
+    return getColorTextures(gl, [255,255,255,255]).specular;
 }
 
 var normal = null;

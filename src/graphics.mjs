@@ -4,8 +4,10 @@ import { camera, setCameraParams }
     from "./common/camera.mjs"
 import { Light }
     from "./common/light.mjs"
-import { getSceneGeometry }
+import { getSceneGeometry, initSceneGeometry }
     from "./scene_geometry/scene_geometry.mjs"
+import { getParkCubeMapTextures }
+    from "./cube_maps/park/cube_map.mjs"
 
 const webglGraphics = (function () {
     var canvas;
@@ -14,6 +16,7 @@ const webglGraphics = (function () {
 
     var light;
     var clearColor = [0.3, 0.3, 0.3, 1.0];
+    var cubeMapTextures = null;
 
     function init() {
         // Get and setup context
@@ -43,6 +46,8 @@ const webglGraphics = (function () {
             100.0
         );
         camera.position = [5, 1, 5];
+        // Setup cube map environment
+        cubeMapTextures = getParkCubeMapTextures(gl);
         // Setup light
         light = new Light(
             [5, 5, 5],
@@ -51,11 +56,7 @@ const webglGraphics = (function () {
             [1.0, 1.0, 1.0]
         );
         // Get and initialize geometry TODO
-        var geometry = getSceneGeometry();
-        geometry.unknot.init(gl, "high-poly");
-        geometry.torusKnot.init(gl, "high-poly");
-        geometry.figureEightKnot.init(gl, "high-poly");
-        geometry.pillar.init(gl, "high-poly");
+        initSceneGeometry(gl);
         // Initial draw routine
         draw();
     }
@@ -85,10 +86,10 @@ const webglGraphics = (function () {
             axis: [0.5, 0.5, 0.0]
         };
         */
-        //drawHierarchy(gl, shaderType, camera, light, geometry.unknot.get());
-        //drawHierarchy(gl, shaderType, camera, light, geometry.torusKnot.get());
-        drawHierarchy(gl, shaderType, camera, light, geometry.figureEightKnot.get());
-        //drawHierarchy(gl, shaderType, camera, light, geometry.pillar.get());
+        drawHierarchy(gl, shaderType, camera, light, geometry.unknot.get(), cubeMapTextures.texture);
+        //drawHierarchy(gl, shaderType, camera, light, geometry.torusKnot.get(), cubeMapTextures.texture);
+        //drawHierarchy(gl, shaderType, camera, light, geometry.figureEightKnot.get(), cubeMapTextures.texture);
+        //drawHierarchy(gl, shaderType, camera, light, geometry.pillar.get(), cubeMapTextures.texture);
 
         // Unset shader
         unsetProgram(gl, shaderType);

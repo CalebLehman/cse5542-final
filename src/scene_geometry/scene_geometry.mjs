@@ -7,6 +7,13 @@ import { figureEightKnot }
 import { pillar }
     from "./pillar.mjs"
 
+function initSceneGeometry(gl) {
+    unknot.init(gl, "high-poly");
+    torusKnot.init(gl, "high-poly");
+    figureEightKnot.init(gl, "high-poly");
+    pillar.init(gl, "high-poly");
+}
+
 function getSceneGeometry() {
     return {
         unknot:          unknot,
@@ -16,4 +23,4 @@ function getSceneGeometry() {
     };
 }
 
-export { getSceneGeometry };
+export { getSceneGeometry, initSceneGeometry };
