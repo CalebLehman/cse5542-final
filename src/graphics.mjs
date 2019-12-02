@@ -10,6 +10,8 @@ import { getParkCubeMapTextures, getParkImageTextures }
     from "./cube_maps/park/cube_map.mjs"
 import { getCityCubeMapTextures, getCityImageTextures }
     from "./cube_maps/city/cube_map.mjs"
+import { getBeachCubeMapTextures, getBeachImageTextures }
+    from "./cube_maps/beach/cube_map.mjs"
 
 const webglGraphics = (function () {
     var canvas;
@@ -75,8 +77,6 @@ const webglGraphics = (function () {
         gl.canvas.width  = gl.canvas.clientWidth;
         gl.canvas.height = gl.canvas.clientHeight;
 
-        // Draw/set light TODO
-
         // Draw main geometry
         setProgram(gl, shaderType);
         drawHierarchy(gl, shaderType, camera, light, getSceneHierarchy().mainRoot, cubeMapTextures.texture);
@@ -119,6 +119,11 @@ const webglGraphics = (function () {
                 cubeMapTextures = getCityCubeMapTextures(gl);
                 textureSceneWalls(getCityImageTextures(gl));
                 setLight([0, 100, 100], null, null, null);
+                break;
+            case "beach":
+                cubeMapTextures = getBeachCubeMapTextures(gl);
+                textureSceneWalls(getBeachImageTextures(gl));
+                setLight([-100, 100, -100], null, null, null);
                 break;
             default:
                 console.log("Unknown environment type " + type);

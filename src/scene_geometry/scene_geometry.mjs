@@ -73,7 +73,7 @@ function initSceneGeometry(gl, poly) {
             null
         );
         const D = 500.0;
-        const S = D + 0.5;
+        const S = D + 1.0;
 
         const posXRoot = walls.get()[0];
         posXRoot.translation = [+D, 0, 0];
