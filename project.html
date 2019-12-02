@@ -197,6 +197,8 @@ import { setLight }
         document.getElementById("diffuse-img").src  = diffuseSrc;
         document.getElementById("specular-img").src = specularSrc;
         document.getElementById("normal-img").src   = normalSrc;
+
+        textureElem.blur();
     }
     const textureElem    = document.getElementById("texture-selector");
     textureElem.onchange = textureSelector;
@@ -226,6 +228,8 @@ import { setLight }
         const wireframePoly = wireframeElem.options[wireframeElem.selectedIndex].value;
 
         selectWireframe(wireframePoly);
+
+        wireframeElem.blur();
     }
     const wireframeElem    = document.getElementById("wireframe-selector");
     wireframeElem.onchange = wireframeSelector;
