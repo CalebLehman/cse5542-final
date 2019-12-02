@@ -2,7 +2,12 @@ import { camera }
     from "./common/camera.mjs"
 import { draw, selectShader }
     from "./graphics.mjs"
-import { initSceneGeometry, getSceneHierarchy, textureSceneGeometry, animateKnots }
+import { initSceneGeometry
+       , getSceneHierarchy
+       , textureSceneGeometry
+       , animateKnots
+       , setKnotsHeight
+       }
     from "./scene_geometry/scene_geometry.mjs"
 
 import { getDefaultTextures }
@@ -191,6 +196,7 @@ function main() {
 
     camera.position = cameraPosition;
     camera.coi      = targetPosition;
+    setKnotsHeight(...camera.position, -1.0 * camera.pitch);
     draw();
     window.requestAnimationFrame(main);
 }
