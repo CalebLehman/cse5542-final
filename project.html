@@ -15,7 +15,7 @@
   <div class="navbar">
     <a href="index.html">Home</a>
     <a href="project.html">Project</a>
-    <a href="planning/requirements.html">Requirements</a>
+    <a href="planning/goals.html">Goals</a>
   </div>
   <div class="main">
     <h2>Project</h2>
@@ -23,7 +23,7 @@
       <canvas id="canvas"></canvas>
     </div>
 
-    <h2>Rendering</h2>
+    <div class="controls-wrapper">
       <div style="text-align: center;">
         <div class="render-controls">
           <h3>Modes</h3>
@@ -95,27 +95,32 @@
           <label>Select an environment:</label>
           <br/>
           <select id="environment-selector">
+            <option value="none">None</option>
             <option value="park">Park</option>
             <option value="city">City</option>
             <option value="beach">Beach</option>
           </select>
           <br/>
         </div>
-
-        <div class="texture-selections">
-          <h4>Diffuse</h4>
-          <img id="diffuse-img" src="./src/textures/empty.gif" style="width:90%;" border="1">
-        </div>
-        <div class="texture-selections">
-          <h4>Specular</h4>
-          <img id="specular-img" src="./src/textures/empty.gif" style="width:90%;" border="1">
-        </div>
-        <div class="texture-selections">
-          <h4>Normal</h4>
-          <img id="normal-img" src="./src/textures/empty.gif" style="width:90%;" border="1">
-        </div>
-        <br style="clear: left;"/>
       </div>
+    </div>
+    <br style="clear: left;"/>
+
+    <div id="texture-images">
+      <div class="texture-selections">
+        <h4>Diffuse</h4>
+        <img id="diffuse-img" src="./src/textures/empty.gif" style="width:90%;" border="1">
+      </div>
+      <div class="texture-selections">
+        <h4>Specular</h4>
+        <img id="specular-img" src="./src/textures/empty.gif" style="width:90%;" border="1">
+      </div>
+      <div class="texture-selections">
+        <h4>Normal</h4>
+        <img id="normal-img" src="./src/textures/empty.gif" style="width:90%;" border="1">
+      </div>
+    </div>
+    <br style="clear: left;"/>
   
     <h2>Controls</h2>
       <p>

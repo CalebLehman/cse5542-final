@@ -12,6 +12,8 @@ import { getCityCubeMapTextures, getCityImageTextures }
     from "./cube_maps/city/cube_map.mjs"
 import { getBeachCubeMapTextures, getBeachImageTextures }
     from "./cube_maps/beach/cube_map.mjs"
+import { getNoneCubeMapTextures, getNoneImageTextures }
+    from "./cube_maps/none/cube_map.mjs"
 
 const webglGraphics = (function () {
     var canvas;
@@ -61,7 +63,7 @@ const webglGraphics = (function () {
         // Get and initialize geometry
         initSceneGeometry(gl, "high-poly");
         // Setup cube map environment
-        selectEnvironment("park");
+        selectEnvironment("none");
         // Initial draw routine
         draw();
     }
@@ -110,6 +112,11 @@ const webglGraphics = (function () {
 
     function selectEnvironment(type) {
         switch (type) {
+            case "none":
+                cubeMapTextures = getNoneCubeMapTextures(gl);
+                textureSceneWalls(getNoneImageTextures(gl));
+                setLight([-85, 100, -100], null, null, null);
+                break;
             case "park":
                 cubeMapTextures = getParkCubeMapTextures(gl);
                 textureSceneWalls(getParkImageTextures(gl));
@@ -123,7 +130,7 @@ const webglGraphics = (function () {
             case "beach":
                 cubeMapTextures = getBeachCubeMapTextures(gl);
                 textureSceneWalls(getBeachImageTextures(gl));
-                setLight([-100, 100, -100], null, null, null);
+                setLight([-85, 100, -100], null, null, null);
                 break;
             default:
                 console.log("Unknown environment type " + type);
@@ -141,8 +148,8 @@ const webglGraphics = (function () {
 
 function init() {
     const canvas  = document.querySelector("#canvas");
-    canvas.width  = window.innerWidth  * 0.93;
-    canvas.height = window.innerHeight * 0.70;
+    canvas.width  = window.innerWidth  * 0.60;
+    canvas.height = window.innerHeight * 0.80;
 
     webglGraphics.init();
 }

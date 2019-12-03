@@ -4,12 +4,12 @@ My overall idea is to have a small \"museum\" dedicated to some simple knots.
 Each knot will be placed on one of several pedestals and the user will be able
 to walk around the scene and view the knots.
 
-### Requirements
+### Goals
 
-The full requirements for the project can be found
+The full goals for the project can be found
 [here](http://web.cse.ohio-state.edu/~shen.94/5542/Site/Lab5.html) or
 [here](../assignment/assignment.html) (local copy).
-The following is a summary of the requirements for the final project.  The
+The following is a summary of the goals for the final project.  The
 following sections detail how my project addresses them.
 
 - [ ] [Texture mapping on a surface](#texture-mapping)

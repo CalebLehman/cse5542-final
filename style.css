@@ -28,7 +28,6 @@
 }
 
 .texture-selections {
-    float: left;
     width: 20%;
     display: inline-block;
 }
@@ -38,10 +37,19 @@
 }
 
 .canvas-wrapper {
+    float: left;
+    padding: 10px;
+}
+
+.controls-wrapper {
+}
+
+#texture-images {
+    text-align: center
 }
 
 #canvas {
   display: block;
-  border: 1px solid black;
+  border: 2px solid lightgray;
   margin: 0 auto;
 }

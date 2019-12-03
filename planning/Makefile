@@ -1,13 +1,13 @@
 # Makefile to convert markdown to HTML
 # Requires pandoc for now
 
-all: requirements
+all: goals
 
-requirements: README.md
+goals: README.md
 	pandoc README.md -f markdown -t html \
-	-o requirements_mid.html
-	cat requirements_top.html requirements_mid.html requirements_bot.html > requirements.html
+	-o goals_mid.html
+	cat goals_top.html goals_mid.html goals_bot.html > goals.html
 
 .PHONY: clean
 clean:
-	rm -rf requirements.html requirements_mid.html
+	rm -rf goals.html goals_mid.html
