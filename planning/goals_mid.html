@@ -1,0 +1,60 @@
+<h2 id="project-overview">Project overview</h2>
+<p>My overall idea is to have a small display dedicated to some famous knots. Each knot is placed on one of several pedestals and the user is be able to walk around the scene and view the knots.</p>
+<h3 id="goals-requirements">Goals / Requirements</h3>
+<p>The given requirements for the project can be found <a href="http://web.cse.ohio-state.edu/~shen.94/5542/Site/Lab5.html">here</a> or <a href="../assignment/assignment.html">here</a> (local copy). The following is a summary of the requirements and the following sections detail how my project addresses them.</p>
+<ul>
+<li><input type="checkbox" disabled="" checked="" />
+<a href="#texture-mapping">Texture mapping on a surface</a></li>
+<li><input type="checkbox" disabled="" checked="" />
+<a href="#parametric-surface">Parametric surface</a></li>
+<li><input type="checkbox" disabled="" checked="" />
+<a href="#environment-cube-mapping">Environment cube mapping</a></li>
+<li><input type="checkbox" disabled="" checked="" />
+<a href="#semester-content">Semester content (put everything together)</a></li>
+<li><input type="checkbox" disabled="" checked="" />
+<a href="#bump-mapping">Bump mapping</a> (Note: bonus)</li>
+</ul>
+<h4 id="texture-mapping">Texture mapping</h4>
+<p><em>Requirement</em> - The scene must contain a planar surface and a parametric surface with textures mapped onto them.</p>
+<p><em>My Scene</em> - By selecting the texture mapping shader and choosing textures, my scene allows the user to map a texture onto boxes (planar surfaces) and to map textures onto knots (parametrics surfaces).</p>
+<h4 id="parametric-surface">Parametric surface</h4>
+<p><em>Requirement</em> - The scene must contain some parametric surface(s). The user must be able to toggle the models between:</p>
+<ul>
+<li>wire-frame</li>
+<li>flat color (with lighting)</li>
+<li>textured (with lighting)</li>
+<li>reflective (using WebGL/OpenGL environment cube mapping)</li>
+</ul>
+<p><em>My Scene</em> - Contains several parametric surfaces (knots) and the user is be able to toggle the knots between:</p>
+<ul>
+<li>wire-frame mode (barycentric-ish coordinates are used to drive both <em>quad</em> and <em>tri</em> wire-frame renderers)</li>
+<li>phong shader mode</li>
+<li>texture mode (including normal mapping for some textures)</li>
+<li>reflective mode (using environment cube mapping)</li>
+</ul>
+<p><em>Parametric Equations Used</em> -</p>
+<p>The following equations define the basic paths in 3-dimensional space as <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20t" alt="t" title="t" /> varies from <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%200" alt="0" title="0" /> to <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%201" alt="1" title="1" />. I numerically re-parametrized these path to have constant speed (for easier texturing). I then used the parametric equations to convert these paths into "tubes" (one parameter follows the path, the other follows a small circle orthogonal to the path):</p>
+<p><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20r_1%28t%29%20%3D%20%5Clangle%20%5Cfrac%7B3%7D%7B2%7D%5Ccos%282%5Cpi%20t%29" alt="r_1(t) = \langle \frac{3}{2}\cos(2\pi t)" title="r_1(t) = \langle \frac{3}{2}\cos(2\pi t)" />, <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%200" alt="0" title="0" />, <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cfrac%7B3%7D%7B2%7D%5Ccos%20%5Crangle%20%5Cqquad%20%28Unknot%29" alt="\frac{3}{2}\cos \rangle \qquad (Unknot)" title="\frac{3}{2}\cos \rangle \qquad (Unknot)" /></p>
+<p><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20r_2%28t%29%20%3D%20%5Clangle%20%5Ccos%286%5Cpi%20t%29%20%281%20%2B%20%5Cfrac%7B1%7D%7B2%7D%5Ccos%284%5Cpi%20t%29%29" alt="r_2(t) = \langle \cos(6\pi t) (1 + \frac{1}{2}\cos(4\pi t))" title="r_2(t) = \langle \cos(6\pi t) (1 + \frac{1}{2}\cos(4\pi t))" />, <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Cfrac%7B1%7D%7B2%7D%5Csin%284%5Cpi%20t%29" alt="\frac{1}{2}\sin(4\pi t)" title="\frac{1}{2}\sin(4\pi t)" />, <img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Csin%286%5Cpi%20t%29%20%281%20%2B%20%5Cfrac%7B1%7D%7B2%7D%5Ccos%284%5Cpi%20t%29%29%20%5Crangle%20%5Cqquad%20%28Trefoil%5Ctext%7B%20%7Dknot%29" alt="\sin(6\pi t) (1 + \frac{1}{2}\cos(4\pi t)) \rangle \qquad (Trefoil\text{ }knot)" title="\sin(6\pi t) (1 + \frac{1}{2}\cos(4\pi t)) \rangle \qquad (Trefoil\text{ }knot)" /></p>
+<p><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20r_3%28t%29%20%3D%20%5Clangle%20%5Ccos%286%5Cpi%20t%29%282%20%2B%20%5Ccos%284%5Cpi%20t%29%29%2C%20%5Csin%288%5Cpi%20t%29%2C%20%5Csin%286%5Cpi%20t%29%282%20%2B%20%5Ccos%284%5Cpi%20t%29%29" alt="r_3(t) = \langle \cos(6\pi t)(2 + \cos(4\pi t)), \sin(8\pi t), \sin(6\pi t)(2 + \cos(4\pi t))" title="r_3(t) = \langle \cos(6\pi t)(2 + \cos(4\pi t)), \sin(8\pi t), \sin(6\pi t)(2 + \cos(4\pi t))" /><img style="vertical-align:middle" src="https://latex.codecogs.com/png.latex?%5Ctextstyle%20%5Crangle%20%5Cqquad%20%28Figure-eight%5Ctext%7B%20%7Dknot%29" alt="\rangle \qquad (Figure-eight\text{ }knot)" title="\rangle \qquad (Figure-eight\text{ }knot)" /></p>
+<h4 id="environment-cube-mapping">Environment cube mapping</h4>
+<p><em>Requirement</em> - The scene must have 6 walls and some geometric primitives and parametrics surfaces which are reflective, using the enivornment cube mapping feature in WebGl.</p>
+<p><em>My Scene</em> - Has a toggle to make both the boxes (geometric primitive) and knots (parametric surfaces) reflective. The user can turn on the reflective shader and select from several surrounding environments, which will automatically set the light in the correct position.</p>
+<h4 id="semester-content">Semester content</h4>
+<p><em>Requirement</em> - Put together everything learned in the semester. In particular, The scene must have</p>
+<ul>
+<li>hierarchical modeling</li>
+<li>lighting</li>
+<li>local and global transformations</li>
+<li>some animation</li>
+</ul>
+<p><em>My Scene</em> -</p>
+<ul>
+<li>knots on top of pedestals (hierarchical modeling)</li>
+<li>phong shading (lighting)</li>
+<li>ability for player can move around, rotate view, and rotate knots (local and global transformations)</li>
+<li>knots which can rotate and "tie" themselves in place (animation)</li>
+</ul>
+<h4 id="bump-mapping">Bump mapping</h4>
+<p><em>Requirement</em> - The scene should implement bump mapping.</p>
+<p><em>My Scene</em> - Has bump mapping (normal mapping) implemented in the texture mapping shader. In particular, the "Brick," "Scales," and "Organic" textures have non-trivial normal textures).</p>

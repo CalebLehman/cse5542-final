@@ -4,7 +4,7 @@
 all: goals
 
 goals: README.md
-	pandoc README.md -f markdown -t html \
+	pandoc --webtex README.md -f markdown -t html \
 	-o goals_mid.html
 	cat goals_top.html goals_mid.html goals_bot.html > goals.html
 

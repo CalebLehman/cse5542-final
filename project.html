@@ -50,7 +50,7 @@
             </tr>
             <tr>
               <td><code>5</code></td>
-              <td><a href="https://en.wikipedia.org/wiki/Cube_mapping">Cube Mapping</a></td>
+              <td><a href="https://en.wikipedia.org/wiki/Cube_mapping">Reflective (Environment Cube Mapping)</a></td>
             </tr>
           </table>
   
@@ -123,13 +123,26 @@
     <br style="clear: left;"/>
   
     <h2>Controls</h2>
+      <h3>Rendering Controls</h3>
       <p>
-      Move player with <code>WASD</code> and mouse (click on canvas to enable mouse control, <code>ESC</code> to release mouse).
-      <code>x</code> will track knots to user camera.
-      <code>c</code> will "tie" the knots.
-      <code>v</code> will toggle rotation of the knots.
-      TODO more controls or description.
+      Rendering controls are located to the right of the canvas above. Using the number keys, you can select from 5
+      different shaders. For the shaders which show a wireframe, you can select between two levels of complexity.
+      For the shaders which have specular highlights, you can select the strength and glossiness of the highlights.
+      For the texture mapping shader, you can select from 5 textures, each of which can have specular and normal
+      texture maps, in addition to the diffuse texture. Finally, you can select from several environments, which
+      changes the background, as well as the reflections with the reflective shader.
       </p>
+
+      <h3>Other Controls</h3>
+      <p>
+      You can move around with <code>WASD</code> and the mouse (you must click on the canvas to enable mouse control and
+      press <code>ESC</code> to release mouse control). In addition,
+      </p>
+      <ul>
+        <li><code>z</code> will toggle whether the knots raise and lower to try and stay in user view.</li>
+        <li><code>x</code> will toggle a continuous rotation of the knots.</li>
+        <li><code>c</code> will show a short animation of the knots.</li>
+      </ul>
 
     <h2>Contact</h2>
       <p>

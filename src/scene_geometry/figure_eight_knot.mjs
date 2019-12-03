@@ -21,16 +21,14 @@ var figureEightKnot = (function() {
     const specular = [1.0, 1.0, 1.0, 1.0];
     var   shine    = 100.0;
     const radius   = 0.3;
-    const p        = 3;
-    const q        = 2;
 
     const highPoly  = {
-        pDivisions: 256,
-        qDivisions: 32,
+        pDivisions: 256, // lengthwise
+        qDivisions: 32,  // radius-of-tube-wise
     };
     const lowPoly   = {
-        pDivisions: 32,
-        qDivisions: 8,
+        pDivisions: 32, // lengthwise
+        qDivisions: 8,  // radius-of-tube-wise
     };
     var currentPoly = null;
     var cachedDrawables = {};

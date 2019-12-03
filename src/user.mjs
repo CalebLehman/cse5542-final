@@ -140,7 +140,7 @@ function handleKeyPress(e) {
     if (e.keyCode === 67) { // c
         animateKnots([3000, 4000, 6000]);
     }
-    if (e.keyCode === 86) { // v
+    if (e.keyCode === 88) { // x
         const date  = new Date();
         rotateKnots = !rotateKnots;
         if (rotateKnots) {
